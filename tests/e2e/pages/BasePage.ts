@@ -21,7 +21,7 @@ export class BasePage {
     await this.page.getByText(text).click()
   }
 
-  async clickByRole(role: 'button' | 'link' | 'input', name?: string) {
+  async clickByRole(role: 'button' | 'link' | 'textbox', name?: string) {
     if (name) {
       await this.page.getByRole(role, { name }).click()
     } else {

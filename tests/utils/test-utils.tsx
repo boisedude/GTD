@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { vi } from 'vitest'
-import { AuthContextProvider } from '@/contexts/auth-context'
+import { AuthProvider } from '@/contexts/auth-context'
 import { mockUsers } from '../fixtures/data'
 
 // Mock AuthContext provider for testing
@@ -9,18 +9,11 @@ const MockAuthProvider: React.FC<{ children: React.ReactNode; user?: any }> = ({
   children,
   user = mockUsers[0]
 }) => {
-  const mockAuthContext = {
-    user,
-    loading: false,
-    signIn: vi.fn(),
-    signOut: vi.fn(),
-    signUp: vi.fn(),
-  }
-
+  // For testing, we'll use the real AuthProvider but with mocked Supabase client
   return (
-    <AuthContextProvider value={mockAuthContext}>
+    <AuthProvider>
       {children}
-    </AuthContextProvider>
+    </AuthProvider>
   )
 }
 
