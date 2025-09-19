@@ -4,9 +4,6 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,8 +14,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  BookOpen,
-  TrendingUp,
   AlertTriangle,
   Info,
   X,
@@ -26,8 +21,6 @@ import {
 import type {
   ReviewType,
   ReviewStepType,
-  Task,
-  Project,
   WeeklyInsights,
   DailyReviewData,
   WeeklyReviewData,
@@ -567,7 +560,7 @@ const CompactCoachingPrompt = React.memo(function CompactCoachingPrompt({
 function checkCondition(
   condition: string,
   reviewData: DailyReviewData | WeeklyReviewData | undefined,
-  insights: WeeklyInsights | null
+  _insights: WeeklyInsights | null
 ): boolean {
   switch (condition) {
     case "has_overdue_tasks":
@@ -593,7 +586,7 @@ export function ReviewCompletionCoaching({
   reviewType,
   duration,
   tasksReviewed,
-  insights,
+  insights: _insights,
 }: {
   reviewType: ReviewType;
   duration: number;

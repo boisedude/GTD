@@ -71,7 +71,7 @@ async function validateDatabase() {
       await supabase.from("projects").select("status").limit(1);
       await supabase.from("reviews").select("type").limit(1);
       console.log("✅ All required custom types exist");
-    } catch (_error) {
+    } catch {
       console.error("❌ Error checking enums - they may not be created yet");
       console.error(
         "Please run the migration script in the Supabase SQL Editor."

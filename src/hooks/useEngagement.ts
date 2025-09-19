@@ -1,15 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type {
   Task,
   TaskFilter,
   EngagementContext,
   TaskSuggestion,
   TaskAction,
-  TaskStatus,
   TaskContext,
-  TaskEnergyLevel,
   TaskDuration,
 } from "@/types/database";
 import { useTasks } from "./useTasks";
@@ -213,7 +211,7 @@ function applyTaskFilters(tasks: Task[], filters: TaskFilter): Task[] {
 export function useEngagement(
   options: UseEngagementOptions = {}
 ): UseEngagementReturn {
-  const { autoRefresh = true, maxSuggestions = 10 } = options;
+  const { autoRefresh: _autoRefresh = true, maxSuggestions = 10 } = options;
   const { tasks, loading: tasksLoading, updateTask } = useTasks();
 
   const [context, setContext] = useState<EngagementContext>({

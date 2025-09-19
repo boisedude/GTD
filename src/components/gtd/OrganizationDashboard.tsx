@@ -30,7 +30,6 @@ import { TaskEditModal } from "./TaskEditModal";
 import { useTasks } from "@/hooks/useTasks";
 import { useProjects } from "@/hooks/useProjects";
 import { useReviews } from "@/hooks/useReviews";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { Task, UpdateTaskInput } from "@/types/database";
 

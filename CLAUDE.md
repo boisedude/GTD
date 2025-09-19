@@ -28,12 +28,16 @@ This is a GTD (Getting Things Done) productivity app project inspired by David A
 
 ## Development Commands
 
-_Note: This project appears to be in planning phase. Once implemented, standard Next.js commands will likely be:_
-
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run test` - Run tests
 - `npx playwright test` - Run Playwright e2e tests
+
+**Important Note on Production Builds:**
+- When running production builds (`npm run build`), you MUST set `NODE_ENV=production` explicitly
+- Command: `export NODE_ENV=production && npm run build`
+- The environment seems to persist NODE_ENV=development which causes Next.js warnings
+- This is required to avoid "non-standard NODE_ENV value" warnings during builds
 
 ## Core Features (MVP Scope)
 

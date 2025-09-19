@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useReviews } from "@/hooks/useReviews";
 import { useTasks } from "@/hooks/useTasks";
-import { TaskCard } from "@/components/gtd/TaskCard";
 import {
   Calendar,
   CheckCircle2,
@@ -104,7 +103,6 @@ export function DailyReviewWorkflow({
     currentSession,
     dailyReviewData,
     loading,
-    error,
     startReview,
     pauseReview,
     resumeReview,
@@ -274,7 +272,7 @@ export function DailyReviewWorkflow({
         <CardContent className="space-y-6">
           {/* Review overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {DAILY_REVIEW_STEPS.map((step, index) => {
+            {DAILY_REVIEW_STEPS.map((step) => {
               const Icon = step.icon;
               return (
                 <div
@@ -493,8 +491,8 @@ export function DailyReviewWorkflow({
 
 // Individual step components
 function WelcomeStep({
-  data,
-  onDataChange,
+  data: _data,
+  onDataChange: _onDataChange,
   onNext,
 }: {
   data: unknown;
@@ -799,7 +797,7 @@ function WaitingForReviewStep({
   reviewData,
   data,
   onDataChange,
-  onTaskAction,
+  onTaskAction: _onTaskAction,
   onNext,
 }: {
   reviewData: DailyReviewData | null;

@@ -108,10 +108,6 @@ export function DragDropLists({
     setDraggedTask(task);
   }, []);
 
-  const _handleDragEnd = useCallback(() => {
-    setDraggedTask(null);
-    setDragOverList(null);
-  }, []);
 
   const handleDragOver = useCallback(
     (e: React.DragEvent, listId: TaskStatus) => {

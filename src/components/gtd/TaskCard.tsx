@@ -13,7 +13,6 @@ import {
   Circle,
   Edit3,
   Trash2,
-  ExternalLink,
   Flag,
   Zap,
   Phone,
@@ -45,7 +44,6 @@ interface TaskCardProps {
   onComplete?: (taskId: string, completed: boolean) => void;
   onStatusChange?: (taskId: string, status: TaskStatus) => void;
   onDragStart?: (task: Task) => void;
-  showProject?: boolean;
   compact?: boolean;
   className?: string;
 }
@@ -80,7 +78,6 @@ export function TaskCard({
   onComplete,
   onStatusChange,
   onDragStart,
-  showProject = true,
   compact = false,
   className,
 }: TaskCardProps) {

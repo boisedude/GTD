@@ -92,11 +92,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signInWithOtp = async (email: string) => {
     try {
       setLoading(true);
+
+      // Get the base URL for email redirect - only use window.location on client side
+      const getBaseUrl = () => {
+        if (typeof window !== 'undefined') {
+          return window.location.origin;
+        }
+        // Fallback for SSR - use environment variable or default
+        return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+      };
+
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
           // Redirect to verification page after OTP is sent
-          emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/verify`,
+          emailRedirectTo: `${getBaseUrl()}/auth/verify`,
         },
       });
       return { error: error as Error | null };

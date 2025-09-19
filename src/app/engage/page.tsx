@@ -42,8 +42,7 @@ function EngageContent() {
   });
 
   const timer = useTimer({
-    onComplete: (session) => {
-      console.log("Timer session completed:", session);
+    onComplete: (_session) => {
       // TODO: Save timer session to database
     },
   });

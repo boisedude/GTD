@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// Client-side only to avoid SSR issues with auth
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -184,9 +186,14 @@ export default function OnboardingPage() {
     router.push("/dashboard");
   };
 
+  useEffect(() => {
+    if (!user && typeof window !== 'undefined') {
+      router.push("/auth/login");
+    }
+  }, [user, router]);
+
   if (!user) {
-    router.push("/auth/login");
-    return null;
+    return null; // Loading state or redirecting
   }
 
   return (

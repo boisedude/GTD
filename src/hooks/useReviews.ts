@@ -6,13 +6,10 @@ import type {
   Review,
   ReviewSession,
   ReviewType,
-  ReviewProgressData,
   ReviewMetrics,
   DailyReviewData,
   WeeklyReviewData,
   WeeklyInsights,
-  Task,
-  Project,
 } from "@/types/database";
 
 interface UseReviewsOptions {

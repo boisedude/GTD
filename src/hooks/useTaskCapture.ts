@@ -30,7 +30,7 @@ interface UseTaskCaptureReturn {
 export function useTaskCapture(
   options: UseTaskCaptureOptions = {}
 ): UseTaskCaptureReturn {
-  const { enableOfflineQueue = true, autoSaveDelay = 2000 } = options;
+  const { enableOfflineQueue = true, autoSaveDelay: _autoSaveDelay = 2000 } = options;
 
   const { createTask, optimisticAdd } = useTasks();
 
@@ -48,10 +48,7 @@ export function useTaskCapture(
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      // Auto-sync when coming back online
-      if (offlineQueue.length > 0) {
-        syncOfflineQueue();
-      }
+      // Note: Auto-sync is handled by a separate useEffect
     };
 
     const handleOffline = () => {
@@ -130,7 +127,7 @@ export function useTaskCapture(
 
     for (const offlineTask of offlineQueue) {
       try {
-        const { tempId, timestamp, ...taskInput } = offlineTask;
+        const { tempId: _tempId, timestamp: _timestamp, ...taskInput } = offlineTask;
         await createTask(taskInput);
       } catch (err) {
         console.error("Failed to sync offline task:", err);

@@ -32,8 +32,6 @@ import {
   X,
   Plus,
   Tag,
-  Clock,
-  Zap,
   Phone,
   Monitor,
   Car,

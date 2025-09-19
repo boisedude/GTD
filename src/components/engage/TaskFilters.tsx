@@ -449,16 +449,11 @@ export function TaskFilters({
                   </Badge>
                 );
               })}
-              {localFilters.priority?.map((priority) => {
-                const _option = priorityOptions.find(
-                  (opt) => opt.value === priority
-                );
-                return (
-                  <Badge key={priority} variant="secondary" className="text-xs">
-                    P{priority}
-                  </Badge>
-                );
-              })}
+              {localFilters.priority?.map((priority) => (
+                <Badge key={priority} variant="secondary" className="text-xs">
+                  P{priority}
+                </Badge>
+              ))}
               {localFilters.due_today && (
                 <Badge variant="secondary" className="text-xs">
                   Due Today

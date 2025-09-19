@@ -105,7 +105,7 @@ export function ProjectsList({
     // const totalTasks = Object.values(tasksByProject).flat().length;
     const projectTasks = Object.entries(tasksByProject)
       .filter(([_projectId]) => _projectId !== "no-project")
-      .map(([projectId, tasks]) => tasks)
+      .map(([, tasks]) => tasks)
       .flat();
 
     const completedTasks = projectTasks.filter(

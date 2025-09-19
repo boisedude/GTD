@@ -32,7 +32,7 @@ const STORAGE_KEY = "gtd_offline_actions";
 export function useOfflineActions(
   options: UseOfflineActionsOptions = {}
 ): UseOfflineActionsReturn {
-  const { maxRetries = 3, retryDelay = 1000, onSync, onError } = options;
+  const { maxRetries = 3, retryDelay: _retryDelay = 1000, onSync, onError } = options;
 
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== "undefined" ? navigator.onLine : true
@@ -142,7 +142,7 @@ export function useOfflineActions(
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, [syncPendingActions]);
 
   // Queue an action for offline execution
   const queueAction = useCallback(

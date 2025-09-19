@@ -45,8 +45,8 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
     clearPendingActions,
     removePendingAction,
   } = useOfflineActions({
-    onSync: (action) => {
-      console.log("Action synced:", action);
+    onSync: (_action) => {
+      // Action synced successfully
     },
     onError: (action, error) => {
       console.error("Action failed to sync:", action, error);
