@@ -1,9 +1,9 @@
 // Middleware disabled - using client-side auth only to avoid SSR issues
 // All authentication logic is handled in client components and ProtectedRoute
 
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function middleware() {
   // Simply pass through all requests - auth is handled client-side
   return NextResponse.next();
 }

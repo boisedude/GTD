@@ -95,11 +95,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Get the base URL for email redirect - only use window.location on client side
       const getBaseUrl = () => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           return window.location.origin;
         }
         // Fallback for SSR - use environment variable or default
-        return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       };
 
       const { error } = await supabase.auth.signInWithOtp({

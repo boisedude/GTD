@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -357,7 +354,6 @@ export function AICoachingSystem({
   currentStep,
   reviewData,
   insights,
-  onDismiss,
   compact = false,
 }: AICoachingSystemProps) {
   const [visiblePrompts, setVisiblePrompts] = useState<CoachingPrompt[]>([]);
@@ -378,7 +374,7 @@ export function AICoachingSystem({
 
       if (prompt.conditions) {
         return prompt.conditions.every((condition) =>
-          checkCondition(condition, reviewData, insights || null)
+          checkCondition(condition, reviewData)
         );
       }
 
@@ -396,7 +392,6 @@ export function AICoachingSystem({
     reviewType,
     currentStep,
     reviewData,
-    insights,
     dismissedPrompts,
     compact,
   ]);
@@ -559,8 +554,7 @@ const CompactCoachingPrompt = React.memo(function CompactCoachingPrompt({
 // Helper function to check conditions
 function checkCondition(
   condition: string,
-  reviewData: DailyReviewData | WeeklyReviewData | undefined,
-  _insights: WeeklyInsights | null
+  reviewData: DailyReviewData | WeeklyReviewData | undefined
 ): boolean {
   switch (condition) {
     case "has_overdue_tasks":
@@ -586,7 +580,6 @@ export function ReviewCompletionCoaching({
   reviewType,
   duration,
   tasksReviewed,
-  insights: _insights,
 }: {
   reviewType: ReviewType;
   duration: number;

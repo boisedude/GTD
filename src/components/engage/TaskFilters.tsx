@@ -119,7 +119,7 @@ const statusBadgeVariants = {
   project: "project",
   waiting_for: "waiting_for",
   someday: "someday",
-  completed: "completed"
+  completed: "completed",
 } as const;
 
 export function TaskFilters({
@@ -163,10 +163,17 @@ export function TaskFilters({
   );
 
   return (
-    <Card className={className} role="region" aria-labelledby="task-filters-title">
+    <Card
+      className={className}
+      role="region"
+      aria-labelledby="task-filters-title"
+    >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle id="task-filters-title" className="text-lg flex items-center gap-2">
+          <CardTitle
+            id="task-filters-title"
+            className="text-lg flex items-center gap-2"
+          >
             <Filter className="h-5 w-5" aria-hidden="true" />
             Task Filters
           </CardTitle>
@@ -412,7 +419,11 @@ export function TaskFilters({
                 return (
                   <Badge
                     key={status}
-                    variant={statusBadgeVariants[status as keyof typeof statusBadgeVariants] || "secondary"}
+                    variant={
+                      statusBadgeVariants[
+                        status as keyof typeof statusBadgeVariants
+                      ] || "secondary"
+                    }
                     className="text-xs"
                   >
                     {option?.label}

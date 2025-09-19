@@ -16,16 +16,14 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
         // GTD Status variants with improved contrast
-        captured:
-          "border-blue-300 bg-blue-100 text-blue-900 hover:bg-blue-200",
+        captured: "border-blue-300 bg-blue-100 text-blue-900 hover:bg-blue-200",
         next_action:
           "border-orange-300 bg-orange-100 text-orange-900 hover:bg-orange-200",
         project:
           "border-purple-300 bg-purple-100 text-purple-900 hover:bg-purple-200",
         waiting_for:
           "border-yellow-300 bg-yellow-100 text-yellow-900 hover:bg-yellow-200",
-        someday:
-          "border-gray-300 bg-gray-100 text-gray-900 hover:bg-gray-200",
+        someday: "border-gray-300 bg-gray-100 text-gray-900 hover:bg-gray-200",
         completed:
           "border-green-300 bg-green-100 text-green-900 hover:bg-green-200",
         // Priority variants

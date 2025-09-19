@@ -19,18 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { useReviews } from "@/hooks/useReviews";
 import {
   Clock,
   Calendar,
   Bell,
-  Settings,
   Target,
   CheckCircle2,
-  AlertTriangle,
-  Zap,
   Moon,
   Sun,
   Coffee,
@@ -87,7 +83,7 @@ export function ReviewScheduler({
   const [schedules, setSchedules] =
     useState<ReviewSchedule[]>(DEFAULT_SCHEDULES);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const { getReviewStreak, getCompletionRate } = useReviews();
+  const { } = useReviews();
 
   // Check notification permission on mount
   useEffect(() => {

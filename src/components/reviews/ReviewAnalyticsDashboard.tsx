@@ -13,11 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useReviews } from "@/hooks/useReviews";
 import {
-  Calendar,
   CheckCircle2,
   Clock,
   TrendingUp,
-  TrendingDown,
   BarChart3,
   Target,
   Zap,
@@ -36,7 +34,6 @@ interface ReviewAnalyticsDashboardProps {
 }
 
 export function ReviewAnalyticsDashboard({
-  timeRange = "month",
   compact = false,
 }: ReviewAnalyticsDashboardProps) {
   const {
@@ -50,7 +47,7 @@ export function ReviewAnalyticsDashboard({
     loadMetrics,
   } = useReviews();
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("month");
 
   // Load data based on time range
   useEffect(() => {
@@ -70,7 +67,7 @@ export function ReviewAnalyticsDashboard({
   const weeklyInsights = getWeeklyInsights();
 
   // Calculate trends and statistics
-  const stats = calculateReviewStats(metrics, recentReviews, selectedTimeRange);
+  const stats = calculateReviewStats(metrics, recentReviews);
 
   if (loading && metrics.length === 0) {
     return (
@@ -176,7 +173,6 @@ export function ReviewAnalyticsDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ReviewPatternsCard
           reviews={recentReviews}
-          timeRange={selectedTimeRange}
         />
         <SystemHealthCard metrics={metrics} insights={weeklyInsights} />
       </div>
@@ -295,10 +291,8 @@ function MetricCard({
 
 function ReviewPatternsCard({
   reviews,
-  timeRange,
 }: {
   reviews: Review[];
-  timeRange: string;
 }) {
   // Calculate review patterns (time of day, day of week, etc.)
   const patterns = analyzeReviewPatterns(reviews);
@@ -526,7 +520,7 @@ function ProductivityTrends({ metrics }: { metrics: ReviewMetrics[] }) {
           </div>
 
           <div className="space-y-2">
-            {metrics.slice(0, 5).map((metric, index) => (
+            {metrics.slice(0, 5).map((metric) => (
               <div key={metric.id} className="flex justify-between text-sm">
                 <span>{new Date(metric.date).toLocaleDateString()}</span>
                 <span>{metric.tasks_completed} tasks</span>
@@ -681,8 +675,7 @@ function RecentReviewsList({ reviews }: { reviews: Review[] }) {
 // Helper functions
 function calculateReviewStats(
   metrics: ReviewMetrics[],
-  reviews: Review[],
-  timeRange: string
+  reviews: Review[]
 ) {
   const totalReviews = reviews.length;
   const avgDuration =

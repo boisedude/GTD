@@ -34,6 +34,7 @@ This is a GTD (Getting Things Done) productivity app project inspired by David A
 - `npx playwright test` - Run Playwright e2e tests
 
 **Important Note on Production Builds:**
+
 - When running production builds (`npm run build`), you MUST set `NODE_ENV=production` explicitly
 - Command: `export NODE_ENV=production && npm run build`
 - The environment seems to persist NODE_ENV=development which causes Next.js warnings

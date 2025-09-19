@@ -108,7 +108,6 @@ export function DragDropLists({
     setDraggedTask(task);
   }, []);
 
-
   const handleDragOver = useCallback(
     (e: React.DragEvent, listId: TaskStatus) => {
       e.preventDefault();

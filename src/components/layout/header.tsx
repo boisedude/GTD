@@ -80,30 +80,59 @@ export function MobileNav() {
   if (!user) return null;
 
   return (
-    <nav className="md:hidden border-t bg-white" role="navigation" aria-label="Mobile navigation">
+    <nav
+      className="md:hidden border-t bg-white"
+      role="navigation"
+      aria-label="Mobile navigation"
+    >
       <div className="container mx-auto px-2 py-1">
         <div className="grid grid-cols-5 gap-1">
-          <Button asChild variant="ghost" size="sm" className="h-12 flex-col text-xs">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-12 flex-col text-xs"
+          >
             <Link href="/dashboard">
               <span className="sr-only">Go to </span>Dashboard
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="h-12 flex-col text-xs">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-12 flex-col text-xs"
+          >
             <Link href="/capture">
               <span className="sr-only">Go to </span>Capture
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="h-12 flex-col text-xs">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-12 flex-col text-xs"
+          >
             <Link href="/organize">
               <span className="sr-only">Go to </span>Organize
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="h-12 flex-col text-xs">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-12 flex-col text-xs"
+          >
             <Link href="/dashboard/reviews">
               <span className="sr-only">Go to </span>Reviews
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="h-12 flex-col text-xs">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-12 flex-col text-xs"
+          >
             <Link href="/engage">
               <span className="sr-only">Go to </span>Engage
             </Link>

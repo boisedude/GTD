@@ -187,7 +187,7 @@ export default function OnboardingPage() {
   };
 
   useEffect(() => {
-    if (!user && typeof window !== 'undefined') {
+    if (!user && typeof window !== "undefined") {
       router.push("/auth/login");
     }
   }, [user, router]);

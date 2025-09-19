@@ -491,8 +491,6 @@ export function DailyReviewWorkflow({
 
 // Individual step components
 function WelcomeStep({
-  data: _data,
-  onDataChange: _onDataChange,
   onNext,
 }: {
   data: unknown;
@@ -797,7 +795,6 @@ function WaitingForReviewStep({
   reviewData,
   data,
   onDataChange,
-  onTaskAction: _onTaskAction,
   onNext,
 }: {
   reviewData: DailyReviewData | null;

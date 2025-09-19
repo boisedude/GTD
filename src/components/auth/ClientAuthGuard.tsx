@@ -9,7 +9,10 @@ interface ClientAuthGuardProps {
   requireAuth?: boolean;
 }
 
-export function ClientAuthGuard({ children, requireAuth = true }: ClientAuthGuardProps) {
+export function ClientAuthGuard({
+  children,
+  requireAuth = true,
+}: ClientAuthGuardProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -17,7 +20,8 @@ export function ClientAuthGuard({ children, requireAuth = true }: ClientAuthGuar
   useEffect(() => {
     if (!loading && requireAuth && !user) {
       // Redirect to login with current path as redirect parameter
-      const redirectPath = pathname !== "/" ? `?redirect=${encodeURIComponent(pathname)}` : "";
+      const redirectPath =
+        pathname !== "/" ? `?redirect=${encodeURIComponent(pathname)}` : "";
       router.push(`/auth/login${redirectPath}`);
     }
   }, [user, loading, requireAuth, router, pathname]);

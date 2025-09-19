@@ -211,7 +211,7 @@ function applyTaskFilters(tasks: Task[], filters: TaskFilter): Task[] {
 export function useEngagement(
   options: UseEngagementOptions = {}
 ): UseEngagementReturn {
-  const { autoRefresh: _autoRefresh = true, maxSuggestions = 10 } = options;
+  const { maxSuggestions = 10 } = options;
   const { tasks, loading: tasksLoading, updateTask } = useTasks();
 
   const [context, setContext] = useState<EngagementContext>({

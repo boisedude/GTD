@@ -11,13 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { useReviews } from "@/hooks/useReviews";
 import { useTasks } from "@/hooks/useTasks";
-import { TaskCard } from "@/components/gtd/TaskCard";
 import {
   Calendar,
   CheckCircle2,
@@ -27,7 +25,6 @@ import {
   Pause,
   Play,
   Target,
-  AlertTriangle,
   Lightbulb,
   BookOpen,
   Coffee,
@@ -37,7 +34,6 @@ import {
   Archive,
   TrendingUp,
   BarChart3,
-  Users,
   Zap,
 } from "lucide-react";
 import type {
@@ -134,7 +130,6 @@ export function WeeklyReviewWorkflow({
     currentSession,
     weeklyReviewData,
     loading,
-    error,
     startReview,
     pauseReview,
     resumeReview,
@@ -144,7 +139,7 @@ export function WeeklyReviewWorkflow({
     loadWeeklyReviewData,
   } = useReviews();
 
-  const { updateTask, createTask } = useTasks();
+  const { updateTask } = useTasks();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [stepData, setStepData] = useState<Record<string, unknown>>({});
@@ -318,7 +313,7 @@ export function WeeklyReviewWorkflow({
               Weekly Review Process
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {WEEKLY_REVIEW_STEPS.map((step, index) => {
+              {WEEKLY_REVIEW_STEPS.map((step) => {
                 const Icon = step.icon;
                 return (
                   <div
@@ -588,8 +583,6 @@ export function WeeklyReviewWorkflow({
 // Individual step components for weekly review
 function WeeklyWelcomeStep({
   reviewData,
-  data,
-  onDataChange,
   onNext,
 }: {
   reviewData: WeeklyReviewData | null;
