@@ -92,6 +92,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* Skip navigation for keyboard users */}
+        <a href="#main-content" className="skip-nav">
+          Skip to main content
+        </a>
         <PWAProvider>
           <AuthProvider>{children}</AuthProvider>
         </PWAProvider>

@@ -5,6 +5,7 @@
 /* Import ClarityDone Design Tokens */
 @import "../styles/design-tokens.css";
 @import "../styles/mobile.css";
+@import "../styles/accessibility.css";
 
 @layer base {
   :root {
