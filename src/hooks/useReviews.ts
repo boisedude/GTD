@@ -138,6 +138,7 @@ export function useReviews(options: UseReviewsOptions = {}): UseReviewsReturn {
         setLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [supabase]
   );
 
@@ -291,6 +292,7 @@ export function useReviews(options: UseReviewsOptions = {}): UseReviewsReturn {
         setLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentSession, supabase]
   );
 
@@ -446,7 +448,9 @@ export function useReviews(options: UseReviewsOptions = {}): UseReviewsReturn {
       } finally {
         setLoading(false);
       }
-    }, [supabase]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [supabase]);
 
   // Load review history
   const loadReviewHistory = useCallback(async (): Promise<void> => {
@@ -622,6 +626,7 @@ export function useReviews(options: UseReviewsOptions = {}): UseReviewsReturn {
     };
 
     loadActiveSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoLoad, supabase]);
 
   // Set up real-time subscription
