@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clarity Done
+
+**Calm. Clear. Done.**
+
+A productivity application inspired by David Allen's Getting Things Done (GTD) methodology. This app helps you capture, clarify, organize, reflect, and engage with your tasks and projects for stress-free productivity.
+
+**Important Disclaimer**: This app is inspired by GTD principles but is NOT affiliated with or licensed by David Allen or GTD®.
+
+## Features
+
+- **Quick Capture**: Instantly capture thoughts and tasks without friction
+- **GTD Workflow**: Follow the proven five-step methodology (Capture, Clarify, Organize, Reflect, Engage)
+- **Smart Organization**: Organize tasks into Next Actions, Projects, Waiting For, and Someday/Maybe lists
+- **Reviews**: Built-in daily and weekly review processes
+- **Mobile-First**: Optimized for fast capture on mobile devices
+- **Privacy-Focused**: Your data stays secure with row-level security
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 with TypeScript
+- **UI**: Shadcn/ui with Tailwind CSS
+- **Backend**: Supabase (PostgreSQL + Authentication)
+- **Hosting**: Vercel
+- **Testing**: Playwright for end-to-end testing
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm, yarn, pnpm, or bun
+- Supabase account
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd clarity-done
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Configure your Supabase project settings in `.env.local`
+
+5. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Development Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
+npm run format       # Format code with Prettier
+npm run type-check   # Run TypeScript checks
+npm run test         # Run Playwright tests
+npm run test:ui      # Run Playwright tests with UI
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/              # Next.js app router pages
+├── components/       # Reusable React components
+├── contexts/         # React contexts (auth, etc.)
+├── lib/              # Utility functions and configurations
+├── types/            # TypeScript type definitions
+└── styles/           # Global styles and CSS
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database Schema
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app uses Supabase with the following core tables:
 
-## Deploy on Vercel
+- `users` - User accounts and preferences
+- `tasks` - Individual tasks and items
+- `projects` - Projects and multi-step outcomes
+- `reviews` - Review completion tracking
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+
+This application is inspired by David Allen's Getting Things Done (GTD) methodology but is not affiliated with, endorsed by, or licensed by David Allen or GTD®. GTD® is a registered trademark of David Allen Company.

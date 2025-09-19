@@ -1,4 +1,4 @@
-# GTD App Baseline Summary & Guidance
+# Clarity Done Baseline Summary & Guidance
 
 ## What is GTD?
 

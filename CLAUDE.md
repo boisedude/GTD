@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a GTD (Getting Things Done) productivity app project inspired by David Allen's methodology. The codebase will be built as a Next.js 15 web application with Supabase backend.
+This is Clarity Done, a productivity app project inspired by David Allen's Getting Things Done methodology. The app follows the tagline "Calm. Clear. Done." and is built as a Next.js 15 web application with Supabase backend.
 
 **Important Legal Notice**: This app is inspired by GTD principles but is NOT affiliated with or licensed by David Allen or GTD®. Always include appropriate disclaimers in user-facing content.
 

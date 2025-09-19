@@ -97,7 +97,7 @@ function LoginForm() {
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle>Sign In to GTD App</CardTitle>
+            <CardTitle>Sign In to Clarity Done</CardTitle>
             <CardDescription>
               Enter your email to receive a secure sign-in link
             </CardDescription>

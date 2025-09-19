@@ -4,35 +4,44 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-brand-2xl border px-2.5 py-0.5 text-brand-xs font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-teal focus:ring-offset-2 shadow-sm",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          "border-transparent bg-brand-teal text-brand-white hover:bg-brand-teal-dark hover:shadow-md",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-transparent bg-brand-gray-200 text-brand-navy hover:bg-brand-gray-300",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
-        // GTD Status variants with improved contrast
-        captured: "border-blue-300 bg-blue-100 text-blue-900 hover:bg-blue-200",
+          "border-transparent bg-error text-brand-white hover:bg-error-dark",
+        outline: "border-brand-gray-300 text-brand-navy hover:bg-brand-gray-50",
+        navy: "border-transparent bg-brand-navy text-brand-white hover:bg-brand-navy-light",
+        success:
+          "border-transparent bg-success text-brand-white hover:bg-success-dark",
+        warning:
+          "border-transparent bg-warning text-brand-white hover:bg-warning-dark",
+        info: "border-transparent bg-info text-brand-white hover:bg-info-dark",
+
+        // GTD Status variants with brand colors
+        captured:
+          "border-brand-teal bg-brand-teal/10 text-brand-teal hover:bg-brand-teal/20",
         next_action:
-          "border-orange-300 bg-orange-100 text-orange-900 hover:bg-orange-200",
+          "border-warning bg-warning/10 text-warning-dark hover:bg-warning/20",
         project:
-          "border-purple-300 bg-purple-100 text-purple-900 hover:bg-purple-200",
+          "border-brand-navy bg-brand-navy/10 text-brand-navy hover:bg-brand-navy/20",
         waiting_for:
-          "border-yellow-300 bg-yellow-100 text-yellow-900 hover:bg-yellow-200",
-        someday: "border-gray-300 bg-gray-100 text-gray-900 hover:bg-gray-200",
+          "border-brand-gray-400 bg-brand-gray-100 text-brand-gray-700 hover:bg-brand-gray-200",
+        someday:
+          "border-brand-gray-300 bg-brand-gray-50 text-brand-gray-600 hover:bg-brand-gray-100",
         completed:
-          "border-green-300 bg-green-100 text-green-900 hover:bg-green-200",
+          "border-success bg-success/10 text-success-dark hover:bg-success/20",
+
         // Priority variants
         priority_high:
-          "border-red-300 bg-red-100 text-red-900 hover:bg-red-200",
+          "border-error bg-error/10 text-error-dark hover:bg-error/20 font-semibold",
         priority_medium:
-          "border-yellow-300 bg-yellow-100 text-yellow-900 hover:bg-yellow-200",
-        priority_low:
-          "border-blue-300 bg-blue-100 text-blue-900 hover:bg-blue-200",
+          "border-warning bg-warning/10 text-warning-dark hover:bg-warning/20",
+        priority_low: "border-info bg-info/10 text-info-dark hover:bg-info/20",
       },
     },
     defaultVariants: {

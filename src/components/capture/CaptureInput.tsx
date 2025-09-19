@@ -159,13 +159,11 @@ export function CaptureInput({
   const getStatusIcon = () => {
     switch (state) {
       case "saving":
-        return (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        );
+        return <Loader2 className="h-4 w-4 animate-spin text-brand-gray-500" />;
       case "success":
-        return <Check className="h-4 w-4 text-green-600" />;
+        return <Check className="h-4 w-4 text-success" />;
       case "error":
-        return <X className="h-4 w-4 text-red-600" />;
+        return <X className="h-4 w-4 text-error" />;
       default:
         return null;
     }
@@ -188,11 +186,16 @@ export function CaptureInput({
 
   return (
     <Card
-      className={cn("w-full border-2 transition-all duration-200", className, {
-        "border-blue-200 shadow-md": state === "typing" || title.trim(),
-        "border-green-200 bg-green-50": state === "success",
-        "border-red-200 bg-red-50": state === "error",
-      })}
+      className={cn(
+        "w-full border-2 transition-all duration-300 ease-out",
+        className,
+        {
+          "border-brand-teal/50 shadow-lg ring-2 ring-brand-teal/20 scale-[1.02]":
+            state === "typing" || title.trim(),
+          "border-success/50 bg-success/5 shadow-md": state === "success",
+          "border-error/50 bg-error/5 shadow-md": state === "error",
+        }
+      )}
     >
       <form onSubmit={handleImmediateSave} className="p-4">
         <div className="flex items-center gap-2">
@@ -206,8 +209,12 @@ export function CaptureInput({
               placeholder={placeholder}
               disabled={state === "saving"}
               className={cn(
-                "border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base md:text-sm",
-                "placeholder:text-muted-foreground/60"
+                "border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                "text-base sm:text-brand-sm md:text-brand-base transition-all duration-200",
+                "placeholder:text-brand-gray-500/60",
+                "min-h-[44px] py-3 px-4", // Mobile-first touch target
+                "text-[16px] sm:text-[14px] md:text-[16px]", // Prevent iOS zoom
+                state === "saving" && "cursor-not-allowed opacity-60"
               )}
               autoComplete="off"
               maxLength={500}
@@ -216,20 +223,36 @@ export function CaptureInput({
 
             {/* Status indicator inside input */}
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              {getStatusIcon()}
+              <div
+                className={cn("transition-all duration-200", {
+                  "scale-110": state === "success",
+                  "animate-pulse": state === "saving",
+                })}
+              >
+                {getStatusIcon()}
+              </div>
             </div>
           </div>
 
           {/* Quick actions */}
           <div className="flex items-center gap-1">
-            {/* Immediate save button */}
+            {/* Immediate save button - mobile optimized */}
             <Button
               type="submit"
-              size="sm"
+              size="touch" // Use mobile-optimized touch size
               disabled={!title.trim() || state === "saving"}
-              className="h-8 px-2"
+              className={cn(
+                "min-h-[44px] min-w-[44px] px-3 transition-all duration-200 sm:h-8 sm:px-2 sm:min-w-0",
+                state === "saving" && "cursor-not-allowed opacity-60",
+                title.trim() &&
+                  "bg-brand-teal hover:bg-brand-teal/90 border-brand-teal"
+              )}
             >
-              <Plus className="h-4 w-4" />
+              {state === "saving" ? (
+                <Loader2 className="h-5 w-5 sm:h-4 sm:w-4 animate-spin" />
+              ) : (
+                <Plus className="h-5 w-5 sm:h-4 sm:w-4" />
+              )}
               <span className="sr-only">Add task</span>
             </Button>
 
@@ -238,32 +261,54 @@ export function CaptureInput({
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                size="touch"
                 onClick={onDetailedCapture}
-                className="h-8 px-2 hidden sm:flex"
+                className="min-h-[44px] px-3 sm:h-8 sm:px-2 hidden xs:flex transition-all duration-200 hover:bg-brand-gray-100"
               >
-                Details
+                <span className="text-sm">Details</span>
               </Button>
             )}
           </div>
         </div>
 
-        {/* Status text */}
+        {/* Status text with animation */}
         {getStatusText() && (
           <div
-            className={cn("mt-2 text-xs transition-all duration-200", {
-              "text-muted-foreground": state === "typing" || state === "saving",
-              "text-green-600": state === "success",
-              "text-red-600": state === "error",
-            })}
+            className={cn(
+              "mt-2 text-brand-xs transition-all duration-300 animate-in slide-in-from-top-1 fade-in",
+              {
+                "text-brand-gray-600": state === "typing" || state === "saving",
+                "text-success font-medium": state === "success",
+                "text-error font-medium": state === "error",
+              }
+            )}
           >
             {getStatusText()}
           </div>
         )}
 
-        {/* Keyboard shortcuts hint */}
-        <div className="mt-2 text-xs text-muted-foreground/60 hidden sm:block">
-          Press Enter to save • Esc to clear • Shift+Tab for details
+        {/* Enhanced keyboard shortcuts hint */}
+        <div className="mt-2 text-brand-xs text-brand-gray-500/60 hidden sm:flex items-center gap-4">
+          <div className="flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 bg-brand-gray-100 rounded text-xs border">
+              Enter
+            </kbd>
+            <span>to save</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 bg-brand-gray-100 rounded text-xs border">
+              Esc
+            </kbd>
+            <span>to clear</span>
+          </div>
+          {onDetailedCapture && (
+            <div className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-brand-gray-100 rounded text-xs border">
+                Shift+Tab
+              </kbd>
+              <span>for details</span>
+            </div>
+          )}
         </div>
       </form>
     </Card>

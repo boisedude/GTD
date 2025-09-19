@@ -32,11 +32,7 @@ const STORAGE_KEY = "gtd_offline_actions";
 export function useOfflineActions(
   options: UseOfflineActionsOptions = {}
 ): UseOfflineActionsReturn {
-  const {
-    maxRetries = 3,
-    onSync,
-    onError,
-  } = options;
+  const { maxRetries = 3, onSync, onError } = options;
 
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== "undefined" ? navigator.onLine : true

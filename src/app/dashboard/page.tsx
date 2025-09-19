@@ -23,24 +23,24 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header with integrated capture */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4">
-            {/* Always-visible capture input */}
+    <div className="min-h-screen bg-brand-gray-50">
+      {/* Header with integrated capture - Mobile optimized */}
+      <div className="bg-background border-b border-brand-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-sm bg-background/95">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="py-3 sm:py-6">
+            {/* Always-visible capture input - Mobile first sizing */}
             <CaptureContainer
               alwaysVisible={true}
               autoFocus={false}
               showStatus={true}
-              className="max-w-2xl mx-auto"
+              className="max-w-full sm:max-w-2xl mx-auto"
             />
           </div>
         </div>
       </div>
 
-      {/* Main Dashboard Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Dashboard Content - Mobile optimized spacing */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         <OrganizationDashboard />
       </div>
     </div>

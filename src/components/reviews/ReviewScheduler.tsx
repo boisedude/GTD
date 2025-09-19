@@ -83,7 +83,7 @@ export function ReviewScheduler({
   const [schedules, setSchedules] =
     useState<ReviewSchedule[]>(DEFAULT_SCHEDULES);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const { } = useReviews();
+  const {} = useReviews();
 
   // Check notification permission on mount
   useEffect(() => {

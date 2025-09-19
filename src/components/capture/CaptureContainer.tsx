@@ -161,13 +161,13 @@ export function CaptureContainer({
           )}
         />
 
-        {/* Mobile-friendly quick actions bar */}
-        <div className="flex items-center justify-between mt-2 px-4 sm:hidden">
+        {/* Mobile-friendly quick actions bar - Enhanced for touch */}
+        <div className="flex items-center justify-between mt-3 px-1 sm:hidden">
           <Button
             variant="ghost"
-            size="sm"
+            size="touch"
             onClick={() => setIsDetailedModalOpen(true)}
-            className="text-xs"
+            className="min-h-[44px] px-4 text-sm font-medium text-brand-teal hover:bg-brand-teal/10 active:scale-95 transition-all duration-200"
           >
             Add Details
           </Button>
@@ -175,11 +175,14 @@ export function CaptureContainer({
           {offlineQueueCount > 0 && isOnline && (
             <Button
               variant="ghost"
-              size="sm"
+              size="touch"
               onClick={syncOfflineQueue}
-              className="text-xs text-blue-600"
+              className="min-h-[44px] px-4 text-sm font-medium text-blue-600 hover:bg-blue-50 active:scale-95 transition-all duration-200"
             >
-              Sync {offlineQueueCount}
+              <span className="flex items-center gap-2">
+                <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
+                Sync {offlineQueueCount}
+              </span>
             </Button>
           )}
         </div>

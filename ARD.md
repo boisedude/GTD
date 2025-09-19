@@ -1,4 +1,4 @@
-# GTD App ARD (Architectural Requirements Document)
+# Clarity Done ARD (Architectural Requirements Document)
 
 ## 1. System Architecture
 

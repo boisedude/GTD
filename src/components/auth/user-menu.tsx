@@ -40,11 +40,13 @@ export function UserMenu({ className }: UserMenuProps) {
       <div className="flex items-center space-x-4">
         {/* User info */}
         <div className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
-            <User className="h-4 w-4 text-gray-600" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-teal/10 border border-brand-teal/20">
+            <User className="h-4 w-4 text-brand-teal" />
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-medium text-gray-900">{user.email}</p>
+            <p className="text-brand-sm font-medium text-brand-navy">
+              {user.email}
+            </p>
           </div>
         </div>
 
@@ -56,7 +58,7 @@ export function UserMenu({ className }: UserMenuProps) {
             onClick={() => router.push("/settings")}
             className="hidden sm:inline-flex"
           >
-            <Settings className="h-4 w-4" />
+            <Settings className="h-4 w-4 text-brand-gray-600" />
             <span className="ml-2">Settings</span>
           </Button>
 
@@ -68,12 +70,12 @@ export function UserMenu({ className }: UserMenuProps) {
           >
             {loggingOut ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin text-brand-gray-600" />
                 <span className="ml-2 hidden sm:inline">Signing Out...</span>
               </>
             ) : (
               <>
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4 text-brand-gray-600" />
                 <span className="ml-2 hidden sm:inline">Sign Out</span>
               </>
             )}
@@ -116,12 +118,12 @@ export function LogoutButton() {
     >
       {loggingOut ? (
         <>
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          <Loader2 className="h-4 w-4 mr-2 animate-spin text-brand-gray-600" />
           Signing Out...
         </>
       ) : (
         <>
-          <LogOut className="h-4 w-4 mr-2" />
+          <LogOut className="h-4 w-4 mr-2 text-brand-gray-600" />
           Sign Out
         </>
       )}

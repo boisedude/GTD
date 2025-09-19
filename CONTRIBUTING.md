@@ -1,4 +1,4 @@
-# Contributing to GTD App
+# Contributing to Clarity Done
 
 ## Development Setup
 

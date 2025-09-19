@@ -138,7 +138,9 @@ export function QuickCaptureModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className={cn(
-          "sm:max-w-[600px] max-h-[90vh] overflow-y-auto",
+          "w-[95vw] max-w-[600px] max-h-[90vh] sm:max-h-[85vh] overflow-y-auto",
+          "mx-auto my-4 sm:my-8 p-4 sm:p-6",
+          "rounded-lg sm:rounded-xl",
           className
         )}
         onKeyDown={handleKeyDown}
@@ -147,10 +149,12 @@ export function QuickCaptureModal({
           <DialogTitle>Capture Task Details</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title Input */}
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          {/* Title Input - Mobile optimized */}
           <div className="space-y-2">
-            <Label htmlFor="title">What needs to be done? *</Label>
+            <Label htmlFor="title" className="text-sm font-medium">
+              What needs to be done? *
+            </Label>
             <Input
               id="title"
               ref={titleInputRef}
@@ -161,12 +165,18 @@ export function QuickCaptureModal({
               disabled={isSubmitting}
               maxLength={500}
               required
+              className="text-base sm:text-sm" // Prevent iOS zoom
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
             />
           </div>
 
-          {/* Description */}
+          {/* Description - Mobile optimized */}
           <div className="space-y-2">
-            <Label htmlFor="description">Additional details (optional)</Label>
+            <Label htmlFor="description" className="text-sm font-medium">
+              Additional details (optional)
+            </Label>
             <Textarea
               id="description"
               value={description}
@@ -175,29 +185,35 @@ export function QuickCaptureModal({
               disabled={isSubmitting}
               rows={3}
               maxLength={2000}
+              className="text-base sm:text-sm" // Prevent iOS zoom
+              autoComplete="off"
+              autoCorrect="on"
+              autoCapitalize="sentences"
             />
           </div>
 
-          {/* Status Selection */}
+          {/* Status Selection - Mobile optimized */}
           <div className="space-y-3">
-            <Label>How would you categorize this?</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <Label className="text-sm font-medium">
+              How would you categorize this?
+            </Label>
+            <div className="grid grid-cols-1 gap-2">
               {taskStatusOptions.map((option) => (
                 <Card
                   key={option.value}
                   className={cn(
-                    "p-3 cursor-pointer transition-all duration-200 hover:shadow-md",
-                    "border-2",
+                    "p-3 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95",
+                    "border-2 min-h-[48px] flex items-center",
                     status === option.value
-                      ? "border-primary bg-primary/5"
+                      ? "border-primary bg-primary/5 shadow-sm"
                       : "border-border hover:border-primary/50"
                   )}
                   onClick={() => handleStatusSelect(option.value)}
                 >
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-center gap-3 w-full">
                     <div
                       className={cn(
-                        "mt-0.5",
+                        "flex-shrink-0",
                         status === option.value
                           ? "text-primary"
                           : "text-muted-foreground"
@@ -208,7 +224,7 @@ export function QuickCaptureModal({
                     <div className="flex-1 min-w-0">
                       <div
                         className={cn(
-                          "font-medium text-sm",
+                          "font-medium text-sm leading-tight",
                           status === option.value
                             ? "text-primary"
                             : "text-foreground"
@@ -216,10 +232,15 @@ export function QuickCaptureModal({
                       >
                         {option.label}
                       </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
+                      <div className="text-xs text-muted-foreground mt-0.5 leading-tight">
                         {option.description}
                       </div>
                     </div>
+                    {status === option.value && (
+                      <div className="flex-shrink-0 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      </div>
+                    )}
                   </div>
                 </Card>
               ))}
@@ -233,20 +254,23 @@ export function QuickCaptureModal({
             </div>
           )}
 
-          {/* Action Buttons */}
-          <DialogFooter className="gap-2">
+          {/* Action Buttons - Mobile optimized */}
+          <DialogFooter className="gap-2 sm:gap-3 flex-col-reverse sm:flex-row">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
+              size="touch"
+              className="w-full sm:w-auto min-h-[44px] text-sm font-medium"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={!title.trim() || isSubmitting}
-              className="min-w-[120px]"
+              size="touch"
+              className="w-full sm:w-auto min-w-[120px] min-h-[44px] text-sm font-medium"
             >
               {isSubmitting ? (
                 <>
@@ -260,8 +284,8 @@ export function QuickCaptureModal({
           </DialogFooter>
         </form>
 
-        {/* Keyboard Shortcuts Hint */}
-        <div className="pt-2 border-t">
+        {/* Keyboard Shortcuts Hint - Hidden on mobile */}
+        <div className="pt-2 border-t hidden sm:block">
           <p className="text-xs text-muted-foreground text-center">
             <kbd className="px-1 py-0.5 bg-muted rounded text-xs">
               Cmd/Ctrl + Enter

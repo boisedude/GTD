@@ -22,9 +22,9 @@ export default function OnboardingPage() {
 
   const steps = [
     {
-      title: "Welcome to GTD App",
+      title: "Welcome to Clarity Done",
       description:
-        "Get organized and stress-free with the Getting Things Done methodology",
+        "Calm. Clear. Done. Get organized and stress-free with the Getting Things Done methodology",
       content: (
         <div className="space-y-4">
           <div className="text-center space-y-4">
@@ -144,7 +144,7 @@ export default function OnboardingPage() {
     },
     {
       title: "You're All Set!",
-      description: "Ready to start your GTD journey",
+      description: "Ready to start your journey to clarity",
       content: (
         <div className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">

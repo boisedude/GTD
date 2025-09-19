@@ -1,5 +1,5 @@
--- GTD App Database Schema
--- This file contains the complete database schema for the GTD application
+-- Clarity Done Database Schema
+-- This file contains the complete database schema for the Clarity Done application
 -- Based on specifications from ARD.md and TypeScript types
 
 -- Enable UUID extension

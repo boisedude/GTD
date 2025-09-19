@@ -2,50 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import ClarityDone Design Tokens */
+@import "../styles/design-tokens.css";
+@import "../styles/mobile.css";
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
+    /* ClarityDone Brand Colors - Light Mode */
+    --background: var(--brand-white);
+    --foreground: var(--brand-navy);
+    --card: var(--brand-white);
+    --card-foreground: var(--brand-navy);
+    --popover: var(--brand-white);
+    --popover-foreground: var(--brand-navy);
+
+    /* Primary uses brand teal */
+    --primary: var(--brand-teal);
+    --primary-foreground: var(--brand-white);
+
+    /* Secondary uses light grays */
+    --secondary: var(--brand-gray-100);
+    --secondary-foreground: var(--brand-navy);
+
+    /* Muted uses subtle grays */
+    --muted: var(--brand-gray-100);
+    --muted-foreground: var(--brand-gray-500);
+
+    /* Accent uses teal theme */
+    --accent: var(--brand-gray-100);
+    --accent-foreground: var(--brand-navy);
+
+    /* Destructive uses error colors */
+    --destructive: var(--color-error);
+    --destructive-foreground: var(--brand-white);
+
+    /* Borders and inputs */
+    --border: var(--brand-gray-200);
+    --input: var(--brand-gray-200);
+    --ring: var(--brand-teal);
+    --radius: var(--radius-lg);
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    /* ClarityDone Brand Colors - Dark Mode */
+    --background: var(--brand-navy-dark);
+    --foreground: var(--brand-gray-100);
+    --card: var(--brand-navy);
+    --card-foreground: var(--brand-gray-100);
+    --popover: var(--brand-navy);
+    --popover-foreground: var(--brand-gray-100);
+
+    /* Primary keeps brand teal */
+    --primary: var(--brand-teal);
+    --primary-foreground: var(--brand-navy-dark);
+
+    /* Secondary uses dark navy tones */
+    --secondary: var(--brand-navy-light);
+    --secondary-foreground: var(--brand-gray-100);
+
+    /* Muted uses mid-range navy */
+    --muted: var(--brand-navy-light);
+    --muted-foreground: var(--brand-gray-400);
+
+    /* Accent maintains navy theme */
+    --accent: var(--brand-navy-light);
+    --accent-foreground: var(--brand-gray-100);
+
+    /* Destructive uses darker error */
+    --destructive: var(--color-error-dark);
+    --destructive-foreground: var(--brand-gray-100);
+
+    /* Borders and inputs */
+    --border: var(--brand-navy-light);
+    --input: var(--brand-navy-light);
+    --ring: var(--brand-teal-light);
   }
 }
 
@@ -53,7 +83,67 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-primary);
+    line-height: var(--line-height-normal);
+  }
+
+  /* ClarityDone Typography Classes */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    color: hsl(var(--foreground));
+  }
+
+  h1 {
+    font-size: var(--font-size-4xl);
+  }
+  h2 {
+    font-size: var(--font-size-3xl);
+  }
+  h3 {
+    font-size: var(--font-size-2xl);
+  }
+  h4 {
+    font-size: var(--font-size-xl);
+  }
+  h5 {
+    font-size: var(--font-size-lg);
+  }
+  h6 {
+    font-size: var(--font-size-base);
+  }
+
+  /* Focus styles with brand colors */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
   }
 }

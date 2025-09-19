@@ -1,4 +1,4 @@
-# GTD App PRD (Product Requirements Document)
+# Clarity Done PRD (Product Requirements Document)
 
 ## 1. Overview
 
@@ -60,7 +60,7 @@ This app is _inspired by_ GTD. We are not affiliated with or licensed by David A
 
 - ✅ “In GTD, tasks are captured so your mind doesn’t have to hold them. Here’s your Capture box.”
 - ✅ “Weekly Reviews keep your system trusted. We’ll guide you through it.”
-- ❌ Avoid saying “Official GTD App” or “Licensed GTD tool.”
+- ❌ Avoid saying "Official Clarity Done" or "Licensed GTD tool."
 
 ---
 

@@ -1,0 +1,199 @@
+/**
+ * Mobile-specific optimizations for Clarity Done
+ * These styles enhance the mobile user experience
+ */
+
+/* Mobile-first touch optimizations */
+@media (max-width: 768px) {
+  /* Ensure smooth scrolling on mobile */
+  html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent text adjustment on device orientation changes */
+  body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Better tap highlight colors */
+  * {
+    -webkit-tap-highlight-color: rgba(6, 182, 212, 0.15);
+  }
+
+  /* Disable user select on UI elements to prevent text selection on tap */
+  button,
+  .button,
+  [role="button"] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Improve form input behavior on mobile */
+  input,
+  textarea,
+  select {
+    /* Prevent zoom on focus for inputs with 16px+ font size */
+    font-size: 16px !important;
+
+    /* Better mobile keyboard behavior */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Prevent auto-zoom on iOS */
+    transform: translateZ(0);
+  }
+
+  /* Optimize card interactions for touch */
+  .card,
+  [data-card] {
+    /* Add touch feedback */
+    transition:
+      transform 0.15s ease-out,
+      box-shadow 0.15s ease-out;
+  }
+
+  .card:active,
+  [data-card]:active {
+    transform: scale(0.98);
+  }
+
+  /* Modal optimizations for mobile */
+  .modal-content,
+  [data-modal] {
+    /* Ensure modals are properly sized on mobile */
+    max-height: 90vh;
+    max-width: 95vw;
+    margin: 5vh auto;
+  }
+
+  /* Better mobile scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  /* Optimize animations for mobile performance */
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce {
+    will-change: transform;
+  }
+
+  /* Mobile-specific utility classes */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Improve mobile keyboard experience */
+  .mobile-keyboard-padding {
+    padding-bottom: env(keyboard-inset-height, 0px);
+  }
+}
+
+/* PWA-specific styles */
+@media (display-mode: standalone) {
+  /* Styles when app is running as PWA */
+  .pwa-only {
+    display: block;
+  }
+
+  /* Add top padding for status bar area */
+  .main-content {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Handle bottom safe area for home indicator */
+  .bottom-navigation {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* High DPI screens optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Optimize for retina displays */
+  .crisp-edges {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Dark mode mobile optimizations */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  /* Darker tap highlight for dark mode */
+  * {
+    -webkit-tap-highlight-color: rgba(6, 182, 212, 0.25);
+  }
+
+  /* Better contrast for mobile dark mode */
+  .mobile-text {
+    color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Landscape orientation optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Reduce header height in landscape */
+  .mobile-header {
+    min-height: 48px;
+  }
+
+  /* Optimize modal height in landscape */
+  .modal-content {
+    max-height: 85vh;
+  }
+}
+
+/* Small screen optimizations (phones) */
+@media (max-width: 475px) {
+  /* Extra small screen optimizations */
+  .text-responsive {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Tighter spacing on very small screens */
+  .mobile-tight {
+    padding: 0.5rem;
+  }
+
+  /* Make sure touch targets are still accessible */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

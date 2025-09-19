@@ -150,144 +150,170 @@ export function OrganizationDashboard({
 
   return (
     <div className={cn("space-y-6", className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Header - Mobile optimized */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <LayoutDashboard className="h-8 w-8 text-blue-600" />
-            GTD Organization
+          <h1 className="text-xl sm:text-2xl lg:text-brand-3xl font-bold text-brand-navy flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-brand-teal/10 rounded-lg">
+              <LayoutDashboard className="h-6 w-6 sm:h-8 sm:w-8 text-brand-teal" />
+            </div>
+            <span className="leading-tight">GTD Organization</span>
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-brand-gray-600 leading-relaxed">
             Organize your tasks and projects using Getting Things Done
             methodology
           </p>
         </div>
-        <Button onClick={handleTaskCreate} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Task
-        </Button>
+        <div className="flex items-center gap-2 sm:justify-end">
+          <Button
+            onClick={handleTaskCreate}
+            size="touch"
+            className="flex items-center justify-center gap-2 bg-brand-teal hover:bg-brand-teal/90 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 min-h-[44px] px-4 w-full sm:w-auto"
+          >
+            <Plus className="h-5 w-5 sm:h-4 sm:w-4" />
+            <span className="text-sm font-medium">Add Task</span>
+          </Button>
+        </div>
       </div>
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Overview
+        <TabsList className="grid w-full grid-cols-4 bg-brand-gray-100/50 p-1 backdrop-blur-sm min-h-[48px] sm:min-h-[40px]">
+          <TabsTrigger
+            value="overview"
+            className="flex items-center justify-center gap-1 sm:gap-2 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-navy min-h-[40px] px-2 text-xs sm:text-sm active:scale-95"
+          >
+            <BarChart3 className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate sm:inline">Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="lists" className="flex items-center gap-2">
-            <List className="h-4 w-4" />
-            Lists
+          <TabsTrigger
+            value="lists"
+            className="flex items-center justify-center gap-1 sm:gap-2 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-navy min-h-[40px] px-2 text-xs sm:text-sm active:scale-95"
+          >
+            <List className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate sm:inline">Lists</span>
           </TabsTrigger>
-          <TabsTrigger value="organize" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Organize
+          <TabsTrigger
+            value="organize"
+            className="flex items-center justify-center gap-1 sm:gap-2 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-navy min-h-[40px] px-2 text-xs sm:text-sm active:scale-95"
+          >
+            <Settings className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate sm:inline">Organize</span>
           </TabsTrigger>
-          <TabsTrigger value="projects" className="flex items-center gap-2">
-            <FolderOpen className="h-4 w-4" />
-            Projects
+          <TabsTrigger
+            value="projects"
+            className="flex items-center justify-center gap-1 sm:gap-2 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-navy min-h-[40px] px-2 text-xs sm:text-sm active:scale-95"
+          >
+            <FolderOpen className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate sm:inline">Projects</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
-          {/* Key Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <Card className="border-l-4 border-blue-200">
-              <CardContent className="p-4">
+          {/* Key Stats - Mobile optimized grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            <Card className="border-l-4 border-brand-teal/30 bg-brand-teal/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group active:scale-95">
+              <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">
+                  <div className="flex-1">
+                    <p className="text-xs sm:text-brand-sm font-medium text-brand-gray-600 truncate">
                       Captured
                     </p>
-                    <p className="text-2xl font-bold text-blue-600">
+                    <p className="text-lg sm:text-brand-2xl font-bold text-brand-teal transition-all duration-200 group-hover:scale-110 leading-tight">
                       {stats.captured}
                     </p>
                   </div>
-                  <Inbox className="h-6 w-6 text-blue-600" />
+                  <div className="p-1.5 sm:p-2 bg-brand-teal/10 rounded-lg group-hover:bg-brand-teal/20 transition-all duration-200 flex-shrink-0">
+                    <Inbox className="h-4 w-4 sm:h-6 sm:w-6 text-brand-teal" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-orange-200">
+            <Card className="border-l-4 border-warning/30 bg-warning/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-brand-sm font-medium text-brand-gray-600">
                       Next Actions
                     </p>
-                    <p className="text-2xl font-bold text-orange-600">
+                    <p className="text-brand-2xl font-bold text-warning transition-all duration-200 group-hover:scale-110">
                       {stats.nextActions}
                     </p>
                   </div>
-                  <AlertTriangle className="h-6 w-6 text-orange-600" />
+                  <div className="p-2 bg-warning/10 rounded-lg group-hover:bg-warning/20 transition-all duration-200">
+                    <AlertTriangle className="h-6 w-6 text-warning" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-purple-200">
+            <Card className="border-l-4 border-brand-navy/30 bg-brand-navy/5">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-brand-sm font-medium text-brand-gray-600">
                       Projects
                     </p>
-                    <p className="text-2xl font-bold text-purple-600">
+                    <p className="text-brand-2xl font-bold text-brand-navy">
                       {stats.activeProjects}
                     </p>
                   </div>
-                  <FolderOpen className="h-6 w-6 text-purple-600" />
+                  <FolderOpen className="h-6 w-6 text-brand-navy" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-yellow-200">
+            <Card className="border-l-4 border-brand-gray-400/30 bg-brand-gray-100/30">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-brand-sm font-medium text-brand-gray-600">
                       Waiting For
                     </p>
-                    <p className="text-2xl font-bold text-yellow-600">
+                    <p className="text-brand-2xl font-bold text-brand-gray-700">
                       {stats.waitingFor}
                     </p>
                   </div>
-                  <Clock className="h-6 w-6 text-yellow-600" />
+                  <Clock className="h-6 w-6 text-brand-gray-700" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-green-200">
+            <Card className="border-l-4 border-success/30 bg-success/5">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-brand-sm font-medium text-brand-gray-600">
                       Completed
                     </p>
-                    <p className="text-2xl font-bold text-green-600">
+                    <p className="text-brand-2xl font-bold text-success">
                       {stats.completedThisWeek}
                     </p>
                   </div>
-                  <CheckCircle2 className="h-6 w-6 text-green-600" />
+                  <CheckCircle2 className="h-6 w-6 text-success" />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">This week</p>
+                <p className="text-brand-xs text-brand-gray-500 mt-1">
+                  This week
+                </p>
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-red-200">
+            <Card className="border-l-4 border-error/30 bg-error/5">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-brand-sm font-medium text-brand-gray-600">
                       Due/Overdue
                     </p>
-                    <p className="text-2xl font-bold text-red-600">
+                    <p className="text-brand-2xl font-bold text-error">
                       {stats.dueToday + stats.overdue}
                     </p>
                   </div>
-                  <Calendar className="h-6 w-6 text-red-600" />
+                  <Calendar className="h-6 w-6 text-error" />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-brand-xs text-brand-gray-500 mt-1">
                   {stats.overdue} overdue
                 </p>
               </CardContent>
@@ -299,27 +325,27 @@ export function OrganizationDashboard({
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-purple-600" />
+                  <Target className="h-5 w-5 text-brand-navy" />
                   Project Progress
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-brand-sm text-brand-gray-600">
                       Projects with Next Actions
                     </span>
                     <Badge variant="secondary">
                       {stats.projectsWithActions} / {stats.activeProjects}
                     </Badge>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div className="w-full bg-brand-gray-200 rounded-full h-3">
                     <div
-                      className="bg-purple-500 h-3 rounded-full transition-all duration-300"
+                      className="bg-brand-navy h-3 rounded-full transition-all duration-300"
                       style={{ width: `${stats.projectProgress}%` }}
                     />
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-brand-sm text-brand-gray-600">
                     {stats.projectProgress}% of active projects have defined
                     next actions
                   </p>
@@ -330,34 +356,36 @@ export function OrganizationDashboard({
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-green-600" />
+                  <TrendingUp className="h-5 w-5 text-success" />
                   Weekly Summary
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-brand-sm text-brand-gray-600">
                       Tasks completed
                     </span>
-                    <span className="font-semibold text-green-600">
+                    <span className="font-semibold text-success">
                       {stats.completedThisWeek}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-brand-sm text-brand-gray-600">
                       Items in inbox
                     </span>
-                    <span className="font-semibold text-blue-600">
+                    <span className="font-semibold text-brand-teal">
                       {stats.captured}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Overdue tasks</span>
+                    <span className="text-brand-sm text-brand-gray-600">
+                      Overdue tasks
+                    </span>
                     <span
                       className={cn(
                         "font-semibold",
-                        stats.overdue > 0 ? "text-red-600" : "text-green-600"
+                        stats.overdue > 0 ? "text-error" : "text-success"
                       )}
                     >
                       {stats.overdue}
@@ -368,51 +396,65 @@ export function OrganizationDashboard({
             </Card>
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Actions - Mobile optimized */}
           <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-lg sm:text-xl">
+                Quick Actions
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                 <Button
                   variant="outline"
                   onClick={() => setActiveTab("lists")}
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 flex flex-col items-center gap-1 sm:gap-2 hover:bg-brand-teal/5 transition-colors duration-200 active:scale-95"
                 >
-                  <Inbox className="h-6 w-6 text-blue-600" />
-                  <span className="text-sm">Process Inbox</span>
+                  <Inbox className="h-5 w-5 sm:h-6 sm:w-6 text-brand-teal flex-shrink-0" />
+                  <span className="text-xs sm:text-brand-sm font-medium text-center leading-tight">
+                    Process Inbox
+                  </span>
                   {stats.captured > 0 && (
-                    <Badge variant="secondary">{stats.captured}</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {stats.captured}
+                    </Badge>
                   )}
                 </Button>
 
                 <Button
                   variant="outline"
                   onClick={() => setActiveTab("organize")}
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 flex flex-col items-center gap-1 sm:gap-2 hover:bg-warning/5 transition-colors duration-200 active:scale-95"
                 >
-                  <Settings className="h-6 w-6 text-orange-600" />
-                  <span className="text-sm">Organize Tasks</span>
+                  <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-warning flex-shrink-0" />
+                  <span className="text-xs sm:text-brand-sm font-medium text-center leading-tight">
+                    Organize Tasks
+                  </span>
                 </Button>
 
                 <Button
                   variant="outline"
                   onClick={() => setActiveTab("projects")}
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 flex flex-col items-center gap-1 sm:gap-2 hover:bg-brand-navy/5 transition-colors duration-200 active:scale-95"
                 >
-                  <FolderOpen className="h-6 w-6 text-purple-600" />
-                  <span className="text-sm">Review Projects</span>
-                  <Badge variant="secondary">{stats.activeProjects}</Badge>
+                  <FolderOpen className="h-5 w-5 sm:h-6 sm:w-6 text-brand-navy flex-shrink-0" />
+                  <span className="text-xs sm:text-brand-sm font-medium text-center leading-tight">
+                    Review Projects
+                  </span>
+                  <Badge variant="secondary" className="text-xs">
+                    {stats.activeProjects}
+                  </Badge>
                 </Button>
 
                 <Button
                   variant="outline"
                   onClick={handleTaskCreate}
-                  className="h-auto p-4 flex flex-col items-center gap-2"
+                  className="h-auto min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 flex flex-col items-center gap-1 sm:gap-2 hover:bg-success/5 transition-colors duration-200 active:scale-95"
                 >
-                  <Plus className="h-6 w-6 text-green-600" />
-                  <span className="text-sm">Add Task</span>
+                  <Plus className="h-5 w-5 sm:h-6 sm:w-6 text-success flex-shrink-0" />
+                  <span className="text-xs sm:text-brand-sm font-medium text-center leading-tight">
+                    Add Task
+                  </span>
                 </Button>
               </div>
             </CardContent>

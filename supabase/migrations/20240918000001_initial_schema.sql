@@ -1,4 +1,4 @@
--- GTD Application Database Schema
+-- Clarity Done Application Database Schema
 -- This migration sets up the complete database schema for a Getting Things Done (GTD) productivity application
 
 -- Enable necessary extensions

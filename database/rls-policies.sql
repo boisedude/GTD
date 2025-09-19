@@ -1,4 +1,4 @@
--- Row Level Security (RLS) Policies for GTD App
+-- Row Level Security (RLS) Policies for Clarity Done
 -- This file contains all RLS policies to ensure users can only access their own data
 
 -- Enable RLS on all tables

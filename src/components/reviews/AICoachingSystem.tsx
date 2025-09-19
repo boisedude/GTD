@@ -388,13 +388,7 @@ export function AICoachingSystem({
     });
 
     return compact ? sortedPrompts.slice(0, 1) : sortedPrompts.slice(0, 3);
-  }, [
-    reviewType,
-    currentStep,
-    reviewData,
-    dismissedPrompts,
-    compact,
-  ]);
+  }, [reviewType, currentStep, reviewData, dismissedPrompts, compact]);
 
   // Update visible prompts when computed prompts change
   useEffect(() => {

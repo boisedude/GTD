@@ -171,9 +171,7 @@ export function ReviewAnalyticsDashboard({
 
       {/* Review patterns and insights */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ReviewPatternsCard
-          reviews={recentReviews}
-        />
+        <ReviewPatternsCard reviews={recentReviews} />
         <SystemHealthCard metrics={metrics} insights={weeklyInsights} />
       </div>
 
@@ -289,11 +287,7 @@ function MetricCard({
   );
 }
 
-function ReviewPatternsCard({
-  reviews,
-}: {
-  reviews: Review[];
-}) {
+function ReviewPatternsCard({ reviews }: { reviews: Review[] }) {
   // Calculate review patterns (time of day, day of week, etc.)
   const patterns = analyzeReviewPatterns(reviews);
 
@@ -673,10 +667,7 @@ function RecentReviewsList({ reviews }: { reviews: Review[] }) {
 }
 
 // Helper functions
-function calculateReviewStats(
-  metrics: ReviewMetrics[],
-  reviews: Review[]
-) {
+function calculateReviewStats(metrics: ReviewMetrics[], reviews: Review[]) {
   const totalReviews = reviews.length;
   const avgDuration =
     reviews.length > 0

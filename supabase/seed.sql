@@ -1,4 +1,4 @@
--- GTD Application Seed Data
+-- Clarity Done Application Seed Data
 -- This file contains sample data for development and testing
 
 -- Sample user data will be created automatically when users sign up via Supabase Auth

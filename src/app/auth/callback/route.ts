@@ -18,11 +18,14 @@ export async function GET(request: NextRequest) {
       console.log("Auth callback - exchange result:", {
         hasSession: !!data?.session,
         hasUser: !!data?.user,
-        error: error?.message
+        error: error?.message,
       });
 
       if (!error && data?.session) {
-        console.log("Auth callback - success, redirecting to:", `${origin}${next}`);
+        console.log(
+          "Auth callback - success, redirecting to:",
+          `${origin}${next}`
+        );
         return NextResponse.redirect(`${origin}${next}`);
       }
 
@@ -40,5 +43,7 @@ export async function GET(request: NextRequest) {
 
   // No code parameter - redirect to error page
   console.log("Auth callback - no code parameter");
-  return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${encodeURIComponent("Missing authentication code")}`);
+  return NextResponse.redirect(
+    `${origin}/auth/auth-code-error?error=${encodeURIComponent("Missing authentication code")}`
+  );
 }

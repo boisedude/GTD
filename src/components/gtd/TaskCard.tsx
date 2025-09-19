@@ -58,17 +58,17 @@ const contextIcons: Record<TaskContext, React.ElementType> = {
 };
 
 const energyColors: Record<TaskEnergyLevel, string> = {
-  high: "text-red-500",
-  medium: "text-yellow-500",
-  low: "text-green-500",
+  high: "text-error",
+  medium: "text-warning",
+  low: "text-success",
 };
 
 const priorityColors = {
-  1: "border-l-red-500 bg-red-50",
-  2: "border-l-orange-500 bg-orange-50",
-  3: "border-l-yellow-500 bg-yellow-50",
-  4: "border-l-blue-500 bg-blue-50",
-  5: "border-l-gray-500 bg-gray-50",
+  1: "border-l-error bg-error/5",
+  2: "border-l-warning bg-warning/5",
+  3: "border-l-warning bg-warning/5",
+  4: "border-l-brand-teal bg-brand-teal/5",
+  5: "border-l-brand-gray-400 bg-brand-gray-50",
 };
 
 export function TaskCard({
@@ -112,11 +112,12 @@ export function TaskCard({
   return (
     <Card
       className={cn(
-        "group transition-all duration-200 hover:shadow-md cursor-pointer border-l-4",
+        "group transition-all duration-300 hover:shadow-lg hover:shadow-brand-teal/10 hover:-translate-y-1 cursor-pointer border-l-4",
+        "hover:border-brand-teal/30 focus-within:ring-2 focus-within:ring-brand-teal/20",
         task.priority &&
           priorityColors[task.priority as keyof typeof priorityColors],
-        isCompleted && "opacity-60",
-        isOverdue && "ring-2 ring-red-200",
+        isCompleted && "opacity-60 hover:opacity-80",
+        isOverdue && "ring-2 ring-error/30 animate-pulse",
         className
       )}
       draggable={!!onDragStart}
@@ -128,16 +129,16 @@ export function TaskCard({
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 mt-0.5 hover:bg-transparent"
+            className="h-6 w-6 p-0 mt-0.5 hover:bg-transparent transition-all duration-200 hover:scale-110"
             onClick={handleComplete}
             disabled={isCompleting}
           >
             {isCompleting ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600" />
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-teal" />
             ) : isCompleted ? (
-              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <CheckCircle2 className="h-5 w-5 text-success transition-all duration-200 scale-110" />
             ) : (
-              <Circle className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              <Circle className="h-5 w-5 text-brand-gray-400 hover:text-brand-teal transition-all duration-200" />
             )}
           </Button>
 
@@ -147,16 +148,16 @@ export function TaskCard({
               <div className="flex-1 min-w-0">
                 <h3
                   className={cn(
-                    "font-medium text-gray-900 mb-1",
-                    isCompleted && "line-through text-gray-500",
-                    compact ? "text-sm" : "text-base"
+                    "font-medium text-brand-navy mb-1",
+                    isCompleted && "line-through text-brand-gray-500",
+                    compact ? "text-brand-sm" : "text-brand-base"
                   )}
                 >
                   {task.title}
                 </h3>
 
                 {task.description && !compact && (
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                  <p className="text-brand-sm text-brand-gray-600 mb-2 line-clamp-2">
                     {task.description}
                   </p>
                 )}
@@ -165,7 +166,7 @@ export function TaskCard({
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   {/* Context */}
                   {ContextIcon && (
-                    <div className="flex items-center gap-1 text-gray-500">
+                    <div className="flex items-center gap-1 text-brand-gray-500">
                       <ContextIcon className="h-3 w-3" />
                       <span>@{task.context}</span>
                     </div>
@@ -186,7 +187,7 @@ export function TaskCard({
 
                   {/* Duration */}
                   {task.estimated_duration && (
-                    <div className="flex items-center gap-1 text-gray-500">
+                    <div className="flex items-center gap-1 text-brand-gray-500">
                       <Clock className="h-3 w-3" />
                       <span>{task.estimated_duration}</span>
                     </div>
@@ -198,10 +199,10 @@ export function TaskCard({
                       className={cn(
                         "flex items-center gap-1",
                         isOverdue
-                          ? "text-red-500"
+                          ? "text-error"
                           : isDueToday
-                            ? "text-orange-500"
-                            : "text-gray-500"
+                            ? "text-warning"
+                            : "text-brand-gray-500"
                       )}
                     >
                       <Calendar className="h-3 w-3" />
@@ -217,7 +218,7 @@ export function TaskCard({
 
                   {/* Waiting for */}
                   {task.waiting_for && (
-                    <div className="flex items-center gap-1 text-blue-600">
+                    <div className="flex items-center gap-1 text-brand-teal">
                       <User className="h-3 w-3" />
                       <span>Waiting: {task.waiting_for}</span>
                     </div>
@@ -225,7 +226,7 @@ export function TaskCard({
 
                   {/* Priority flag */}
                   {task.priority && task.priority <= 2 && (
-                    <div className="flex items-center gap-1 text-red-500">
+                    <div className="flex items-center gap-1 text-error">
                       <Flag className="h-3 w-3" />
                       <span>High</span>
                     </div>
@@ -246,7 +247,7 @@ export function TaskCard({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-brand-gray-100 hover:scale-110"
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
@@ -295,7 +296,7 @@ export function TaskCard({
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => onDelete(task.id)}
-                        className="text-red-600 focus:text-red-600"
+                        className="text-error focus:text-error"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Delete
