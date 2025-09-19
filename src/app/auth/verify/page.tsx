@@ -155,8 +155,8 @@ export default function VerifyPage() {
               </div>
 
               {error && (
-                <div className="rounded-md bg-red-50 border border-red-200 p-3">
-                  <p className="text-sm text-red-800">{error}</p>
+                <div className="rounded-md bg-error-light border border-error p-3">
+                  <p className="text-sm text-error-dark">{error}</p>
                 </div>
               )}
 

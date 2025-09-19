@@ -46,12 +46,12 @@ const energyIcons = {
 };
 
 const statusColors = {
-  captured: "bg-blue-100 text-blue-800",
+  captured: "bg-info-light text-brand-navy",
   next_action: "bg-orange-100 text-orange-800",
   project: "bg-purple-100 text-purple-800",
-  waiting_for: "bg-yellow-100 text-yellow-800",
+  waiting_for: "bg-warning-light text-warning-dark",
   someday: "bg-gray-100 text-gray-800",
-  completed: "bg-green-100 text-green-800",
+  completed: "bg-success-light text-success-dark",
 };
 
 const swipeActions = {

@@ -154,8 +154,8 @@ export default function OnboardingPage() {
             You&apos;re ready to start capturing, organizing, and getting things
             done! Head to your dashboard to begin.
           </p>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <p className="text-sm text-yellow-800">
+          <div className="bg-warning-light border border-warning rounded-lg p-4">
+            <p className="text-sm text-warning-dark">
               <strong>Disclaimer:</strong> This app is inspired by GTD
               principles but is not affiliated with or licensed by David Allen
               or GTD®.

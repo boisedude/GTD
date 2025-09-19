@@ -1,6 +1,5 @@
 "use client";
 
-import { BRAND } from "@/lib/brand";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail } from "lucide-react";
 import Link from "next/link";
@@ -24,7 +23,10 @@ export function CallToAction() {
               size="lg"
               className="w-full bg-teal-600 text-white hover:bg-teal-700 sm:w-auto"
             >
-              <Link href="/auth/login" className="flex items-center gap-2">
+              <Link
+                href="/auth/login?signup=true"
+                className="flex items-center gap-2"
+              >
                 <Mail className="h-4 w-4" />
                 Sign Up with Email
                 <ArrowRight className="h-4 w-4" />

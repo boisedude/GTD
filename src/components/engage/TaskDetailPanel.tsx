@@ -54,25 +54,25 @@ const contextIcons = {
 };
 
 const energyIcons = {
-  high: { icon: Zap, label: "High Energy", color: "text-green-600" },
-  medium: { icon: Battery, label: "Medium Energy", color: "text-yellow-600" },
-  low: { icon: ZapOff, label: "Low Energy", color: "text-red-600" },
+  high: { icon: Zap, label: "High Energy", color: "text-success-dark" },
+  medium: { icon: Battery, label: "Medium Energy", color: "text-warning-dark" },
+  low: { icon: ZapOff, label: "Low Energy", color: "text-error-dark" },
 };
 
 const statusColors = {
-  captured: "bg-blue-100 text-blue-800",
+  captured: "bg-info-light text-brand-navy",
   next_action: "bg-orange-100 text-orange-800",
   project: "bg-purple-100 text-purple-800",
-  waiting_for: "bg-yellow-100 text-yellow-800",
+  waiting_for: "bg-warning-light text-warning-dark",
   someday: "bg-gray-100 text-gray-800",
-  completed: "bg-green-100 text-green-800",
+  completed: "bg-success-light text-success-dark",
 };
 
 const priorityColors: Record<number, string> = {
   1: "bg-red-100 text-red-800",
   2: "bg-orange-100 text-orange-800",
   3: "bg-yellow-100 text-yellow-800",
-  4: "bg-blue-100 text-blue-800",
+  4: "bg-info-light text-brand-navy",
   5: "bg-gray-100 text-gray-800",
 };
 

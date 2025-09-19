@@ -121,8 +121,8 @@ function LoginForm() {
               </div>
 
               {error && (
-                <div className="rounded-md bg-red-50 border border-red-200 p-3">
-                  <p className="text-sm text-red-800">{error}</p>
+                <div className="rounded-md bg-error-light border border-error p-3">
+                  <p className="text-sm text-error-dark">{error}</p>
                 </div>
               )}
 
@@ -155,8 +155,8 @@ function LoginForm() {
         </Card>
 
         {/* GTD Disclaimer */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-xs text-yellow-800 text-center">
+        <div className="bg-warning-light border border-warning rounded-lg p-4">
+          <p className="text-xs text-warning-dark text-center">
             <strong>Disclaimer:</strong> This app is inspired by GTD principles
             but is not affiliated with or licensed by David Allen or GTD®.
           </p>
