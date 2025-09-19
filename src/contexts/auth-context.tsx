@@ -96,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         options: {
           // Redirect to verification page after OTP is sent
-          emailRedirectTo: `${window.location.origin}/auth/verify`,
+          emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/verify`,
         },
       });
       return { error: error as Error | null };

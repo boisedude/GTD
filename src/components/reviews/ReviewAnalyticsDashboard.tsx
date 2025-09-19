@@ -163,7 +163,7 @@ export function ReviewAnalyticsDashboard({
 
         <MetricCard
           title="Avg Duration"
-          value={stats.avgDuration}
+          value={stats.avgTime}
           unit="min"
           icon={Clock}
           color="purple"
@@ -693,7 +693,7 @@ function calculateReviewStats(
 
   return {
     totalReviews,
-    avgDuration: Math.round(avgDuration),
+    avgTime: Math.round(avgDuration),
     reviewTrend: "neutral" as const, // Could calculate actual trend
     durationTrend: "neutral" as const,
   };
