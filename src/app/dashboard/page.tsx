@@ -1,25 +1,25 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/auth-context'
-import { ProtectedRoute } from '@/components/auth/protected-route'
-import { CaptureContainer } from '@/components/capture/CaptureContainer'
-import { OrganizationDashboard } from '@/components/gtd/OrganizationDashboard'
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { ProtectedRoute } from "@/components/auth/protected-route";
+import { CaptureContainer } from "@/components/capture/CaptureContainer";
+import { OrganizationDashboard } from "@/components/gtd/OrganizationDashboard";
 
 function DashboardContent() {
-  const { isNewUser } = useAuth()
-  const router = useRouter()
+  const { isNewUser } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     // Redirect new users to onboarding
     if (isNewUser) {
-      router.push('/onboarding')
+      router.push("/onboarding");
     }
-  }, [isNewUser, router])
+  }, [isNewUser, router]);
 
   if (isNewUser) {
-    return null // Will redirect to onboarding
+    return null; // Will redirect to onboarding
   }
 
   return (
@@ -44,7 +44,7 @@ function DashboardContent() {
         <OrganizationDashboard />
       </div>
     </div>
-  )
+  );
 }
 
 export default function DashboardPage() {
@@ -52,5 +52,5 @@ export default function DashboardPage() {
     <ProtectedRoute>
       <DashboardContent />
     </ProtectedRoute>
-  )
+  );
 }

@@ -2,25 +2,17 @@
 // These types match the Postgres enums and table structures
 
 export type TaskStatus =
-  | 'captured'
-  | 'next_action'
-  | 'project'
-  | 'waiting_for'
-  | 'someday'
-  | 'completed'
-  | 'cancelled';
+  | "captured"
+  | "next_action"
+  | "project"
+  | "waiting_for"
+  | "someday"
+  | "completed"
+  | "cancelled";
 
-export type ProjectStatus =
-  | 'active'
-  | 'complete'
-  | 'cancelled'
-  | 'on_hold';
+export type ProjectStatus = "active" | "complete" | "cancelled" | "on_hold";
 
-export type ReviewType =
-  | 'daily'
-  | 'weekly'
-  | 'monthly'
-  | 'quarterly';
+export type ReviewType = "daily" | "weekly" | "monthly" | "quarterly";
 
 export interface User {
   id: string;
@@ -73,23 +65,27 @@ export interface Database {
     Tables: {
       users: {
         Row: User;
-        Insert: Omit<User, 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>;
+        Insert: Omit<User, "created_at" | "updated_at">;
+        Update: Partial<Omit<User, "id" | "created_at" | "updated_at">>;
       };
       tasks: {
         Row: Task;
-        Insert: Omit<Task, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at'>>;
+        Insert: Omit<Task, "id" | "created_at" | "updated_at">;
+        Update: Partial<
+          Omit<Task, "id" | "user_id" | "created_at" | "updated_at">
+        >;
       };
       projects: {
         Row: Project;
-        Insert: Omit<Project, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Project, 'id' | 'user_id' | 'created_at' | 'updated_at'>>;
+        Insert: Omit<Project, "id" | "created_at" | "updated_at">;
+        Update: Partial<
+          Omit<Project, "id" | "user_id" | "created_at" | "updated_at">
+        >;
       };
       reviews: {
         Row: Review;
-        Insert: Omit<Review, 'id' | 'created_at'>;
-        Update: Partial<Omit<Review, 'id' | 'user_id' | 'created_at'>>;
+        Insert: Omit<Review, "id" | "created_at">;
+        Update: Partial<Omit<Review, "id" | "user_id" | "created_at">>;
       };
     };
     Views: {

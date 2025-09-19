@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Clock,
   User,
@@ -21,28 +21,33 @@ import {
   Car,
   Home,
   Building,
-  Globe
-} from 'lucide-react'
+  Globe,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
-import type { Task, TaskStatus, TaskContext, TaskEnergyLevel } from '@/types/database'
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import type {
+  Task,
+  TaskStatus,
+  TaskContext,
+  TaskEnergyLevel,
+} from "@/types/database";
 
 interface TaskCardProps {
-  task: Task
-  onEdit?: (task: Task) => void
-  onDelete?: (taskId: string) => void
-  onComplete?: (taskId: string, completed: boolean) => void
-  onStatusChange?: (taskId: string, status: TaskStatus) => void
-  onDragStart?: (task: Task) => void
-  showProject?: boolean
-  compact?: boolean
-  className?: string
+  task: Task;
+  onEdit?: (task: Task) => void;
+  onDelete?: (taskId: string) => void;
+  onComplete?: (taskId: string, completed: boolean) => void;
+  onStatusChange?: (taskId: string, status: TaskStatus) => void;
+  onDragStart?: (task: Task) => void;
+  showProject?: boolean;
+  compact?: boolean;
+  className?: string;
 }
 
 const contextIcons: Record<TaskContext, React.ElementType> = {
@@ -51,22 +56,22 @@ const contextIcons: Record<TaskContext, React.ElementType> = {
   errands: Car,
   home: Home,
   office: Building,
-  anywhere: Globe
-}
+  anywhere: Globe,
+};
 
 const energyColors: Record<TaskEnergyLevel, string> = {
-  high: 'text-red-500',
-  medium: 'text-yellow-500',
-  low: 'text-green-500'
-}
+  high: "text-red-500",
+  medium: "text-yellow-500",
+  low: "text-green-500",
+};
 
 const priorityColors = {
-  1: 'border-l-red-500 bg-red-50',
-  2: 'border-l-orange-500 bg-orange-50',
-  3: 'border-l-yellow-500 bg-yellow-50',
-  4: 'border-l-blue-500 bg-blue-50',
-  5: 'border-l-gray-500 bg-gray-50'
-}
+  1: "border-l-red-500 bg-red-50",
+  2: "border-l-orange-500 bg-orange-50",
+  3: "border-l-yellow-500 bg-yellow-50",
+  4: "border-l-blue-500 bg-blue-50",
+  5: "border-l-gray-500 bg-gray-50",
+};
 
 export function TaskCard({
   task,
@@ -77,47 +82,50 @@ export function TaskCard({
   onDragStart,
   showProject = true,
   compact = false,
-  className
+  className,
 }: TaskCardProps) {
-  const [isCompleting, setIsCompleting] = useState(false)
+  const [isCompleting, setIsCompleting] = useState(false);
 
-  const isCompleted = task.status === 'completed' || task.completed_at
-  const isOverdue = task.due_date && new Date(task.due_date) < new Date() && !isCompleted
-  const isDueToday = task.due_date &&
-    new Date(task.due_date).toDateString() === new Date().toDateString()
+  const isCompleted = task.status === "completed" || task.completed_at;
+  const isOverdue =
+    task.due_date && new Date(task.due_date) < new Date() && !isCompleted;
+  const isDueToday =
+    task.due_date &&
+    new Date(task.due_date).toDateString() === new Date().toDateString();
 
   const handleComplete = async () => {
-    if (!onComplete) return
+    if (!onComplete) return;
 
-    setIsCompleting(true)
+    setIsCompleting(true);
     try {
-      await onComplete(task.id, !isCompleted)
+      await onComplete(task.id, !isCompleted);
     } finally {
-      setIsCompleting(false)
+      setIsCompleting(false);
     }
-  }
+  };
 
   const handleStatusChange = (newStatus: TaskStatus) => {
     if (onStatusChange) {
-      onStatusChange(task.id, newStatus)
+      onStatusChange(task.id, newStatus);
     }
-  }
+  };
 
-  const ContextIcon = task.context ? contextIcons[task.context] : null
+  const ContextIcon = task.context ? contextIcons[task.context] : null;
 
   return (
     <Card
       className={cn(
-        'group transition-all duration-200 hover:shadow-md cursor-pointer border-l-4',
-        task.priority && priorityColors[task.priority as keyof typeof priorityColors],
-        isCompleted && 'opacity-60',
-        isOverdue && 'ring-2 ring-red-200',
+        "group transition-all duration-200 hover:shadow-md cursor-pointer border-l-4",
+        task.priority &&
+          priorityColors[task.priority as keyof typeof priorityColors],
+        isCompleted && "opacity-60",
+        isOverdue && "ring-2 ring-red-200",
         className
       )}
       draggable={!!onDragStart}
       onDragStart={() => onDragStart?.(task)}
     >
-      <CardContent className={cn('p-4', compact && 'p-3')}>
+      <CardContent className={cn("p-4", compact && "p-3")}>
         <div className="flex items-start gap-3">
           {/* Completion checkbox */}
           <Button
@@ -140,11 +148,13 @@ export function TaskCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                <h3 className={cn(
-                  'font-medium text-gray-900 mb-1',
-                  isCompleted && 'line-through text-gray-500',
-                  compact ? 'text-sm' : 'text-base'
-                )}>
+                <h3
+                  className={cn(
+                    "font-medium text-gray-900 mb-1",
+                    isCompleted && "line-through text-gray-500",
+                    compact ? "text-sm" : "text-base"
+                  )}
+                >
                   {task.title}
                 </h3>
 
@@ -166,7 +176,12 @@ export function TaskCard({
 
                   {/* Energy level */}
                   {task.energy_level && (
-                    <div className={cn('flex items-center gap-1', energyColors[task.energy_level])}>
+                    <div
+                      className={cn(
+                        "flex items-center gap-1",
+                        energyColors[task.energy_level]
+                      )}
+                    >
                       <Zap className="h-3 w-3" />
                       <span>{task.energy_level}</span>
                     </div>
@@ -182,15 +197,23 @@ export function TaskCard({
 
                   {/* Due date */}
                   {task.due_date && (
-                    <div className={cn(
-                      'flex items-center gap-1',
-                      isOverdue ? 'text-red-500' : isDueToday ? 'text-orange-500' : 'text-gray-500'
-                    )}>
+                    <div
+                      className={cn(
+                        "flex items-center gap-1",
+                        isOverdue
+                          ? "text-red-500"
+                          : isDueToday
+                            ? "text-orange-500"
+                            : "text-gray-500"
+                      )}
+                    >
                       <Calendar className="h-3 w-3" />
                       <span>
-                        {isDueToday ? 'Today' :
-                         isOverdue ? 'Overdue' :
-                         new Date(task.due_date).toLocaleDateString()}
+                        {isDueToday
+                          ? "Today"
+                          : isOverdue
+                            ? "Overdue"
+                            : new Date(task.due_date).toLocaleDateString()}
                       </span>
                     </div>
                   )}
@@ -241,22 +264,30 @@ export function TaskCard({
 
                   <DropdownMenuItem onClick={handleComplete}>
                     <CheckCircle2 className="h-4 w-4 mr-2" />
-                    {isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
+                    {isCompleted ? "Mark Incomplete" : "Mark Complete"}
                   </DropdownMenuItem>
 
                   {onStatusChange && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => handleStatusChange('next_action')}>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("next_action")}
+                      >
                         Move to Next Actions
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleStatusChange('waiting_for')}>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("waiting_for")}
+                      >
                         Move to Waiting For
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleStatusChange('someday')}>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("someday")}
+                      >
                         Move to Someday/Maybe
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleStatusChange('project')}>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("project")}
+                      >
                         Convert to Project
                       </DropdownMenuItem>
                     </>
@@ -281,5 +312,5 @@ export function TaskCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

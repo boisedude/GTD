@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 import {
   FolderOpen,
   MoreHorizontal,
@@ -21,21 +21,21 @@ import {
   Plus,
   Calendar,
   Users,
-  Target
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { Project, Task } from '@/types/database'
+  Target,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { Project, Task } from "@/types/database";
 
 interface ProjectCardProps {
-  project: Project
-  tasks?: Task[]
-  onEdit?: (project: Project) => void
-  onDelete?: (projectId: string) => void
-  onComplete?: (projectId: string, completed: boolean) => void
-  onAddTask?: (projectId: string) => void
-  onViewDetails?: (project: Project) => void
-  compact?: boolean
-  className?: string
+  project: Project;
+  tasks?: Task[];
+  onEdit?: (project: Project) => void;
+  onDelete?: (projectId: string) => void;
+  onComplete?: (projectId: string, completed: boolean) => void;
+  onAddTask?: (projectId: string) => void;
+  onViewDetails?: (project: Project) => void;
+  compact?: boolean;
+  className?: string;
 }
 
 export function ProjectCard({
@@ -47,45 +47,56 @@ export function ProjectCard({
   onAddTask,
   onViewDetails,
   compact = false,
-  className
+  className,
 }: ProjectCardProps) {
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const isCompleted = project.status === 'complete'
-  const completedTasks = tasks.filter(task => task.status === 'completed' || task.completed_at)
-  const activeTasks = tasks.filter(task => task.status !== 'completed' && !task.completed_at)
-  const nextActions = activeTasks.filter(task => task.status === 'next_action')
-  const waitingFor = activeTasks.filter(task => task.status === 'waiting_for')
+  const isCompleted = project.status === "complete";
+  const completedTasks = tasks.filter(
+    (task) => task.status === "completed" || task.completed_at
+  );
+  const activeTasks = tasks.filter(
+    (task) => task.status !== "completed" && !task.completed_at
+  );
+  const nextActions = activeTasks.filter(
+    (task) => task.status === "next_action"
+  );
+  const waitingFor = activeTasks.filter(
+    (task) => task.status === "waiting_for"
+  );
 
-  const progressPercentage = tasks.length > 0 ? Math.round((completedTasks.length / tasks.length) * 100) : 0
+  const progressPercentage =
+    tasks.length > 0
+      ? Math.round((completedTasks.length / tasks.length) * 100)
+      : 0;
 
   const handleComplete = async () => {
-    if (!onComplete) return
+    if (!onComplete) return;
 
-    setIsUpdating(true)
+    setIsUpdating(true);
     try {
-      await onComplete(project.id, !isCompleted)
+      await onComplete(project.id, !isCompleted);
     } finally {
-      setIsUpdating(false)
+      setIsUpdating(false);
     }
-  }
+  };
 
   const handleViewDetails = () => {
     if (onViewDetails) {
-      onViewDetails(project)
+      onViewDetails(project);
     }
-  }
+  };
 
   return (
     <Card
       className={cn(
-        'group transition-all duration-200 hover:shadow-md cursor-pointer',
-        isCompleted && 'opacity-75 bg-gray-50',
+        "group transition-all duration-200 hover:shadow-md cursor-pointer",
+        isCompleted && "opacity-75 bg-gray-50",
         className
       )}
       onClick={handleViewDetails}
     >
-      <CardHeader className={cn('pb-3', compact && 'pb-2')}>
+      <CardHeader className={cn("pb-3", compact && "pb-2")}>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <Button
@@ -93,8 +104,8 @@ export function ProjectCard({
               size="sm"
               className="h-6 w-6 p-0 hover:bg-transparent"
               onClick={(e) => {
-                e.stopPropagation()
-                handleComplete()
+                e.stopPropagation();
+                handleComplete();
               }}
               disabled={isUpdating}
             >
@@ -108,11 +119,13 @@ export function ProjectCard({
             </Button>
 
             <div className="flex-1 min-w-0">
-              <CardTitle className={cn(
-                'flex items-center gap-2 text-lg',
-                isCompleted && 'line-through text-gray-500',
-                compact && 'text-base'
-              )}>
+              <CardTitle
+                className={cn(
+                  "flex items-center gap-2 text-lg",
+                  isCompleted && "line-through text-gray-500",
+                  compact && "text-base"
+                )}
+              >
                 <FolderOpen className="h-5 w-5 text-purple-600 flex-shrink-0" />
                 <span className="truncate">{project.name}</span>
               </CardTitle>
@@ -142,14 +155,19 @@ export function ProjectCard({
             </div>
           </div>
 
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="flex items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Badge
-              variant={isCompleted ? 'secondary' : 'default'}
+              variant={isCompleted ? "secondary" : "default"}
               className={cn(
-                isCompleted ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'
+                isCompleted
+                  ? "bg-green-100 text-green-800"
+                  : "bg-purple-100 text-purple-800"
               )}
             >
-              {isCompleted ? 'Complete' : 'Active'}
+              {isCompleted ? "Complete" : "Active"}
             </Badge>
 
             <DropdownMenu>
@@ -172,7 +190,7 @@ export function ProjectCard({
 
                 <DropdownMenuItem onClick={handleComplete}>
                   <CheckCircle2 className="h-4 w-4 mr-2" />
-                  {isCompleted ? 'Reactivate' : 'Mark Complete'}
+                  {isCompleted ? "Reactivate" : "Mark Complete"}
                 </DropdownMenuItem>
 
                 {onAddTask && !isCompleted && (
@@ -210,13 +228,15 @@ export function ProjectCard({
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Progress</span>
-                <span className="font-medium">{progressPercentage}% complete</span>
+                <span className="font-medium">
+                  {progressPercentage}% complete
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className={cn(
-                    'h-2 rounded-full transition-all duration-300',
-                    isCompleted ? 'bg-green-500' : 'bg-purple-500'
+                    "h-2 rounded-full transition-all duration-300",
+                    isCompleted ? "bg-green-500" : "bg-purple-500"
                   )}
                   style={{ width: `${progressPercentage}%` }}
                 />
@@ -237,8 +257,8 @@ export function ProjectCard({
                   variant="ghost"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    onAddTask(project.id)
+                    e.stopPropagation();
+                    onAddTask(project.id);
                   }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -251,7 +271,9 @@ export function ProjectCard({
           {/* Recent tasks preview */}
           {tasks.length > 0 && !compact && (
             <div className="mt-4 space-y-2">
-              <h4 className="text-sm font-medium text-gray-700">Recent Tasks</h4>
+              <h4 className="text-sm font-medium text-gray-700">
+                Recent Tasks
+              </h4>
               {activeTasks.slice(0, 3).map((task) => (
                 <div
                   key={task.id}
@@ -260,7 +282,7 @@ export function ProjectCard({
                   <Circle className="h-3 w-3 text-gray-400 flex-shrink-0" />
                   <span className="truncate flex-1">{task.title}</span>
                   <Badge variant="outline" className="text-xs">
-                    {task.status.replace('_', ' ')}
+                    {task.status.replace("_", " ")}
                   </Badge>
                 </div>
               ))}
@@ -278,13 +300,17 @@ export function ProjectCard({
             <div className="flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
-                <span>Updated {new Date(project.updated_at).toLocaleDateString()}</span>
+                <span>
+                  Updated {new Date(project.updated_at).toLocaleDateString()}
+                </span>
               </div>
-              <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
+              <span>
+                Created {new Date(project.created_at).toLocaleDateString()}
+              </span>
             </div>
           </div>
         </CardContent>
       )}
     </Card>
-  )
+  );
 }

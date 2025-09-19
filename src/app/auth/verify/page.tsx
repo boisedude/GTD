@@ -1,109 +1,116 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { useAuth } from '@/contexts/auth-context'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Loader2, Mail, RefreshCw } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ArrowLeft, Loader2, Mail, RefreshCw } from "lucide-react";
 
 export default function VerifyPage() {
-  const [otp, setOtp] = useState('')
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [resending, setResending] = useState(false)
-  const [error, setError] = useState('')
-  const [resendCooldown, setResendCooldown] = useState(0)
-  const router = useRouter()
-  const { verifyOtp, signInWithOtp, user } = useAuth()
+  const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [error, setError] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const router = useRouter();
+  const { verifyOtp, signInWithOtp, user } = useAuth();
 
   useEffect(() => {
     // Get email from session storage
-    const storedEmail = sessionStorage.getItem('auth_email')
+    const storedEmail = sessionStorage.getItem("auth_email");
     if (storedEmail) {
-      setEmail(storedEmail)
+      setEmail(storedEmail);
     } else {
       // Redirect to login if no email found
-      router.push('/auth/login')
+      router.push("/auth/login");
     }
-  }, [router])
+  }, [router]);
 
   useEffect(() => {
     // Redirect if already authenticated
     if (user) {
-      const redirectTo = sessionStorage.getItem('auth_redirect') || '/dashboard'
-      sessionStorage.removeItem('auth_email')
-      sessionStorage.removeItem('auth_redirect')
-      router.push(redirectTo)
+      const redirectTo =
+        sessionStorage.getItem("auth_redirect") || "/dashboard";
+      sessionStorage.removeItem("auth_email");
+      sessionStorage.removeItem("auth_redirect");
+      router.push(redirectTo);
     }
-  }, [user, router])
+  }, [user, router]);
 
   useEffect(() => {
     // Cooldown timer for resend button
     if (resendCooldown > 0) {
       const timer = setTimeout(() => {
-        setResendCooldown(resendCooldown - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
+        setResendCooldown(resendCooldown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
     }
-  }, [resendCooldown])
+  }, [resendCooldown]);
 
   const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!otp || !email) return
+    e.preventDefault();
+    if (!otp || !email) return;
 
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError("");
 
     try {
-      const { error } = await verifyOtp(email, otp)
+      const { error } = await verifyOtp(email, otp);
 
       if (error) {
-        setError(error.message)
+        setError(error.message);
       } else {
         // Success - user will be redirected by useEffect
       }
     } catch {
-      setError('An unexpected error occurred. Please try again.')
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleResend = async () => {
-    if (!email || resendCooldown > 0) return
+    if (!email || resendCooldown > 0) return;
 
-    setResending(true)
-    setError('')
+    setResending(true);
+    setError("");
 
     try {
-      const { error } = await signInWithOtp(email)
+      const { error } = await signInWithOtp(email);
 
       if (error) {
-        setError(error.message)
+        setError(error.message);
       } else {
-        setResendCooldown(60) // 60 second cooldown
+        setResendCooldown(60); // 60 second cooldown
       }
     } catch {
-      setError('Failed to resend code. Please try again.')
+      setError("Failed to resend code. Please try again.");
     } finally {
-      setResending(false)
+      setResending(false);
     }
-  }
+  };
 
   const formatOtp = (value: string) => {
     // Remove any non-numeric characters and limit to 6 digits
-    const numbers = value.replace(/\D/g, '').slice(0, 6)
+    const numbers = value.replace(/\D/g, "").slice(0, 6);
     // Add spaces between groups of 3 digits for better readability
-    return numbers.replace(/(\d{3})(\d{1,3})/, '$1 $2').trim()
-  }
+    return numbers.replace(/(\d{3})(\d{1,3})/, "$1 $2").trim();
+  };
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatOtp(e.target.value)
-    setOtp(formatted)
-  }
+    const formatted = formatOtp(e.target.value);
+    setOtp(formatted);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
@@ -123,9 +130,7 @@ export default function VerifyPage() {
               <Mail className="h-6 w-6 text-blue-600" />
             </div>
             <CardTitle>Enter Verification Code</CardTitle>
-            <CardDescription>
-              We sent a 6-digit code to {email}
-            </CardDescription>
+            <CardDescription>We sent a 6-digit code to {email}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleVerify} className="space-y-4">
@@ -158,7 +163,7 @@ export default function VerifyPage() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loading || otp.replace(/\s/g, '').length !== 6}
+                disabled={loading || otp.replace(/\s/g, "").length !== 6}
               >
                 {loading ? (
                   <>
@@ -166,7 +171,7 @@ export default function VerifyPage() {
                     Verifying...
                   </>
                 ) : (
-                  'Verify Code'
+                  "Verify Code"
                 )}
               </Button>
             </form>
@@ -202,11 +207,11 @@ export default function VerifyPage() {
         {/* Tips */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
-            <strong>Tips:</strong> Check your spam folder if you don&apos;t see the email.
-            The code expires in 10 minutes.
+            <strong>Tips:</strong> Check your spam folder if you don&apos;t see
+            the email. The code expires in 10 minutes.
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

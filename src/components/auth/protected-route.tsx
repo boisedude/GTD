@@ -1,54 +1,54 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { useAuth } from '@/contexts/auth-context'
-import { Loader2 } from 'lucide-react'
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
-  requireAuth?: boolean
-  redirectTo?: string
+  children: React.ReactNode;
+  requireAuth?: boolean;
+  redirectTo?: string;
 }
 
 export function ProtectedRoute({
   children,
   requireAuth = true,
-  redirectTo
+  redirectTo,
 }: ProtectedRouteProps) {
-  const { user, loading } = useAuth()
-  const router = useRouter()
-  const pathname = usePathname()
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (loading) return
+    if (loading) return;
 
     if (requireAuth && !user) {
       // User needs to be authenticated but isn't
-      const redirectPath = redirectTo || '/auth/login'
-      const currentPath = pathname
+      const redirectPath = redirectTo || "/auth/login";
+      const currentPath = pathname;
 
       // Add current path as redirect parameter
-      const searchParams = new URLSearchParams()
-      if (currentPath !== '/' && currentPath !== redirectPath) {
-        searchParams.set('redirect', currentPath)
+      const searchParams = new URLSearchParams();
+      if (currentPath !== "/" && currentPath !== redirectPath) {
+        searchParams.set("redirect", currentPath);
       }
 
       const redirectUrl = searchParams.toString()
         ? `${redirectPath}?${searchParams.toString()}`
-        : redirectPath
+        : redirectPath;
 
-      router.push(redirectUrl)
-      return
+      router.push(redirectUrl);
+      return;
     }
 
     if (!requireAuth && user) {
       // User is authenticated but shouldn't be (e.g., on login page)
-      const redirectPath = redirectTo || '/dashboard'
-      router.push(redirectPath)
-      return
+      const redirectPath = redirectTo || "/dashboard";
+      router.push(redirectPath);
+      return;
     }
-  }, [user, loading, requireAuth, router, pathname, redirectTo])
+  }, [user, loading, requireAuth, router, pathname, redirectTo]);
 
   // Show loading while checking authentication
   if (loading) {
@@ -59,19 +59,19 @@ export function ProtectedRoute({
           <p className="text-sm text-gray-600">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   // Don't render children if auth requirements aren't met
   if (requireAuth && !user) {
-    return null
+    return null;
   }
 
   if (!requireAuth && user) {
-    return null
+    return null;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 // Higher-order component for pages that require authentication
@@ -84,12 +84,12 @@ export function withAuth<P extends object>(
       <ProtectedRoute requireAuth={true} redirectTo={options?.redirectTo}>
         <Component {...props} />
       </ProtectedRoute>
-    )
-  }
+    );
+  };
 
-  AuthenticatedComponent.displayName = `withAuth(${Component.displayName || Component.name})`
+  AuthenticatedComponent.displayName = `withAuth(${Component.displayName || Component.name})`;
 
-  return AuthenticatedComponent
+  return AuthenticatedComponent;
 }
 
 // Higher-order component for pages that require NO authentication (like login)
@@ -102,10 +102,10 @@ export function withoutAuth<P extends object>(
       <ProtectedRoute requireAuth={false} redirectTo={options?.redirectTo}>
         <Component {...props} />
       </ProtectedRoute>
-    )
-  }
+    );
+  };
 
-  UnauthenticatedComponent.displayName = `withoutAuth(${Component.displayName || Component.name})`
+  UnauthenticatedComponent.displayName = `withoutAuth(${Component.displayName || Component.name})`;
 
-  return UnauthenticatedComponent
+  return UnauthenticatedComponent;
 }

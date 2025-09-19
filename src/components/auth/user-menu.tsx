@@ -1,38 +1,38 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/auth-context'
-import { Button } from '@/components/ui/button'
-import { LogOut, User, Settings, Loader2 } from 'lucide-react'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import { LogOut, User, Settings, Loader2 } from "lucide-react";
 
 interface UserMenuProps {
-  className?: string
+  className?: string;
 }
 
 export function UserMenu({ className }: UserMenuProps) {
-  const { user, signOut } = useAuth()
-  const [loggingOut, setLoggingOut] = useState(false)
-  const router = useRouter()
+  const { user, signOut } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const router = useRouter();
 
   const handleSignOut = async () => {
-    setLoggingOut(true)
+    setLoggingOut(true);
     try {
-      const { error } = await signOut()
+      const { error } = await signOut();
       if (error) {
-        console.error('Error signing out:', error.message)
+        console.error("Error signing out:", error.message);
       } else {
-        router.push('/')
+        router.push("/");
       }
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error("Error signing out:", error);
     } finally {
-      setLoggingOut(false)
+      setLoggingOut(false);
     }
-  }
+  };
 
   if (!user) {
-    return null
+    return null;
   }
 
   return (
@@ -53,7 +53,7 @@ export function UserMenu({ className }: UserMenuProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push('/settings')}
+            onClick={() => router.push("/settings")}
             className="hidden sm:inline-flex"
           >
             <Settings className="h-4 w-4" />
@@ -81,30 +81,30 @@ export function UserMenu({ className }: UserMenuProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Simplified logout button for mobile/compact views
 export function LogoutButton() {
-  const { signOut } = useAuth()
-  const [loggingOut, setLoggingOut] = useState(false)
-  const router = useRouter()
+  const { signOut } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const router = useRouter();
 
   const handleSignOut = async () => {
-    setLoggingOut(true)
+    setLoggingOut(true);
     try {
-      const { error } = await signOut()
+      const { error } = await signOut();
       if (error) {
-        console.error('Error signing out:', error.message)
+        console.error("Error signing out:", error.message);
       } else {
-        router.push('/')
+        router.push("/");
       }
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error("Error signing out:", error);
     } finally {
-      setLoggingOut(false)
+      setLoggingOut(false);
     }
-  }
+  };
 
   return (
     <Button
@@ -126,5 +126,5 @@ export function LogoutButton() {
         </>
       )}
     </Button>
-  )
+  );
 }

@@ -1,7 +1,13 @@
-import Link from 'next/link'
-import { AlertTriangle, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from "next/link";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function AuthCodeErrorPage() {
   return (
@@ -29,8 +35,8 @@ export default function AuthCodeErrorPage() {
           <CardContent className="space-y-4">
             <div className="space-y-3">
               <p className="text-sm text-gray-600">
-                The sign-in link may have expired or been used already.
-                This can happen if:
+                The sign-in link may have expired or been used already. This can
+                happen if:
               </p>
               <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
                 <li>The link is more than 1 hour old</li>
@@ -41,19 +47,15 @@ export default function AuthCodeErrorPage() {
 
             <div className="space-y-3">
               <Button asChild className="w-full">
-                <Link href="/auth/login">
-                  Get New Sign-In Link
-                </Link>
+                <Link href="/auth/login">Get New Sign-In Link</Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
-                <Link href="/">
-                  Go to Home Page
-                </Link>
+                <Link href="/">Go to Home Page</Link>
               </Button>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,23 +10,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import type { Task, TaskAction } from '@/types/database'
-import { LucideIcon } from 'lucide-react'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import type { Task, TaskAction } from "@/types/database";
+import { LucideIcon } from "lucide-react";
 
 interface TaskActionButtonProps {
-  task: Task
-  action: TaskAction
-  onAction: (action: TaskAction) => Promise<void>
-  disabled?: boolean
-  size?: 'sm' | 'default' | 'lg'
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  icon?: LucideIcon
-  tooltip?: string
-  children?: React.ReactNode
+  task: Task;
+  action: TaskAction;
+  onAction: (action: TaskAction) => Promise<void>;
+  disabled?: boolean;
+  size?: "sm" | "default" | "lg";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
+  icon?: LucideIcon;
+  tooltip?: string;
+  children?: React.ReactNode;
 }
 
 export function TaskActionButton({
@@ -34,33 +40,33 @@ export function TaskActionButton({
   action,
   onAction,
   disabled = false,
-  size = 'default',
-  variant = 'default',
+  size = "default",
+  variant = "default",
   icon: Icon,
   tooltip,
-  children
+  children,
 }: TaskActionButtonProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [actionData, setActionData] = useState<Record<string, string>>({})
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [actionData, setActionData] = useState<Record<string, string>>({});
 
-  const requiresDialog = action.type === 'defer' || action.type === 'delegate'
+  const requiresDialog = action.type === "defer" || action.type === "delegate";
 
   const handleAction = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       await onAction({
         ...action,
-        data: requiresDialog ? actionData : action.data
-      })
-      setIsOpen(false)
-      setActionData({})
+        data: requiresDialog ? actionData : action.data,
+      });
+      setIsOpen(false);
+      setActionData({});
     } catch (error) {
-      console.error('Action failed:', error)
+      console.error("Action failed:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const buttonContent = (
     <Button
@@ -73,17 +79,15 @@ export function TaskActionButton({
       {Icon && <Icon className="h-4 w-4 mr-1" />}
       {children || getActionLabel(action.type)}
     </Button>
-  )
+  );
 
   if (!requiresDialog) {
-    return buttonContent
+    return buttonContent;
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {buttonContent}
-      </DialogTrigger>
+      <DialogTrigger asChild>{buttonContent}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{getDialogTitle(action.type)}</DialogTitle>
@@ -93,15 +97,20 @@ export function TaskActionButton({
         </DialogHeader>
 
         <div className="space-y-4">
-          {action.type === 'defer' && (
+          {action.type === "defer" && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="new-due-date">New Due Date</Label>
                 <Input
                   id="new-due-date"
                   type="date"
-                  value={actionData.newDueDate || ''}
-                  onChange={(e) => setActionData((prev: Record<string, string>) => ({ ...prev, newDueDate: e.target.value }))}
+                  value={actionData.newDueDate || ""}
+                  onChange={(e) =>
+                    setActionData((prev: Record<string, string>) => ({
+                      ...prev,
+                      newDueDate: e.target.value,
+                    }))
+                  }
                 />
               </div>
 
@@ -110,8 +119,13 @@ export function TaskActionButton({
                 <Textarea
                   id="defer-reason"
                   placeholder="Why are you deferring this task?"
-                  value={actionData.reason || ''}
-                  onChange={(e) => setActionData((prev: Record<string, string>) => ({ ...prev, reason: e.target.value }))}
+                  value={actionData.reason || ""}
+                  onChange={(e) =>
+                    setActionData((prev: Record<string, string>) => ({
+                      ...prev,
+                      reason: e.target.value,
+                    }))
+                  }
                 />
               </div>
 
@@ -122,12 +136,12 @@ export function TaskActionButton({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const tomorrow = new Date()
-                      tomorrow.setDate(tomorrow.getDate() + 1)
+                      const tomorrow = new Date();
+                      tomorrow.setDate(tomorrow.getDate() + 1);
                       setActionData((prev: Record<string, string>) => ({
                         ...prev,
-                        newDueDate: tomorrow.toISOString().split('T')[0]
-                      }))
+                        newDueDate: tomorrow.toISOString().split("T")[0],
+                      }));
                     }}
                   >
                     Tomorrow
@@ -136,12 +150,12 @@ export function TaskActionButton({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const nextWeek = new Date()
-                      nextWeek.setDate(nextWeek.getDate() + 7)
+                      const nextWeek = new Date();
+                      nextWeek.setDate(nextWeek.getDate() + 7);
                       setActionData((prev: Record<string, string>) => ({
                         ...prev,
-                        newDueDate: nextWeek.toISOString().split('T')[0]
-                      }))
+                        newDueDate: nextWeek.toISOString().split("T")[0],
+                      }));
                     }}
                   >
                     Next Week
@@ -150,12 +164,12 @@ export function TaskActionButton({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const nextMonth = new Date()
-                      nextMonth.setMonth(nextMonth.getMonth() + 1)
+                      const nextMonth = new Date();
+                      nextMonth.setMonth(nextMonth.getMonth() + 1);
                       setActionData((prev: Record<string, string>) => ({
                         ...prev,
-                        newDueDate: nextMonth.toISOString().split('T')[0]
-                      }))
+                        newDueDate: nextMonth.toISOString().split("T")[0],
+                      }));
                     }}
                   >
                     Next Month
@@ -165,15 +179,20 @@ export function TaskActionButton({
             </>
           )}
 
-          {action.type === 'delegate' && (
+          {action.type === "delegate" && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="delegate-to">Delegate To</Label>
                 <Input
                   id="delegate-to"
                   placeholder="Person or team name"
-                  value={actionData.delegateTo || ''}
-                  onChange={(e) => setActionData((prev: Record<string, string>) => ({ ...prev, delegateTo: e.target.value }))}
+                  value={actionData.delegateTo || ""}
+                  onChange={(e) =>
+                    setActionData((prev: Record<string, string>) => ({
+                      ...prev,
+                      delegateTo: e.target.value,
+                    }))
+                  }
                 />
               </div>
 
@@ -182,8 +201,13 @@ export function TaskActionButton({
                 <Input
                   id="delegate-due"
                   type="date"
-                  value={actionData.followUpDate || ''}
-                  onChange={(e) => setActionData((prev: Record<string, string>) => ({ ...prev, followUpDate: e.target.value }))}
+                  value={actionData.followUpDate || ""}
+                  onChange={(e) =>
+                    setActionData((prev: Record<string, string>) => ({
+                      ...prev,
+                      followUpDate: e.target.value,
+                    }))
+                  }
                 />
               </div>
 
@@ -192,8 +216,13 @@ export function TaskActionButton({
                 <Textarea
                   id="delegate-notes"
                   placeholder="Additional context or instructions..."
-                  value={actionData.notes || ''}
-                  onChange={(e) => setActionData((prev: Record<string, string>) => ({ ...prev, notes: e.target.value }))}
+                  value={actionData.notes || ""}
+                  onChange={(e) =>
+                    setActionData((prev: Record<string, string>) => ({
+                      ...prev,
+                      notes: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </>
@@ -201,53 +230,57 @@ export function TaskActionButton({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isLoading}>
+          <Button
+            variant="outline"
+            onClick={() => setIsOpen(false)}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
           <Button onClick={handleAction} disabled={isLoading}>
-            {isLoading ? 'Processing...' : getActionLabel(action.type)}
+            {isLoading ? "Processing..." : getActionLabel(action.type)}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function getActionLabel(actionType: string): string {
   switch (actionType) {
-    case 'complete':
-      return 'Complete'
-    case 'defer':
-      return 'Defer'
-    case 'delegate':
-      return 'Delegate'
-    case 'update':
-      return 'Update'
-    case 'delete':
-      return 'Delete'
+    case "complete":
+      return "Complete";
+    case "defer":
+      return "Defer";
+    case "delegate":
+      return "Delegate";
+    case "update":
+      return "Update";
+    case "delete":
+      return "Delete";
     default:
-      return 'Action'
+      return "Action";
   }
 }
 
 function getDialogTitle(actionType: string): string {
   switch (actionType) {
-    case 'defer':
-      return 'Defer Task'
-    case 'delegate':
-      return 'Delegate Task'
+    case "defer":
+      return "Defer Task";
+    case "delegate":
+      return "Delegate Task";
     default:
-      return 'Confirm Action'
+      return "Confirm Action";
   }
 }
 
 function getDialogDescription(actionType: string, taskTitle: string): string {
   switch (actionType) {
-    case 'defer':
-      return `Reschedule "${taskTitle}" to a later date. You can set a new due date and add a reason for deferring.`
-    case 'delegate':
-      return `Delegate "${taskTitle}" to someone else. The task will be moved to your "Waiting For" list.`
+    case "defer":
+      return `Reschedule "${taskTitle}" to a later date. You can set a new due date and add a reason for deferring.`;
+    case "delegate":
+      return `Delegate "${taskTitle}" to someone else. The task will be moved to your "Waiting For" list.`;
     default:
-      return `Are you sure you want to perform this action on "${taskTitle}"?`
+      return `Are you sure you want to perform this action on "${taskTitle}"?`;
   }
 }

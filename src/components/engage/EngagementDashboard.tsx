@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { TaskActionButton } from './TaskActionButton'
-import type { TaskSuggestion, TaskAction } from '@/types/database'
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { TaskActionButton } from "./TaskActionButton";
+import type { TaskSuggestion, TaskAction } from "@/types/database";
 import {
   CheckCircle2,
   Clock,
@@ -24,16 +24,16 @@ import {
   ZapOff,
   Timer,
   Target,
-  TrendingUp
-} from 'lucide-react'
+  TrendingUp,
+} from "lucide-react";
 
 interface EngagementDashboardProps {
-  suggestions: TaskSuggestion[]
-  onTaskSelect: (task: TaskSuggestion['task']) => void
-  onTaskAction: (taskId: string, action: TaskAction) => Promise<void>
-  loading?: boolean
-  showScoring?: boolean
-  className?: string
+  suggestions: TaskSuggestion[];
+  onTaskSelect: (task: TaskSuggestion["task"]) => void;
+  onTaskAction: (taskId: string, action: TaskAction) => Promise<void>;
+  loading?: boolean;
+  showScoring?: boolean;
+  className?: string;
 }
 
 const contextIcons = {
@@ -43,52 +43,53 @@ const contextIcons = {
   home: Home,
   office: Building,
   anywhere: Globe,
-}
+};
 
 const energyIcons = {
   high: Zap,
   medium: Battery,
   low: ZapOff,
-}
+};
 
 const statusColors = {
-  captured: 'bg-blue-100 text-blue-800',
-  next_action: 'bg-orange-100 text-orange-800',
-  project: 'bg-purple-100 text-purple-800',
-  waiting_for: 'bg-yellow-100 text-yellow-800',
-  someday: 'bg-gray-100 text-gray-800',
-  completed: 'bg-green-100 text-green-800',
-}
+  captured: "bg-blue-100 text-blue-800",
+  next_action: "bg-orange-100 text-orange-800",
+  project: "bg-purple-100 text-purple-800",
+  waiting_for: "bg-yellow-100 text-yellow-800",
+  someday: "bg-gray-100 text-gray-800",
+  completed: "bg-green-100 text-green-800",
+};
 
 function TaskCard({
   suggestion,
   onSelect,
   onAction,
-  showScoring = true
+  showScoring = true,
 }: {
-  suggestion: TaskSuggestion
-  onSelect: () => void
-  onAction: (action: TaskAction) => Promise<void>
-  showScoring?: boolean
+  suggestion: TaskSuggestion;
+  onSelect: () => void;
+  onAction: (action: TaskAction) => Promise<void>;
+  showScoring?: boolean;
 }) {
-  const { task, score, reasons } = suggestion
-  const [isLoading, setIsLoading] = useState(false)
+  const { task, score, reasons } = suggestion;
+  const [isLoading, setIsLoading] = useState(false);
 
-  const ContextIcon = task.context ? contextIcons[task.context] : null
-  const EnergyIcon = task.energy_level ? energyIcons[task.energy_level] : null
+  const ContextIcon = task.context ? contextIcons[task.context] : null;
+  const EnergyIcon = task.energy_level ? energyIcons[task.energy_level] : null;
 
   const handleAction = async (action: TaskAction) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await onAction(action)
+      await onAction(action);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const isOverdue = task.due_date && new Date(task.due_date) < new Date()
-  const isDueToday = task.due_date &&
-    new Date(task.due_date).toDateString() === new Date().toDateString()
+  const isOverdue = task.due_date && new Date(task.due_date) < new Date();
+  const isDueToday =
+    task.due_date &&
+    new Date(task.due_date).toDateString() === new Date().toDateString();
 
   return (
     <Card className="group hover:shadow-md transition-all duration-200 cursor-pointer relative">
@@ -106,7 +107,7 @@ function TaskCard({
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
               <Badge className={statusColors[task.status]} variant="secondary">
-                {task.status.replace('_', ' ')}
+                {task.status.replace("_", " ")}
               </Badge>
               {showScoring && (
                 <Badge variant="outline" className="text-xs">
@@ -118,9 +119,13 @@ function TaskCard({
 
             {(isOverdue || isDueToday) && (
               <div className="flex items-center gap-1">
-                <Calendar className={`h-4 w-4 ${isOverdue ? 'text-red-500' : 'text-orange-500'}`} />
-                <span className={`text-xs ${isOverdue ? 'text-red-600' : 'text-orange-600'}`}>
-                  {isOverdue ? 'Overdue' : 'Due today'}
+                <Calendar
+                  className={`h-4 w-4 ${isOverdue ? "text-red-500" : "text-orange-500"}`}
+                />
+                <span
+                  className={`text-xs ${isOverdue ? "text-red-600" : "text-orange-600"}`}
+                >
+                  {isOverdue ? "Overdue" : "Due today"}
                 </span>
               </div>
             )}
@@ -173,7 +178,8 @@ function TaskCard({
           {/* Reasons (for suggestions) */}
           {showScoring && reasons.length > 0 && (
             <div className="text-xs text-green-700 bg-green-50 rounded px-2 py-1">
-              <span className="font-medium">Why now:</span> {reasons.slice(0, 2).join(', ')}
+              <span className="font-medium">Why now:</span>{" "}
+              {reasons.slice(0, 2).join(", ")}
             </div>
           )}
 
@@ -182,7 +188,7 @@ function TaskCard({
             <div className="flex items-center gap-1">
               <TaskActionButton
                 task={task}
-                action={{ type: 'complete' }}
+                action={{ type: "complete" }}
                 onAction={handleAction}
                 disabled={isLoading}
                 size="sm"
@@ -193,7 +199,7 @@ function TaskCard({
 
               <TaskActionButton
                 task={task}
-                action={{ type: 'defer' }}
+                action={{ type: "defer" }}
                 onAction={handleAction}
                 disabled={isLoading}
                 size="sm"
@@ -216,7 +222,7 @@ function TaskCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export function EngagementDashboard({
@@ -225,7 +231,7 @@ export function EngagementDashboard({
   onTaskAction,
   loading = false,
   showScoring = true,
-  className
+  className,
 }: EngagementDashboardProps) {
   if (loading) {
     return (
@@ -249,7 +255,7 @@ export function EngagementDashboard({
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   if (suggestions.length === 0) {
@@ -261,12 +267,13 @@ export function EngagementDashboard({
               <Target className="h-6 w-6 text-gray-600" />
             </div>
             <div>
-              <h3 className="text-lg font-medium text-gray-900">No tasks found</h3>
+              <h3 className="text-lg font-medium text-gray-900">
+                No tasks found
+              </h3>
               <p className="text-gray-600 mt-1">
                 {showScoring
                   ? "No tasks match your current context. Try adjusting your filters or context settings."
-                  : "No tasks match the current filters. Try adjusting your filter criteria."
-                }
+                  : "No tasks match the current filters. Try adjusting your filter criteria."}
               </p>
             </div>
             <Button variant="outline" onClick={() => window.location.reload()}>
@@ -275,7 +282,7 @@ export function EngagementDashboard({
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -283,7 +290,10 @@ export function EngagementDashboard({
       {showScoring && (
         <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
           <Target className="h-4 w-4" />
-          <span>Showing {suggestions.length} personalized suggestions for your current context</span>
+          <span>
+            Showing {suggestions.length} personalized suggestions for your
+            current context
+          </span>
         </div>
       )}
 
@@ -299,5 +309,5 @@ export function EngagementDashboard({
         ))}
       </div>
     </div>
-  )
+  );
 }

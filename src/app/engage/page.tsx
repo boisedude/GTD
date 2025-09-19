@@ -1,36 +1,52 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ProtectedRoute } from '@/components/auth/protected-route'
-import { EngagementDashboard } from '@/components/engage/EngagementDashboard'
-import { TaskDetailPanel } from '@/components/engage/TaskDetailPanel'
-import { ContextSelector } from '@/components/engage/ContextSelector'
-import { TaskFilters } from '@/components/engage/TaskFilters'
-import { OfflineIndicator } from '@/components/engage/OfflineIndicator'
-import { useEngagement } from '@/hooks/useEngagement'
-import { useTimer } from '@/hooks/useTimer'
-import type { Task } from '@/types/database'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Play, Brain, Filter, Settings, Clock, Zap, Target } from 'lucide-react'
+import { useState } from "react";
+import { ProtectedRoute } from "@/components/auth/protected-route";
+import { EngagementDashboard } from "@/components/engage/EngagementDashboard";
+import { TaskDetailPanel } from "@/components/engage/TaskDetailPanel";
+import { ContextSelector } from "@/components/engage/ContextSelector";
+import { TaskFilters } from "@/components/engage/TaskFilters";
+import { OfflineIndicator } from "@/components/engage/OfflineIndicator";
+import { useEngagement } from "@/hooks/useEngagement";
+import { useTimer } from "@/hooks/useTimer";
+import type { Task } from "@/types/database";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Play,
+  Brain,
+  Filter,
+  Settings,
+  Clock,
+  Zap,
+  Target,
+} from "lucide-react";
 
 function EngageContent() {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
-  const [activeView, setActiveView] = useState<'suggestions' | 'filtered' | 'timer'>('suggestions')
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [activeView, setActiveView] = useState<
+    "suggestions" | "filtered" | "timer"
+  >("suggestions");
 
   const engagement = useEngagement({
-    maxSuggestions: 8
-  })
+    maxSuggestions: 8,
+  });
 
   const timer = useTimer({
     onComplete: (session) => {
-      console.log('Timer session completed:', session)
+      console.log("Timer session completed:", session);
       // TODO: Save timer session to database
-    }
-  })
+    },
+  });
 
   const {
     suggestions,
@@ -40,11 +56,11 @@ function EngageContent() {
     loading,
     updateContext,
     updateFilters,
-    executeAction
-  } = engagement
+    executeAction,
+  } = engagement;
 
   // Get the next best suggestion
-  const nextTask = suggestions[0]
+  const nextTask = suggestions[0];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -77,7 +93,7 @@ function EngageContent() {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowFilters(!showFilters)}
-                  className={showFilters ? 'bg-blue-50 border-blue-200' : ''}
+                  className={showFilters ? "bg-blue-50 border-blue-200" : ""}
                 >
                   <Settings className="h-4 w-4 mr-1" />
                   Filters
@@ -130,7 +146,7 @@ function EngageContent() {
                     <Zap className="h-3 w-3" />
                     <span>Score: {nextTask.score}</span>
                     <span>•</span>
-                    <span>{nextTask.reasons.join(', ')}</span>
+                    <span>{nextTask.reasons.join(", ")}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -157,11 +173,19 @@ function EngageContent() {
                           Resume
                         </Button>
                       ) : (
-                        <Button onClick={timer.pause} size="sm" variant="outline">
+                        <Button
+                          onClick={timer.pause}
+                          size="sm"
+                          variant="outline"
+                        >
                           Pause
                         </Button>
                       )}
-                      <Button onClick={() => timer.stop()} size="sm" variant="outline">
+                      <Button
+                        onClick={() => timer.stop()}
+                        size="sm"
+                        variant="outline"
+                      >
                         Stop
                       </Button>
                     </div>
@@ -171,13 +195,24 @@ function EngageContent() {
             )}
 
             {/* Main Task Views */}
-            <Tabs value={activeView} onValueChange={(v) => setActiveView(v as 'suggestions' | 'filtered' | 'timer')}>
+            <Tabs
+              value={activeView}
+              onValueChange={(v) =>
+                setActiveView(v as "suggestions" | "filtered" | "timer")
+              }
+            >
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="suggestions" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="suggestions"
+                  className="flex items-center gap-2"
+                >
                   <Brain className="h-4 w-4" />
                   Suggestions
                 </TabsTrigger>
-                <TabsTrigger value="filtered" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="filtered"
+                  className="flex items-center gap-2"
+                >
                   <Filter className="h-4 w-4" />
                   Filtered
                 </TabsTrigger>
@@ -198,7 +233,11 @@ function EngageContent() {
 
               <TabsContent value="filtered" className="mt-4">
                 <EngagementDashboard
-                  suggestions={filteredTasks.map(task => ({ task, score: 0, reasons: [] }))}
+                  suggestions={filteredTasks.map((task) => ({
+                    task,
+                    score: 0,
+                    reasons: [],
+                  }))}
                   onTaskSelect={setSelectedTask}
                   onTaskAction={executeAction}
                   loading={loading}
@@ -211,29 +250,35 @@ function EngageContent() {
                   <CardHeader>
                     <CardTitle>Focus Timer</CardTitle>
                     <CardDescription>
-                      Use time-blocking to maintain focus on your most important tasks
+                      Use time-blocking to maintain focus on your most important
+                      tasks
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     {!timer.isRunning ? (
                       <div className="space-y-4">
                         <p className="text-gray-600">
-                          Select a task from your suggestions to start a focused work session.
+                          Select a task from your suggestions to start a focused
+                          work session.
                         </p>
                         {suggestions.length > 0 && (
                           <div className="space-y-2">
-                            <h4 className="font-medium">Quick start with top suggestions:</h4>
+                            <h4 className="font-medium">
+                              Quick start with top suggestions:
+                            </h4>
                             {suggestions.slice(0, 3).map((suggestion) => (
                               <div
                                 key={suggestion.task.id}
                                 className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                               >
-                                <span className="font-medium">{suggestion.task.title}</span>
+                                <span className="font-medium">
+                                  {suggestion.task.title}
+                                </span>
                                 <Button
                                   size="sm"
                                   onClick={() => {
-                                    timer.start(suggestion.task.id, 25) // Default 25-minute Pomodoro
-                                    setSelectedTask(suggestion.task)
+                                    timer.start(suggestion.task.id, 25); // Default 25-minute Pomodoro
+                                    setSelectedTask(suggestion.task);
                                   }}
                                 >
                                   Start 25min
@@ -252,10 +297,19 @@ function EngageContent() {
                           {timer.isPaused ? (
                             <Button onClick={timer.resume}>Resume</Button>
                           ) : (
-                            <Button onClick={timer.pause} variant="outline">Pause</Button>
+                            <Button onClick={timer.pause} variant="outline">
+                              Pause
+                            </Button>
                           )}
-                          <Button onClick={() => timer.stop()} variant="outline">Stop</Button>
-                          <Button onClick={timer.reset} variant="ghost">Reset</Button>
+                          <Button
+                            onClick={() => timer.stop()}
+                            variant="outline"
+                          >
+                            Stop
+                          </Button>
+                          <Button onClick={timer.reset} variant="ghost">
+                            Reset
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -283,11 +337,11 @@ function EngageContent() {
                 onClose={() => setSelectedTask(null)}
                 onAction={executeAction}
                 onStartTimer={(taskId, duration) => {
-                  timer.start(taskId, duration)
+                  timer.start(taskId, duration);
                 }}
                 timerState={{
                   isRunning: timer.isRunning,
-                  currentTaskId: timer.currentSession?.task_id
+                  currentTaskId: timer.currentSession?.task_id,
                 }}
               />
             )}
@@ -316,7 +370,7 @@ function EngageContent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default function EngagePage() {
@@ -324,5 +378,5 @@ export default function EngagePage() {
     <ProtectedRoute>
       <EngageContent />
     </ProtectedRoute>
-  )
+  );
 }

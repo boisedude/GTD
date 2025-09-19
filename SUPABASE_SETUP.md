@@ -49,6 +49,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_actual_service_role_key_here
 5. Click "Run" to execute the migration
 
 This will create:
+
 - All database tables (users, tasks, projects, reviews)
 - Custom PostgreSQL enums for type safety
 - Row Level Security (RLS) policies
@@ -62,20 +63,24 @@ This will create:
 2. Configure the following settings:
 
 ### Email Templates (Optional)
+
 - Customize the email templates for confirmation and password reset emails
 - Add your app's branding and styling
 
 ### Auth Providers
+
 - **Email**: Already enabled by default
 - You can enable additional providers later (Google, GitHub, etc.)
 
 ### Site URL
+
 - Set this to your development URL: `http://localhost:3000`
 - For production, update this to your deployed domain
 
 ## Step 6: Test the Setup
 
 1. Start your development server:
+
    ```bash
    npm run dev
    ```

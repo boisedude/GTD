@@ -1,50 +1,56 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { useAuth } from '@/contexts/auth-context'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Mail, ArrowLeft, Loader2 } from 'lucide-react'
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [emailSent, setEmailSent] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { signInWithOtp } = useAuth()
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { signInWithOtp } = useAuth();
 
-  const redirectTo = searchParams.get('redirect') || '/dashboard'
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
+    e.preventDefault();
+    if (!email) return;
 
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError("");
 
     try {
-      const { error } = await signInWithOtp(email)
+      const { error } = await signInWithOtp(email);
 
       if (error) {
-        setError(error.message)
+        setError(error.message);
       } else {
-        setEmailSent(true)
+        setEmailSent(true);
         // Store email and redirect path for verification page
-        sessionStorage.setItem('auth_email', email)
-        sessionStorage.setItem('auth_redirect', redirectTo)
-        router.push('/auth/verify')
+        sessionStorage.setItem("auth_email", email);
+        sessionStorage.setItem("auth_redirect", redirectTo);
+        router.push("/auth/verify");
       }
     } catch {
-      setError('An unexpected error occurred. Please try again.')
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (emailSent) {
     return (
@@ -61,7 +67,8 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-gray-600 text-center">
-              Click the link in the email or enter the verification code on the next page.
+              Click the link in the email or enter the verification code on the
+              next page.
             </p>
             <Button
               variant="outline"
@@ -73,7 +80,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -140,7 +147,8 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-600">
-                By signing in, you agree to our terms of service and privacy policy.
+                By signing in, you agree to our terms of service and privacy
+                policy.
               </p>
             </div>
           </CardContent>
@@ -149,10 +157,11 @@ export default function LoginPage() {
         {/* GTD Disclaimer */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <p className="text-xs text-yellow-800 text-center">
-            <strong>Disclaimer:</strong> This app is inspired by GTD principles but is not affiliated with or licensed by David Allen or GTD®.
+            <strong>Disclaimer:</strong> This app is inspired by GTD principles
+            but is not affiliated with or licensed by David Allen or GTD®.
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

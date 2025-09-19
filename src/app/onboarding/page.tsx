@@ -1,21 +1,28 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/auth-context'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { CheckCircle, ArrowRight, Play } from 'lucide-react'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CheckCircle, ArrowRight, Play } from "lucide-react";
 
 export default function OnboardingPage() {
-  const [currentStep, setCurrentStep] = useState(0)
-  const { user, setIsNewUser } = useAuth()
-  const router = useRouter()
+  const [currentStep, setCurrentStep] = useState(0);
+  const { user, setIsNewUser } = useAuth();
+  const router = useRouter();
 
   const steps = [
     {
       title: "Welcome to GTD App",
-      description: "Get organized and stress-free with the Getting Things Done methodology",
+      description:
+        "Get organized and stress-free with the Getting Things Done methodology",
       content: (
         <div className="space-y-4">
           <div className="text-center space-y-4">
@@ -23,13 +30,13 @@ export default function OnboardingPage() {
               <CheckCircle className="w-8 h-8 text-blue-600" />
             </div>
             <p className="text-gray-600">
-              You&apos;ve successfully signed in! Let&apos;s get you set up with a quick introduction
-              to how this app helps you capture, clarify, organize, reflect, and engage
-              with your tasks.
+              You&apos;ve successfully signed in! Let&apos;s get you set up with
+              a quick introduction to how this app helps you capture, clarify,
+              organize, reflect, and engage with your tasks.
             </p>
           </div>
         </div>
-      )
+      ),
     },
     {
       title: "The GTD Workflow",
@@ -43,7 +50,9 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <h4 className="font-medium">Capture</h4>
-                <p className="text-sm text-gray-600">Collect everything that has your attention</p>
+                <p className="text-sm text-gray-600">
+                  Collect everything that has your attention
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
@@ -52,7 +61,9 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <h4 className="font-medium">Clarify</h4>
-                <p className="text-sm text-gray-600">Decide what each item means and what action is required</p>
+                <p className="text-sm text-gray-600">
+                  Decide what each item means and what action is required
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
@@ -61,7 +72,9 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <h4 className="font-medium">Organize</h4>
-                <p className="text-sm text-gray-600">Put items where they belong in your system</p>
+                <p className="text-sm text-gray-600">
+                  Put items where they belong in your system
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
@@ -70,7 +83,9 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <h4 className="font-medium">Reflect</h4>
-                <p className="text-sm text-gray-600">Review your system regularly to stay current</p>
+                <p className="text-sm text-gray-600">
+                  Review your system regularly to stay current
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
@@ -79,12 +94,14 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <h4 className="font-medium">Engage</h4>
-                <p className="text-sm text-gray-600">Take action with confidence and clarity</p>
+                <p className="text-sm text-gray-600">
+                  Take action with confidence and clarity
+                </p>
               </div>
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
       title: "Quick Capture",
@@ -93,12 +110,14 @@ export default function OnboardingPage() {
         <div className="space-y-4">
           <p className="text-gray-600">
             The capture input is always available at the top of your dashboard.
-            Whenever something crosses your mind, quickly capture it here without
-            worrying about organizing it right away.
+            Whenever something crosses your mind, quickly capture it here
+            without worrying about organizing it right away.
           </p>
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Quick Capture (Example)</label>
+              <label className="text-sm font-medium">
+                Quick Capture (Example)
+              </label>
               <div className="flex space-x-2">
                 <input
                   type="text"
@@ -106,7 +125,10 @@ export default function OnboardingPage() {
                   className="flex-1 px-3 py-2 border rounded-md bg-white"
                   disabled
                 />
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md" disabled>
+                <button
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                  disabled
+                >
                   Capture
                 </button>
               </div>
@@ -116,7 +138,7 @@ export default function OnboardingPage() {
             This will be available on every page once you start using the app.
           </p>
         </div>
-      )
+      ),
     },
     {
       title: "You're All Set!",
@@ -127,43 +149,44 @@ export default function OnboardingPage() {
             <Play className="w-8 h-8 text-green-600" />
           </div>
           <p className="text-gray-600">
-            You&apos;re ready to start capturing, organizing, and getting things done!
-            Head to your dashboard to begin.
+            You&apos;re ready to start capturing, organizing, and getting things
+            done! Head to your dashboard to begin.
           </p>
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-sm text-yellow-800">
-              <strong>Disclaimer:</strong> This app is inspired by GTD principles but is not
-              affiliated with or licensed by David Allen or GTD®.
+              <strong>Disclaimer:</strong> This app is inspired by GTD
+              principles but is not affiliated with or licensed by David Allen
+              or GTD®.
             </p>
           </div>
         </div>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     } else {
-      handleComplete()
+      handleComplete();
     }
-  }
+  };
 
   const handleComplete = () => {
     // Mark user as no longer new
-    setIsNewUser(false)
+    setIsNewUser(false);
     // Redirect to dashboard
-    router.push('/dashboard')
-  }
+    router.push("/dashboard");
+  };
 
   const handleSkip = () => {
-    setIsNewUser(false)
-    router.push('/dashboard')
-  }
+    setIsNewUser(false);
+    router.push("/dashboard");
+  };
 
   if (!user) {
-    router.push('/auth/login')
-    return null
+    router.push("/auth/login");
+    return null;
   }
 
   return (
@@ -176,7 +199,7 @@ export default function OnboardingPage() {
                 <div
                   key={index}
                   className={`w-3 h-3 rounded-full ${
-                    index <= currentStep ? 'bg-blue-600' : 'bg-gray-200'
+                    index <= currentStep ? "bg-blue-600" : "bg-gray-200"
                   }`}
                 />
               ))}
@@ -185,9 +208,7 @@ export default function OnboardingPage() {
             <CardDescription>{steps[currentStep].description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="mb-8">
-              {steps[currentStep].content}
-            </div>
+            <div className="mb-8">{steps[currentStep].content}</div>
 
             <div className="flex justify-between items-center">
               <Button
@@ -226,5 +247,5 @@ export default function OnboardingPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

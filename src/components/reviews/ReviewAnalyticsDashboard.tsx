@@ -1,11 +1,17 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { useReviews } from '@/hooks/useReviews'
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { useReviews } from "@/hooks/useReviews";
 import {
   Calendar,
   CheckCircle2,
@@ -20,18 +26,18 @@ import {
   ArrowUp,
   ArrowDown,
   Minus,
-  RefreshCw
-} from 'lucide-react'
-import type { ReviewMetrics, Review, WeeklyInsights } from '@/types/database'
+  RefreshCw,
+} from "lucide-react";
+import type { ReviewMetrics, Review, WeeklyInsights } from "@/types/database";
 
 interface ReviewAnalyticsDashboardProps {
-  timeRange?: 'week' | 'month' | 'quarter'
-  compact?: boolean
+  timeRange?: "week" | "month" | "quarter";
+  compact?: boolean;
 }
 
 export function ReviewAnalyticsDashboard({
-  timeRange = 'month',
-  compact = false
+  timeRange = "month",
+  compact = false,
 }: ReviewAnalyticsDashboardProps) {
   const {
     recentReviews,
@@ -41,25 +47,30 @@ export function ReviewAnalyticsDashboard({
     getCompletionRate,
     getWeeklyInsights,
     loadReviewHistory,
-    loadMetrics
-  } = useReviews()
+    loadMetrics,
+  } = useReviews();
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange)
+  const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange);
 
   // Load data based on time range
   useEffect(() => {
-    const days = selectedTimeRange === 'week' ? 7 : selectedTimeRange === 'month' ? 30 : 90
-    loadMetrics(days)
-    loadReviewHistory()
-  }, [selectedTimeRange, loadMetrics, loadReviewHistory])
+    const days =
+      selectedTimeRange === "week"
+        ? 7
+        : selectedTimeRange === "month"
+          ? 30
+          : 90;
+    loadMetrics(days);
+    loadReviewHistory();
+  }, [selectedTimeRange, loadMetrics, loadReviewHistory]);
 
   // Calculate analytics
-  const streak = getReviewStreak()
-  const completionRate = getCompletionRate(7) // Last 7 days
-  const weeklyInsights = getWeeklyInsights()
+  const streak = getReviewStreak();
+  const completionRate = getCompletionRate(7); // Last 7 days
+  const weeklyInsights = getWeeklyInsights();
 
   // Calculate trends and statistics
-  const stats = calculateReviewStats(metrics, recentReviews, selectedTimeRange)
+  const stats = calculateReviewStats(metrics, recentReviews, selectedTimeRange);
 
   if (loading && metrics.length === 0) {
     return (
@@ -71,11 +82,17 @@ export function ReviewAnalyticsDashboard({
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (compact) {
-    return <CompactAnalyticsDashboard stats={stats} streak={streak} completionRate={completionRate} />
+    return (
+      <CompactAnalyticsDashboard
+        stats={stats}
+        streak={streak}
+        completionRate={completionRate}
+      />
+    );
   }
 
   return (
@@ -84,17 +101,23 @@ export function ReviewAnalyticsDashboard({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Review Analytics</h2>
-          <p className="text-gray-600">Track your GTD review habits and system health</p>
+          <p className="text-gray-600">
+            Track your GTD review habits and system health
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          {(['week', 'month', 'quarter'] as const).map((range) => (
+          {(["week", "month", "quarter"] as const).map((range) => (
             <Button
               key={range}
-              variant={selectedTimeRange === range ? 'default' : 'outline'}
+              variant={selectedTimeRange === range ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedTimeRange(range)}
             >
-              {range === 'week' ? '7 days' : range === 'month' ? '30 days' : '90 days'}
+              {range === "week"
+                ? "7 days"
+                : range === "month"
+                  ? "30 days"
+                  : "90 days"}
             </Button>
           ))}
         </div>
@@ -109,7 +132,7 @@ export function ReviewAnalyticsDashboard({
           icon={Zap}
           color="orange"
           description="Consecutive days with daily reviews"
-          trend={streak > 0 ? 'up' : 'neutral'}
+          trend={streak > 0 ? "up" : "neutral"}
         />
 
         <MetricCard
@@ -119,7 +142,13 @@ export function ReviewAnalyticsDashboard({
           icon={Target}
           color="green"
           description="Daily reviews completed this week"
-          trend={completionRate >= 80 ? 'up' : completionRate >= 60 ? 'neutral' : 'down'}
+          trend={
+            completionRate >= 80
+              ? "up"
+              : completionRate >= 60
+                ? "neutral"
+                : "down"
+          }
         />
 
         <MetricCard
@@ -145,7 +174,10 @@ export function ReviewAnalyticsDashboard({
 
       {/* Review patterns and insights */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ReviewPatternsCard reviews={recentReviews} timeRange={selectedTimeRange} />
+        <ReviewPatternsCard
+          reviews={recentReviews}
+          timeRange={selectedTimeRange}
+        />
         <SystemHealthCard metrics={metrics} insights={weeklyInsights} />
       </div>
 
@@ -159,17 +191,17 @@ export function ReviewAnalyticsDashboard({
       {/* Recent reviews list */}
       <RecentReviewsList reviews={recentReviews.slice(0, 10)} />
     </div>
-  )
+  );
 }
 
 function CompactAnalyticsDashboard({
   stats,
   streak,
-  completionRate
+  completionRate,
 }: {
-  stats: any
-  streak: number
-  completionRate: number
+  stats: { totalReviews: number; avgTime: number };
+  streak: number;
+  completionRate: number;
 }) {
   return (
     <Card>
@@ -183,17 +215,21 @@ function CompactAnalyticsDashboard({
             <div className="text-xs text-gray-600">Day Streak</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{completionRate}%</div>
+            <div className="text-2xl font-bold text-green-600">
+              {completionRate}%
+            </div>
             <div className="text-xs text-gray-600">This Week</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.totalReviews}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {stats.totalReviews}
+            </div>
             <div className="text-xs text-gray-600">Total</div>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function MetricCard({
@@ -203,25 +239,31 @@ function MetricCard({
   icon: Icon,
   color,
   description,
-  trend
+  trend,
 }: {
-  title: string
-  value: number
-  unit: string
-  icon: React.ComponentType<any>
-  color: 'orange' | 'green' | 'blue' | 'purple'
-  description: string
-  trend: 'up' | 'down' | 'neutral'
+  title: string;
+  value: number;
+  unit: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color: "orange" | "green" | "blue" | "purple";
+  description: string;
+  trend: "up" | "down" | "neutral";
 }) {
   const colorClasses = {
-    orange: 'text-orange-600 bg-orange-100',
-    green: 'text-green-600 bg-green-100',
-    blue: 'text-blue-600 bg-blue-100',
-    purple: 'text-purple-600 bg-purple-100'
-  }
+    orange: "text-orange-600 bg-orange-100",
+    green: "text-green-600 bg-green-100",
+    blue: "text-blue-600 bg-blue-100",
+    purple: "text-purple-600 bg-purple-100",
+  };
 
-  const TrendIcon = trend === 'up' ? ArrowUp : trend === 'down' ? ArrowDown : Minus
-  const trendColor = trend === 'up' ? 'text-green-500' : trend === 'down' ? 'text-red-500' : 'text-gray-500'
+  const TrendIcon =
+    trend === "up" ? ArrowUp : trend === "down" ? ArrowDown : Minus;
+  const trendColor =
+    trend === "up"
+      ? "text-green-500"
+      : trend === "down"
+        ? "text-red-500"
+        : "text-gray-500";
 
   return (
     <Card>
@@ -236,7 +278,9 @@ function MetricCard({
               <div className="flex items-center gap-1">
                 <p className="text-2xl font-bold text-gray-900">
                   {value}
-                  <span className="text-lg font-normal text-gray-600">{unit}</span>
+                  <span className="text-lg font-normal text-gray-600">
+                    {unit}
+                  </span>
                 </p>
                 <TrendIcon className={`h-4 w-4 ${trendColor}`} />
               </div>
@@ -246,18 +290,18 @@ function MetricCard({
         <p className="text-xs text-gray-500 mt-2">{description}</p>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function ReviewPatternsCard({
   reviews,
-  timeRange
+  timeRange,
 }: {
-  reviews: Review[]
-  timeRange: string
+  reviews: Review[];
+  timeRange: string;
 }) {
   // Calculate review patterns (time of day, day of week, etc.)
-  const patterns = analyzeReviewPatterns(reviews)
+  const patterns = analyzeReviewPatterns(reviews);
 
   return (
     <Card>
@@ -300,17 +344,17 @@ function ReviewPatternsCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function SystemHealthCard({
   metrics,
-  insights
+  insights,
 }: {
-  metrics: ReviewMetrics[]
-  insights: WeeklyInsights | null
+  metrics: ReviewMetrics[];
+  insights: WeeklyInsights | null;
 }) {
-  const healthScore = calculateSystemHealth(metrics, insights)
+  const healthScore = calculateSystemHealth(metrics, insights);
 
   return (
     <Card>
@@ -324,10 +368,15 @@ function SystemHealthCard({
       <CardContent>
         <div className="space-y-4">
           <div className="text-center">
-            <div className={`text-3xl font-bold ${
-              healthScore >= 80 ? 'text-green-600' :
-              healthScore >= 60 ? 'text-yellow-600' : 'text-red-600'
-            }`}>
+            <div
+              className={`text-3xl font-bold ${
+                healthScore >= 80
+                  ? "text-green-600"
+                  : healthScore >= 60
+                    ? "text-yellow-600"
+                    : "text-red-600"
+              }`}
+            >
               {healthScore}%
             </div>
             <p className="text-sm text-gray-600">Health Score</p>
@@ -359,9 +408,12 @@ function SystemHealthCard({
               <div className="flex items-start gap-2">
                 <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-yellow-800">Improvement Needed</p>
+                  <p className="text-sm font-medium text-yellow-800">
+                    Improvement Needed
+                  </p>
                   <p className="text-xs text-yellow-700 mt-1">
-                    Consider increasing review frequency and task completion rates.
+                    Consider increasing review frequency and task completion
+                    rates.
                   </p>
                 </div>
               </div>
@@ -370,28 +422,36 @@ function SystemHealthCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function HealthIndicator({
   label,
   score,
   maxScore,
-  type
+  type,
 }: {
-  label: string
-  score: number
-  maxScore: number
-  type: 'streak' | 'tasks' | 'projects'
+  label: string;
+  score: number;
+  maxScore: number;
+  type: "streak" | "tasks" | "projects";
 }) {
-  const percentage = Math.min((score / maxScore) * 100, 100)
-  const color = percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+  const percentage = Math.min((score / maxScore) * 100, 100);
+  const color =
+    percentage >= 80
+      ? "bg-green-500"
+      : percentage >= 60
+        ? "bg-yellow-500"
+        : "bg-red-500";
 
   return (
     <div>
       <div className="flex justify-between text-sm mb-1">
         <span>{label}</span>
-        <span>{score}{type === 'streak' ? 'd' : ''}</span>
+        <span>
+          {score}
+          {type === "streak" ? "d" : ""}
+        </span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2">
         <div
@@ -400,16 +460,19 @@ function HealthIndicator({
         />
       </div>
     </div>
-  )
+  );
 }
 
 function ReviewTypeBreakdown({ reviews }: { reviews: Review[] }) {
-  const breakdown = reviews.reduce((acc, review) => {
-    acc[review.type] = (acc[review.type] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
+  const breakdown = reviews.reduce(
+    (acc, review) => {
+      acc[review.type] = (acc[review.type] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
-  const total = reviews.length
+  const total = reviews.length;
 
   return (
     <Card>
@@ -421,7 +484,9 @@ function ReviewTypeBreakdown({ reviews }: { reviews: Review[] }) {
         <div className="space-y-3">
           {Object.entries(breakdown).map(([type, count]) => (
             <div key={type} className="flex items-center justify-between">
-              <span className="text-sm capitalize">{type.replace('_', ' ')}</span>
+              <span className="text-sm capitalize">
+                {type.replace("_", " ")}
+              </span>
               <div className="flex items-center gap-2">
                 <Progress value={(count / total) * 100} className="w-20 h-2" />
                 <span className="text-sm text-gray-600 w-8">{count}</span>
@@ -431,12 +496,14 @@ function ReviewTypeBreakdown({ reviews }: { reviews: Review[] }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function ProductivityTrends({ metrics }: { metrics: ReviewMetrics[] }) {
-  const trend = metrics.length > 1 ?
-    metrics[0].tasks_completed - metrics[metrics.length - 1].tasks_completed : 0
+  const trend =
+    metrics.length > 1
+      ? metrics[0].tasks_completed - metrics[metrics.length - 1].tasks_completed
+      : 0;
 
   return (
     <Card>
@@ -449,8 +516,11 @@ function ProductivityTrends({ metrics }: { metrics: ReviewMetrics[] }) {
       <CardContent>
         <div className="space-y-4">
           <div className="text-center">
-            <div className={`text-2xl font-bold ${trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-gray-600'}`}>
-              {trend > 0 ? '+' : ''}{trend}
+            <div
+              className={`text-2xl font-bold ${trend > 0 ? "text-green-600" : trend < 0 ? "text-red-600" : "text-gray-600"}`}
+            >
+              {trend > 0 ? "+" : ""}
+              {trend}
             </div>
             <p className="text-sm text-gray-600">Tasks vs Previous Period</p>
           </div>
@@ -466,17 +536,17 @@ function ProductivityTrends({ metrics }: { metrics: ReviewMetrics[] }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function GoalsAndStreaks({
   streak,
-  completionRate
+  completionRate,
 }: {
-  streak: number
-  completionRate: number
+  streak: number;
+  completionRate: number;
 }) {
-  const nextMilestone = getNextMilestone(streak)
+  const nextMilestone = getNextMilestone(streak);
 
   return (
     <Card>
@@ -519,31 +589,39 @@ function GoalsAndStreaks({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function Achievement({
   title,
   description,
-  completed
+  completed,
 }: {
-  title: string
-  description: string
-  completed: boolean
+  title: string;
+  description: string;
+  completed: boolean;
 }) {
   return (
-    <div className={`flex items-center gap-3 p-2 rounded-lg ${completed ? 'bg-green-50' : 'bg-gray-50'}`}>
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-        completed ? 'bg-green-500 text-white' : 'bg-gray-300'
-      }`}>
-        {completed ? <CheckCircle2 className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
+    <div
+      className={`flex items-center gap-3 p-2 rounded-lg ${completed ? "bg-green-50" : "bg-gray-50"}`}
+    >
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+          completed ? "bg-green-500 text-white" : "bg-gray-300"
+        }`}
+      >
+        {completed ? (
+          <CheckCircle2 className="h-4 w-4" />
+        ) : (
+          <Clock className="h-4 w-4" />
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-gray-900">{title}</p>
         <p className="text-xs text-gray-600">{description}</p>
       </div>
     </div>
-  )
+  );
 }
 
 function RecentReviewsList({ reviews }: { reviews: Review[] }) {
@@ -557,9 +635,14 @@ function RecentReviewsList({ reviews }: { reviews: Review[] }) {
         <div className="space-y-3">
           {reviews.length > 0 ? (
             reviews.map((review) => (
-              <div key={review.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div
+                key={review.id}
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+              >
                 <div className="flex items-center gap-3">
-                  <Badge variant={review.type === 'daily' ? 'default' : 'secondary'}>
+                  <Badge
+                    variant={review.type === "daily" ? "default" : "secondary"}
+                  >
                     {review.type}
                   </Badge>
                   <div>
@@ -567,7 +650,9 @@ function RecentReviewsList({ reviews }: { reviews: Review[] }) {
                       {new Date(review.completed_at).toLocaleDateString()}
                     </p>
                     <p className="text-xs text-gray-600">
-                      {review.duration_minutes ? `${review.duration_minutes} minutes` : 'Duration not recorded'}
+                      {review.duration_minutes
+                        ? `${review.duration_minutes} minutes`
+                        : "Duration not recorded"}
                     </p>
                   </div>
                 </div>
@@ -582,59 +667,81 @@ function RecentReviewsList({ reviews }: { reviews: Review[] }) {
             <div className="text-center py-8 text-gray-500">
               <Clock className="h-8 w-8 mx-auto mb-2" />
               <p>No reviews completed yet</p>
-              <p className="text-sm">Start your first review to see analytics</p>
+              <p className="text-sm">
+                Start your first review to see analytics
+              </p>
             </div>
           )}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Helper functions
-function calculateReviewStats(metrics: ReviewMetrics[], reviews: Review[], timeRange: string) {
-  const totalReviews = reviews.length
-  const avgDuration = reviews.length > 0 ?
-    reviews.reduce((sum, r) => sum + (r.duration_minutes || 0), 0) / reviews.length : 0
+function calculateReviewStats(
+  metrics: ReviewMetrics[],
+  reviews: Review[],
+  timeRange: string
+) {
+  const totalReviews = reviews.length;
+  const avgDuration =
+    reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + (r.duration_minutes || 0), 0) /
+        reviews.length
+      : 0;
 
   return {
     totalReviews,
     avgDuration: Math.round(avgDuration),
-    reviewTrend: 'neutral' as const, // Could calculate actual trend
-    durationTrend: 'neutral' as const
-  }
+    reviewTrend: "neutral" as const, // Could calculate actual trend
+    durationTrend: "neutral" as const,
+  };
 }
 
 function analyzeReviewPatterns(reviews: Review[]) {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const weeklyBreakdown = days.map((name, index) => {
-    const count = reviews.filter(r => new Date(r.completed_at).getDay() === index).length
-    return { name, count, percentage: (count / reviews.length) * 100 }
-  })
+    const count = reviews.filter(
+      (r) => new Date(r.completed_at).getDay() === index
+    ).length;
+    return { name, count, percentage: (count / reviews.length) * 100 };
+  });
 
   const bestDay = weeklyBreakdown.reduce((best, current) =>
     current.count > best.count ? current : best
-  ).name
+  ).name;
 
   return {
     bestDay,
-    preferredTime: 'Morning', // Could calculate from actual times
+    preferredTime: "Morning", // Could calculate from actual times
     consistencyScore: 75, // Could calculate based on regularity
-    weeklyBreakdown
-  }
+    weeklyBreakdown,
+  };
 }
 
-function calculateSystemHealth(metrics: ReviewMetrics[], insights: WeeklyInsights | null): number {
-  if (!insights) return 50
+function calculateSystemHealth(
+  metrics: ReviewMetrics[],
+  insights: WeeklyInsights | null
+): number {
+  if (!insights) return 50;
 
-  const reviewConsistency = Math.min((insights.streakDays / 7) * 100, 100)
-  const taskCompletion = Math.min((insights.avgTasksPerDay / 5) * 100, 100)
-  const projectProgress = insights.projectsProgressed > 0 ? 100 : 50
+  const reviewConsistency = Math.min((insights.streakDays / 7) * 100, 100);
+  const taskCompletion = Math.min((insights.avgTasksPerDay / 5) * 100, 100);
+  const projectProgress = insights.projectsProgressed > 0 ? 100 : 50;
 
-  return Math.round((reviewConsistency + taskCompletion + projectProgress) / 3)
+  return Math.round((reviewConsistency + taskCompletion + projectProgress) / 3);
 }
 
 function getNextMilestone(streak: number): number {
-  const milestones = [7, 14, 30, 60, 90, 180, 365]
-  return milestones.find(m => m > streak) || streak + 30
+  const milestones = [7, 14, 30, 60, 90, 180, 365];
+  return milestones.find((m) => m > streak) || streak + 30;
 }

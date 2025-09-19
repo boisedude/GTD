@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,25 +8,25 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Calendar } from '@/components/ui/calendar'
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from "@/components/ui/popover";
 import {
   CalendarIcon,
   X,
@@ -39,17 +39,24 @@ import {
   Car,
   Home,
   Building,
-  Globe
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useProjects } from '@/hooks/useProjects'
-import type { Task, TaskStatus, TaskContext, TaskEnergyLevel, TaskDuration, UpdateTaskInput } from '@/types/database'
+  Globe,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useProjects } from "@/hooks/useProjects";
+import type {
+  Task,
+  TaskStatus,
+  TaskContext,
+  TaskEnergyLevel,
+  TaskDuration,
+  UpdateTaskInput,
+} from "@/types/database";
 
 interface TaskEditModalProps {
-  task?: Task
-  isOpen: boolean
-  onClose: () => void
-  onSave: (taskData: UpdateTaskInput) => Promise<void>
+  task?: Task;
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (taskData: UpdateTaskInput) => Promise<void>;
 }
 
 const contextIcons: Record<TaskContext, React.ElementType> = {
@@ -58,22 +65,27 @@ const contextIcons: Record<TaskContext, React.ElementType> = {
   errands: Car,
   home: Home,
   office: Building,
-  anywhere: Globe
-}
+  anywhere: Globe,
+};
 
-export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalProps) {
-  const { projects } = useProjects()
-  const [formData, setFormData] = useState<UpdateTaskInput>({})
-  const [newTag, setNewTag] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
-  const [showCalendar, setShowCalendar] = useState(false)
+export function TaskEditModal({
+  task,
+  isOpen,
+  onClose,
+  onSave,
+}: TaskEditModalProps) {
+  const { projects } = useProjects();
+  const [formData, setFormData] = useState<UpdateTaskInput>({});
+  const [newTag, setNewTag] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // Initialize form data when task changes
   useEffect(() => {
     if (task) {
       setFormData({
         title: task.title,
-        description: task.description || '',
+        description: task.description || "",
         status: task.status,
         project_id: task.project_id || undefined,
         context: task.context || undefined,
@@ -82,67 +94,67 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
         due_date: task.due_date || undefined,
         priority: task.priority || undefined,
         tags: task.tags || [],
-        notes: task.notes || ''
-      })
+        notes: task.notes || "",
+      });
     } else {
-      setFormData({})
+      setFormData({});
     }
-  }, [task])
+  }, [task]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.title?.trim()) return
+    e.preventDefault();
+    if (!formData.title?.trim()) return;
 
-    setIsSaving(true)
+    setIsSaving(true);
     try {
-      await onSave(formData)
-      onClose()
+      await onSave(formData);
+      onClose();
     } catch (error) {
-      console.error('Error saving task:', error)
+      console.error("Error saving task:", error);
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleAddTag = () => {
-    if (!newTag.trim() || formData.tags?.includes(newTag.trim())) return
+    if (!newTag.trim() || formData.tags?.includes(newTag.trim())) return;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: [...(prev.tags || []), newTag.trim()]
-    }))
-    setNewTag('')
-  }
+      tags: [...(prev.tags || []), newTag.trim()],
+    }));
+    setNewTag("");
+  };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
-    }))
-  }
+      tags: prev.tags?.filter((tag) => tag !== tagToRemove) || [],
+    }));
+  };
 
   const handleDateSelect = (date: Date | undefined) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      due_date: date ? date.toISOString() : undefined
-    }))
-    setShowCalendar(false)
-  }
+      due_date: date ? date.toISOString() : undefined,
+    }));
+    setShowCalendar(false);
+  };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'No due date'
-    return new Date(dateString).toLocaleDateString()
-  }
+    if (!dateString) return "No due date";
+    return new Date(dateString).toLocaleDateString();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {task ? 'Edit Task' : 'Create Task'}
-          </DialogTitle>
+          <DialogTitle>{task ? "Edit Task" : "Create Task"}</DialogTitle>
           <DialogDescription>
-            {task ? 'Update task details and organize according to GTD principles.' : 'Add a new task to your GTD system.'}
+            {task
+              ? "Update task details and organize according to GTD principles."
+              : "Add a new task to your GTD system."}
           </DialogDescription>
         </DialogHeader>
 
@@ -152,8 +164,10 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <Label htmlFor="title">Title *</Label>
             <Input
               id="title"
-              value={formData.title || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              value={formData.title || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               placeholder="What needs to be done?"
               required
             />
@@ -164,8 +178,13 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              value={formData.description || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              value={formData.description || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
               placeholder="Additional details..."
               rows={3}
             />
@@ -176,8 +195,13 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <Select
-                value={formData.status || 'captured'}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, status: value as TaskStatus }))}
+                value={formData.status || "captured"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: value as TaskStatus,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -195,11 +219,13 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <div className="space-y-2">
               <Label htmlFor="project">Project</Label>
               <Select
-                value={formData.project_id || 'none'}
-                onValueChange={(value) => setFormData(prev => ({
-                  ...prev,
-                  project_id: value === 'none' ? undefined : value
-                }))}
+                value={formData.project_id || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    project_id: value === "none" ? undefined : value,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="No project" />
@@ -221,11 +247,14 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <div className="space-y-2">
               <Label htmlFor="context">Context</Label>
               <Select
-                value={formData.context || 'none'}
-                onValueChange={(value) => setFormData(prev => ({
-                  ...prev,
-                  context: value === 'none' ? undefined : value as TaskContext
-                }))}
+                value={formData.context || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    context:
+                      value === "none" ? undefined : (value as TaskContext),
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Any context" />
@@ -235,8 +264,7 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
                   {Object.entries(contextIcons).map(([context, Icon]) => (
                     <SelectItem key={context} value={context}>
                       <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
-                        @{context}
+                        <Icon className="h-4 w-4" />@{context}
                       </div>
                     </SelectItem>
                   ))}
@@ -247,11 +275,14 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <div className="space-y-2">
               <Label htmlFor="energy">Energy Level</Label>
               <Select
-                value={formData.energy_level || 'none'}
-                onValueChange={(value) => setFormData(prev => ({
-                  ...prev,
-                  energy_level: value === 'none' ? undefined : value as TaskEnergyLevel
-                }))}
+                value={formData.energy_level || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    energy_level:
+                      value === "none" ? undefined : (value as TaskEnergyLevel),
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Any energy" />
@@ -268,11 +299,14 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <div className="space-y-2">
               <Label htmlFor="duration">Duration</Label>
               <Select
-                value={formData.estimated_duration || 'none'}
-                onValueChange={(value) => setFormData(prev => ({
-                  ...prev,
-                  estimated_duration: value === 'none' ? undefined : value as TaskDuration
-                }))}
+                value={formData.estimated_duration || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    estimated_duration:
+                      value === "none" ? undefined : (value as TaskDuration),
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Unknown" />
@@ -298,8 +332,8 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
                   <Button
                     variant="outline"
                     className={cn(
-                      'w-full justify-start text-left font-normal',
-                      !formData.due_date && 'text-muted-foreground'
+                      "w-full justify-start text-left font-normal",
+                      !formData.due_date && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -309,7 +343,11 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.due_date ? new Date(formData.due_date) : undefined}
+                    selected={
+                      formData.due_date
+                        ? new Date(formData.due_date)
+                        : undefined
+                    }
                     onSelect={handleDateSelect}
                     initialFocus
                   />
@@ -329,11 +367,13 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <div className="space-y-2">
               <Label htmlFor="priority">Priority</Label>
               <Select
-                value={formData.priority?.toString() || 'none'}
-                onValueChange={(value) => setFormData(prev => ({
-                  ...prev,
-                  priority: value === 'none' ? undefined : parseInt(value)
-                }))}
+                value={formData.priority?.toString() || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    priority: value === "none" ? undefined : parseInt(value),
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Normal" />
@@ -354,7 +394,11 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <Label>Tags</Label>
             <div className="flex flex-wrap gap-2 mb-2">
               {formData.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="flex items-center gap-1"
+                >
                   <Tag className="h-3 w-3" />
                   {tag}
                   <button
@@ -372,7 +416,9 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
                 placeholder="Add a tag..."
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), handleAddTag())
+                }
               />
               <Button type="button" variant="outline" onClick={handleAddTag}>
                 <Plus className="h-4 w-4" />
@@ -385,8 +431,10 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <Label htmlFor="notes">Notes</Label>
             <Textarea
               id="notes"
-              value={formData.notes || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+              value={formData.notes || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, notes: e.target.value }))
+              }
               placeholder="Additional notes, reminders, or context..."
               rows={3}
             />
@@ -396,12 +444,15 @@ export function TaskEditModal({ task, isOpen, onClose, onSave }: TaskEditModalPr
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSaving || !formData.title?.trim()}>
-              {isSaving ? 'Saving...' : task ? 'Update Task' : 'Create Task'}
+            <Button
+              type="submit"
+              disabled={isSaving || !formData.title?.trim()}
+            >
+              {isSaving ? "Saving..." : task ? "Update Task" : "Create Task"}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

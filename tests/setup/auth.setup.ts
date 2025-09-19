@@ -1,15 +1,15 @@
-import { test as setup, expect } from '@playwright/test';
-import { GTDTestHelpers } from '../helpers/test-utils';
-import { TEST_USERS } from '../fixtures/test-data';
+import { test as setup, expect } from "@playwright/test";
+import { GTDTestHelpers } from "../helpers/test-utils";
+import { TEST_USERS } from "../fixtures/test-data";
 
-const authFile = 'test-results/.auth/user.json';
+const authFile = "test-results/.auth/user.json";
 
 /**
  * Authentication setup for GTD tests
  * This runs before other tests to establish authenticated state
  */
-setup('authenticate user', async ({ page }) => {
-  console.log('🔐 Setting up authentication for tests...');
+setup("authenticate user", async ({ page }) => {
+  console.log("🔐 Setting up authentication for tests...");
 
   const helpers = new GTDTestHelpers(page);
 
@@ -24,19 +24,18 @@ setup('authenticate user', async ({ page }) => {
     // Save authentication state
     await page.context().storageState({ path: authFile });
 
-    console.log('✅ Authentication setup completed');
-
+    console.log("✅ Authentication setup completed");
   } catch (error) {
-    console.error('❌ Authentication setup failed:', error);
+    console.error("❌ Authentication setup failed:", error);
 
     // Try to capture debugging information
-    await page.screenshot({ path: 'test-results/auth-setup-failure.png' });
+    await page.screenshot({ path: "test-results/auth-setup-failure.png" });
 
     // Check if we're on an error page
     const errorMessage = page.locator('[data-testid="auth-error-message"]');
     if (await errorMessage.isVisible()) {
       const errorText = await errorMessage.textContent();
-      console.error('Auth error message:', errorText);
+      console.error("Auth error message:", errorText);
     }
 
     throw error;
@@ -46,35 +45,34 @@ setup('authenticate user', async ({ page }) => {
 /**
  * Setup test data for authenticated user
  */
-setup('setup user data', async ({ page }) => {
-  console.log('📊 Setting up user test data...');
+setup("setup user data", async ({ page }) => {
+  console.log("📊 Setting up user test data...");
 
   const helpers = new GTDTestHelpers(page);
 
   // Use the authenticated state
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
 
   try {
     // Clean up any existing test data
     await helpers.cleanupTestData();
 
     // Create baseline test data
-    await helpers.captureTask('Sample inbox task', {
-      status: 'captured',
-      description: 'This is a sample task for testing'
+    await helpers.captureTask("Sample inbox task", {
+      status: "captured",
+      description: "This is a sample task for testing",
     });
 
-    await helpers.captureTask('Sample next action', {
-      status: 'next_action',
-      context: 'office',
-      energy_level: 'medium',
-      estimated_duration: '30min'
+    await helpers.captureTask("Sample next action", {
+      status: "next_action",
+      context: "office",
+      energy_level: "medium",
+      estimated_duration: "30min",
     });
 
-    console.log('✅ User test data setup completed');
-
+    console.log("✅ User test data setup completed");
   } catch (error) {
-    console.error('❌ User test data setup failed:', error);
+    console.error("❌ User test data setup failed:", error);
     // Don't throw error here as authentication is more important
   }
 });
@@ -82,14 +80,16 @@ setup('setup user data', async ({ page }) => {
 /**
  * Verify application state
  */
-setup('verify app state', async ({ page }) => {
-  console.log('🔍 Verifying application state...');
+setup("verify app state", async ({ page }) => {
+  console.log("🔍 Verifying application state...");
 
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
 
   try {
     // Verify core elements are present
-    await expect(page.locator('[data-testid="quick-capture-input"]')).toBeVisible();
+    await expect(
+      page.locator('[data-testid="quick-capture-input"]')
+    ).toBeVisible();
     await expect(page.locator('[data-testid="main-navigation"]')).toBeVisible();
     await expect(page.locator('[data-testid="user-menu"]')).toBeVisible();
 
@@ -101,15 +101,16 @@ setup('verify app state', async ({ page }) => {
     await expect(page).toHaveURL(/next-actions/);
 
     // Return to dashboard
-    await page.goto('/dashboard');
+    await page.goto("/dashboard");
 
-    console.log('✅ Application state verification completed');
-
+    console.log("✅ Application state verification completed");
   } catch (error) {
-    console.error('❌ Application state verification failed:', error);
+    console.error("❌ Application state verification failed:", error);
 
     // Capture debugging information
-    await page.screenshot({ path: 'test-results/app-state-verification-failure.png' });
+    await page.screenshot({
+      path: "test-results/app-state-verification-failure.png",
+    });
 
     throw error;
   }
@@ -118,13 +119,13 @@ setup('verify app state', async ({ page }) => {
 /**
  * Setup for mobile testing
  */
-setup('mobile setup', async ({ page, isMobile }) => {
+setup("mobile setup", async ({ page, isMobile }) => {
   if (!isMobile) {
     setup.skip();
     return;
   }
 
-  console.log('📱 Setting up mobile-specific test environment...');
+  console.log("📱 Setting up mobile-specific test environment...");
 
   const helpers = new GTDTestHelpers(page);
 
@@ -138,10 +139,9 @@ setup('mobile setup', async ({ page, isMobile }) => {
     // Test mobile capture functionality
     await helpers.testMobileCapture();
 
-    console.log('✅ Mobile setup completed');
-
+    console.log("✅ Mobile setup completed");
   } catch (error) {
-    console.error('❌ Mobile setup failed:', error);
+    console.error("❌ Mobile setup failed:", error);
     throw error;
   }
 });
@@ -149,32 +149,36 @@ setup('mobile setup', async ({ page, isMobile }) => {
 /**
  * Performance testing setup
  */
-setup('performance setup', async ({ page }, testInfo) => {
+setup("performance setup", async ({ page }, testInfo) => {
   if (!testInfo.project.use.performanceMode) {
     setup.skip();
     return;
   }
 
-  console.log('⚡ Setting up performance testing environment...');
+  console.log("⚡ Setting up performance testing environment...");
 
   try {
     // Enable performance monitoring
     await page.addInitScript(() => {
       // Mark performance monitoring as enabled
-      (window as any).__GTD_PERFORMANCE_MODE__ = true;
+      (
+        window as { __GTD_PERFORMANCE_MODE__?: boolean }
+      ).__GTD_PERFORMANCE_MODE__ = true;
 
       // Set up performance observers
-      if ('PerformanceObserver' in window) {
+      if ("PerformanceObserver" in window) {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          entries.forEach(entry => {
-            if (entry.entryType === 'measure') {
-              console.log(`Performance: ${entry.name} took ${entry.duration}ms`);
+          entries.forEach((entry) => {
+            if (entry.entryType === "measure") {
+              console.log(
+                `Performance: ${entry.name} took ${entry.duration}ms`
+              );
             }
           });
         });
 
-        observer.observe({ entryTypes: ['measure', 'navigation'] });
+        observer.observe({ entryTypes: ["measure", "navigation"] });
       }
     });
 
@@ -186,10 +190,9 @@ setup('performance setup', async ({ page }, testInfo) => {
 
     console.log(`Authentication took ${authTime}ms`);
 
-    console.log('✅ Performance setup completed');
-
+    console.log("✅ Performance setup completed");
   } catch (error) {
-    console.error('❌ Performance setup failed:', error);
+    console.error("❌ Performance setup failed:", error);
     throw error;
   }
 });
@@ -197,30 +200,35 @@ setup('performance setup', async ({ page }, testInfo) => {
 /**
  * Accessibility testing setup
  */
-setup('accessibility setup', async ({ page }, testInfo) => {
+setup("accessibility setup", async ({ page }, testInfo) => {
   if (!testInfo.project.use.accessibilityChecks) {
     setup.skip();
     return;
   }
 
-  console.log('♿ Setting up accessibility testing environment...');
+  console.log("♿ Setting up accessibility testing environment...");
 
   try {
     // Inject accessibility testing utilities
     await page.addInitScript(() => {
       // Mark accessibility checking as enabled
-      (window as any).__GTD_ACCESSIBILITY_MODE__ = true;
+      (
+        window as { __GTD_ACCESSIBILITY_MODE__?: boolean }
+      ).__GTD_ACCESSIBILITY_MODE__ = true;
 
       // Add aria-live region observer
       const observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(node => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach((node) => {
               if (node.nodeType === Node.ELEMENT_NODE) {
                 const element = node as Element;
-                const ariaLive = element.getAttribute('aria-live');
+                const ariaLive = element.getAttribute("aria-live");
                 if (ariaLive) {
-                  console.log(`Accessibility: aria-live region updated (${ariaLive}):`, element.textContent);
+                  console.log(
+                    `Accessibility: aria-live region updated (${ariaLive}):`,
+                    element.textContent
+                  );
                 }
               }
             });
@@ -238,10 +246,9 @@ setup('accessibility setup', async ({ page }, testInfo) => {
     // Run basic accessibility check
     await helpers.checkAccessibility();
 
-    console.log('✅ Accessibility setup completed');
-
+    console.log("✅ Accessibility setup completed");
   } catch (error) {
-    console.error('❌ Accessibility setup failed:', error);
+    console.error("❌ Accessibility setup failed:", error);
     throw error;
   }
 });

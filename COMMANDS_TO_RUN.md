@@ -58,12 +58,14 @@ npm run validate-db
 ## 🗄️ Database Schema Created
 
 ### Tables
+
 - **users** - User profiles (extends Supabase auth)
 - **tasks** - GTD tasks with status, context, projects
 - **projects** - GTD projects containing tasks
 - **reviews** - Daily/weekly/monthly review records
 
 ### Features
+
 - ✅ Row Level Security (RLS) - Users only see their own data
 - ✅ Real-time subscriptions - Live updates
 - ✅ Automatic timestamps - created_at/updated_at
@@ -95,7 +97,7 @@ npm run build
 The TypeScript types are available in `supabase/types.ts`:
 
 ```typescript
-import type { Database } from './supabase/types';
+import type { Database } from "./supabase/types";
 
 // Use with Supabase client
 const supabase = createClient<Database>(url, key);

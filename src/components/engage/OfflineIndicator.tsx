@@ -1,9 +1,15 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +17,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { useOfflineActions, getActionDescription } from '@/hooks/useOfflineActions'
+} from "@/components/ui/dialog";
+import {
+  useOfflineActions,
+  getActionDescription,
+} from "@/hooks/useOfflineActions";
 import {
   WifiOff,
   Wifi,
@@ -20,48 +29,48 @@ import {
   RefreshCw,
   Trash2,
   AlertCircle,
-  CheckCircle
-} from 'lucide-react'
+  CheckCircle,
+} from "lucide-react";
 
 interface OfflineIndicatorProps {
-  className?: string
+  className?: string;
 }
 
 export function OfflineIndicator({ className }: OfflineIndicatorProps) {
-  const [showDetails, setShowDetails] = useState(false)
+  const [showDetails, setShowDetails] = useState(false);
   const {
     isOnline,
     pendingActions,
     syncPendingActions,
     clearPendingActions,
-    removePendingAction
+    removePendingAction,
   } = useOfflineActions({
     onSync: (action) => {
-      console.log('Action synced:', action)
+      console.log("Action synced:", action);
     },
     onError: (action, error) => {
-      console.error('Action failed to sync:', action, error)
-    }
-  })
+      console.error("Action failed to sync:", action, error);
+    },
+  });
 
-  const [isSyncing, setIsSyncing] = useState(false)
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const handleSync = async () => {
-    setIsSyncing(true)
+    setIsSyncing(true);
     try {
-      await syncPendingActions()
+      await syncPendingActions();
     } finally {
-      setIsSyncing(false)
+      setIsSyncing(false);
     }
-  }
+  };
 
   const handleClearAll = () => {
-    clearPendingActions()
-    setShowDetails(false)
-  }
+    clearPendingActions();
+    setShowDetails(false);
+  };
 
   if (isOnline && pendingActions.length === 0) {
-    return null // Don't show indicator when online with no pending actions
+    return null; // Don't show indicator when online with no pending actions
   }
 
   return (
@@ -71,7 +80,7 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
           <Button
             variant="ghost"
             size="sm"
-            className={`flex items-center gap-2 ${!isOnline ? 'text-red-600' : 'text-orange-600'}`}
+            className={`flex items-center gap-2 ${!isOnline ? "text-red-600" : "text-orange-600"}`}
           >
             {isOnline ? (
               <Wifi className="h-4 w-4" />
@@ -79,9 +88,7 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
               <WifiOff className="h-4 w-4" />
             )}
 
-            {!isOnline && (
-              <span className="text-sm">Offline</span>
-            )}
+            {!isOnline && <span className="text-sm">Offline</span>}
 
             {pendingActions.length > 0 && (
               <Badge variant="secondary" className="ml-1">
@@ -104,8 +111,7 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
             <DialogDescription>
               {isOnline
                 ? "You're online. Pending actions can be synced."
-                : "You're offline. Actions will be queued until you're back online."
-              }
+                : "You're offline. Actions will be queued until you're back online."}
             </DialogDescription>
           </DialogHeader>
 
@@ -114,9 +120,11 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
             <Card>
               <CardContent className="pt-4">
                 <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <div
+                    className={`w-3 h-3 rounded-full ${isOnline ? "bg-green-500" : "bg-red-500"}`}
+                  />
                   <span className="font-medium">
-                    {isOnline ? 'Connected' : 'Disconnected'}
+                    {isOnline ? "Connected" : "Disconnected"}
                   </span>
                 </div>
               </CardContent>
@@ -187,7 +195,7 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
                   ) : (
                     <CheckCircle className="h-4 w-4 mr-2" />
                   )}
-                  {isSyncing ? 'Syncing...' : 'Sync Now'}
+                  {isSyncing ? "Syncing..." : "Sync Now"}
                 </Button>
               )}
 
@@ -213,5 +221,5 @@ export function OfflineIndicator({ className }: OfflineIndicatorProps) {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

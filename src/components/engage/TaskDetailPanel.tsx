@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
-import { TaskActionButton } from './TaskActionButton'
-import type { Task, TaskAction } from '@/types/database'
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { TaskActionButton } from "./TaskActionButton";
+import type { Task, TaskAction } from "@/types/database";
 import {
   X,
   CheckCircle2,
@@ -29,52 +29,52 @@ import {
   ZapOff,
   Timer,
   Save,
-  RotateCcw
-} from 'lucide-react'
+  RotateCcw,
+} from "lucide-react";
 
 interface TaskDetailPanelProps {
-  task: Task
-  onClose: () => void
-  onAction: (taskId: string, action: TaskAction) => Promise<void>
-  onStartTimer: (taskId: string, duration?: number) => void
+  task: Task;
+  onClose: () => void;
+  onAction: (taskId: string, action: TaskAction) => Promise<void>;
+  onStartTimer: (taskId: string, duration?: number) => void;
   timerState: {
-    isRunning: boolean
-    currentTaskId?: string
-  }
-  className?: string
+    isRunning: boolean;
+    currentTaskId?: string;
+  };
+  className?: string;
 }
 
 const contextIcons = {
-  calls: { icon: Phone, label: 'Calls' },
-  computer: { icon: Monitor, label: 'Computer' },
-  errands: { icon: Car, label: 'Errands' },
-  home: { icon: Home, label: 'Home' },
-  office: { icon: Building, label: 'Office' },
-  anywhere: { icon: Globe, label: 'Anywhere' },
-}
+  calls: { icon: Phone, label: "Calls" },
+  computer: { icon: Monitor, label: "Computer" },
+  errands: { icon: Car, label: "Errands" },
+  home: { icon: Home, label: "Home" },
+  office: { icon: Building, label: "Office" },
+  anywhere: { icon: Globe, label: "Anywhere" },
+};
 
 const energyIcons = {
-  high: { icon: Zap, label: 'High Energy', color: 'text-green-600' },
-  medium: { icon: Battery, label: 'Medium Energy', color: 'text-yellow-600' },
-  low: { icon: ZapOff, label: 'Low Energy', color: 'text-red-600' },
-}
+  high: { icon: Zap, label: "High Energy", color: "text-green-600" },
+  medium: { icon: Battery, label: "Medium Energy", color: "text-yellow-600" },
+  low: { icon: ZapOff, label: "Low Energy", color: "text-red-600" },
+};
 
 const statusColors = {
-  captured: 'bg-blue-100 text-blue-800',
-  next_action: 'bg-orange-100 text-orange-800',
-  project: 'bg-purple-100 text-purple-800',
-  waiting_for: 'bg-yellow-100 text-yellow-800',
-  someday: 'bg-gray-100 text-gray-800',
-  completed: 'bg-green-100 text-green-800',
-}
+  captured: "bg-blue-100 text-blue-800",
+  next_action: "bg-orange-100 text-orange-800",
+  project: "bg-purple-100 text-purple-800",
+  waiting_for: "bg-yellow-100 text-yellow-800",
+  someday: "bg-gray-100 text-gray-800",
+  completed: "bg-green-100 text-green-800",
+};
 
 const priorityColors: Record<number, string> = {
-  1: 'bg-red-100 text-red-800',
-  2: 'bg-orange-100 text-orange-800',
-  3: 'bg-yellow-100 text-yellow-800',
-  4: 'bg-blue-100 text-blue-800',
-  5: 'bg-gray-100 text-gray-800',
-}
+  1: "bg-red-100 text-red-800",
+  2: "bg-orange-100 text-orange-800",
+  3: "bg-yellow-100 text-yellow-800",
+  4: "bg-blue-100 text-blue-800",
+  5: "bg-gray-100 text-gray-800",
+};
 
 export function TaskDetailPanel({
   task,
@@ -82,46 +82,48 @@ export function TaskDetailPanel({
   onAction,
   onStartTimer,
   timerState,
-  className
+  className,
 }: TaskDetailPanelProps) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedNotes, setEditedNotes] = useState(task.notes || '')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedNotes, setEditedNotes] = useState(task.notes || "");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const ContextInfo = task.context ? contextIcons[task.context] : null
-  const EnergyInfo = task.energy_level ? energyIcons[task.energy_level] : null
+  const ContextInfo = task.context ? contextIcons[task.context] : null;
+  const EnergyInfo = task.energy_level ? energyIcons[task.energy_level] : null;
 
-  const isOverdue = task.due_date && new Date(task.due_date) < new Date()
-  const isDueToday = task.due_date &&
-    new Date(task.due_date).toDateString() === new Date().toDateString()
+  const isOverdue = task.due_date && new Date(task.due_date) < new Date();
+  const isDueToday =
+    task.due_date &&
+    new Date(task.due_date).toDateString() === new Date().toDateString();
 
-  const isTimerRunning = timerState.isRunning && timerState.currentTaskId === task.id
+  const isTimerRunning =
+    timerState.isRunning && timerState.currentTaskId === task.id;
 
   const handleSaveNotes = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       await onAction(task.id, {
-        type: 'update',
-        data: { notes: editedNotes }
-      })
-      setIsEditing(false)
+        type: "update",
+        data: { notes: editedNotes },
+      });
+      setIsEditing(false);
     } catch (error) {
-      console.error('Failed to save notes:', error)
+      console.error("Failed to save notes:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleAction = async (action: TaskAction) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await onAction(task.id, action)
+      await onAction(task.id, action);
     } catch (error) {
-      console.error('Action failed:', error)
+      console.error("Action failed:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className={className}>
@@ -139,19 +141,25 @@ export function TaskDetailPanel({
         <div className="space-y-3">
           <div className="flex items-center gap-2 flex-wrap">
             <Badge className={statusColors[task.status]} variant="secondary">
-              {task.status.replace('_', ' ')}
+              {task.status.replace("_", " ")}
             </Badge>
 
             {task.priority && (
-              <Badge className={priorityColors[task.priority]} variant="secondary">
+              <Badge
+                className={priorityColors[task.priority]}
+                variant="secondary"
+              >
                 Priority {task.priority}
               </Badge>
             )}
 
             {(isOverdue || isDueToday) && (
-              <Badge variant={isOverdue ? 'destructive' : 'secondary'} className="flex items-center gap-1">
+              <Badge
+                variant={isOverdue ? "destructive" : "secondary"}
+                className="flex items-center gap-1"
+              >
                 <Calendar className="h-3 w-3" />
-                {isOverdue ? 'Overdue' : 'Due today'}
+                {isOverdue ? "Overdue" : "Due today"}
               </Badge>
             )}
           </div>
@@ -161,9 +169,7 @@ export function TaskDetailPanel({
           </h2>
 
           {task.description && (
-            <p className="text-gray-600">
-              {task.description}
-            </p>
+            <p className="text-gray-600">{task.description}</p>
           )}
         </div>
 
@@ -210,7 +216,7 @@ export function TaskDetailPanel({
             <div className="flex items-center gap-2 col-span-2">
               <Tag className="h-4 w-4 text-gray-500" />
               <div className="flex gap-1 flex-wrap">
-                {task.tags.map(tag => (
+                {task.tags.map((tag) => (
                   <Badge key={tag} variant="outline" className="text-xs">
                     {tag}
                   </Badge>
@@ -221,7 +227,7 @@ export function TaskDetailPanel({
         </div>
 
         {/* Timer Section */}
-        {task.status === 'next_action' && (
+        {task.status === "next_action" && (
           <div className="space-y-2">
             <h4 className="font-medium text-gray-900">Focus Timer</h4>
             <div className="flex gap-2">
@@ -283,8 +289,8 @@ export function TaskDetailPanel({
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    setEditedNotes(task.notes || '')
-                    setIsEditing(false)
+                    setEditedNotes(task.notes || "");
+                    setIsEditing(false);
                   }}
                   disabled={isLoading}
                 >
@@ -331,7 +337,7 @@ export function TaskDetailPanel({
           <div className="grid grid-cols-2 gap-2">
             <TaskActionButton
               task={task}
-              action={{ type: 'complete' }}
+              action={{ type: "complete" }}
               onAction={handleAction}
               disabled={isLoading}
               icon={CheckCircle2}
@@ -342,7 +348,7 @@ export function TaskDetailPanel({
 
             <TaskActionButton
               task={task}
-              action={{ type: 'defer' }}
+              action={{ type: "defer" }}
               onAction={handleAction}
               disabled={isLoading}
               icon={Clock}
@@ -353,7 +359,7 @@ export function TaskDetailPanel({
 
             <TaskActionButton
               task={task}
-              action={{ type: 'delegate' }}
+              action={{ type: "delegate" }}
               onAction={handleAction}
               disabled={isLoading}
               icon={Users}
@@ -364,7 +370,7 @@ export function TaskDetailPanel({
 
             <TaskActionButton
               task={task}
-              action={{ type: 'delete' }}
+              action={{ type: "delete" }}
               onAction={handleAction}
               disabled={isLoading}
               icon={Trash2}
@@ -385,5 +391,5 @@ export function TaskDetailPanel({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

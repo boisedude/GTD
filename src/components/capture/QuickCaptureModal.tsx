@@ -1,138 +1,146 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Card } from '@/components/ui/card'
-import { Loader2, Clock, FolderOpen, AlertTriangle } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { TaskStatus, CreateTaskInput } from '@/types/database'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Loader2, Clock, FolderOpen, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { TaskStatus, CreateTaskInput } from "@/types/database";
 
 interface QuickCaptureModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onTaskCreate?: (task: CreateTaskInput) => Promise<void>
-  initialTitle?: string
-  className?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onTaskCreate?: (task: CreateTaskInput) => Promise<void>;
+  initialTitle?: string;
+  className?: string;
 }
 
-const taskStatusOptions: { value: TaskStatus; label: string; description: string; icon: React.ReactNode }[] = [
+const taskStatusOptions: {
+  value: TaskStatus;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+}[] = [
   {
-    value: 'captured',
-    label: 'Captured',
-    description: 'Just captured, needs clarification',
-    icon: <Clock className="h-4 w-4" />
+    value: "captured",
+    label: "Captured",
+    description: "Just captured, needs clarification",
+    icon: <Clock className="h-4 w-4" />,
   },
   {
-    value: 'next_action',
-    label: 'Next Action',
-    description: 'Ready to work on',
-    icon: <AlertTriangle className="h-4 w-4" />
+    value: "next_action",
+    label: "Next Action",
+    description: "Ready to work on",
+    icon: <AlertTriangle className="h-4 w-4" />,
   },
   {
-    value: 'project',
-    label: 'Project',
-    description: 'Multi-step outcome',
-    icon: <FolderOpen className="h-4 w-4" />
+    value: "project",
+    label: "Project",
+    description: "Multi-step outcome",
+    icon: <FolderOpen className="h-4 w-4" />,
   },
   {
-    value: 'waiting_for',
-    label: 'Waiting For',
-    description: 'Blocked on someone else',
-    icon: <Clock className="h-4 w-4" />
+    value: "waiting_for",
+    label: "Waiting For",
+    description: "Blocked on someone else",
+    icon: <Clock className="h-4 w-4" />,
   },
   {
-    value: 'someday',
-    label: 'Someday/Maybe',
-    description: 'Not active right now',
-    icon: <Clock className="h-4 w-4" />
-  }
-]
+    value: "someday",
+    label: "Someday/Maybe",
+    description: "Not active right now",
+    icon: <Clock className="h-4 w-4" />,
+  },
+];
 
 export function QuickCaptureModal({
   isOpen,
   onClose,
   onTaskCreate,
-  initialTitle = '',
-  className
+  initialTitle = "",
+  className,
 }: QuickCaptureModalProps) {
-  const [title, setTitle] = useState(initialTitle)
-  const [description, setDescription] = useState('')
-  const [status, setStatus] = useState<TaskStatus>('captured')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [title, setTitle] = useState(initialTitle);
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<TaskStatus>("captured");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const titleInputRef = useRef<HTMLInputElement>(null)
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
-      setTitle(initialTitle)
-      setDescription('')
-      setStatus('captured')
-      setError(null)
-      setIsSubmitting(false)
+      setTitle(initialTitle);
+      setDescription("");
+      setStatus("captured");
+      setError(null);
+      setIsSubmitting(false);
 
       // Focus title input when modal opens
       setTimeout(() => {
-        titleInputRef.current?.focus()
-      }, 100)
+        titleInputRef.current?.focus();
+      }, 100);
     }
-  }, [isOpen, initialTitle])
+  }, [isOpen, initialTitle]);
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!title.trim() || !onTaskCreate || isSubmitting) return
+    if (!title.trim() || !onTaskCreate || isSubmitting) return;
 
-    setIsSubmitting(true)
-    setError(null)
+    setIsSubmitting(true);
+    setError(null);
 
     try {
       const taskData: CreateTaskInput = {
         title: title.trim(),
         description: description.trim() || undefined,
-        status
-      }
+        status,
+      };
 
-      await onTaskCreate(taskData)
-      onClose()
+      await onTaskCreate(taskData);
+      onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create task')
+      setError(err instanceof Error ? err.message : "Failed to create task");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Handle keyboard shortcuts
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape' && !isSubmitting) {
-      onClose()
-    } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault()
-      handleSubmit(e)
+    if (e.key === "Escape" && !isSubmitting) {
+      onClose();
+    } else if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleSubmit(e);
     }
-  }
+  };
 
   // Quick status selection
   const handleStatusSelect = (selectedStatus: TaskStatus) => {
-    setStatus(selectedStatus)
-  }
+    setStatus(selectedStatus);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className={cn("sm:max-w-[600px] max-h-[90vh] overflow-y-auto", className)}
+        className={cn(
+          "sm:max-w-[600px] max-h-[90vh] overflow-y-auto",
+          className
+        )}
         onKeyDown={handleKeyDown}
       >
         <DialogHeader>
@@ -187,17 +195,25 @@ export function QuickCaptureModal({
                   onClick={() => handleStatusSelect(option.value)}
                 >
                   <div className="flex items-start gap-2">
-                    <div className={cn(
-                      "mt-0.5",
-                      status === option.value ? "text-primary" : "text-muted-foreground"
-                    )}>
+                    <div
+                      className={cn(
+                        "mt-0.5",
+                        status === option.value
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      )}
+                    >
                       {option.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className={cn(
-                        "font-medium text-sm",
-                        status === option.value ? "text-primary" : "text-foreground"
-                      )}>
+                      <div
+                        className={cn(
+                          "font-medium text-sm",
+                          status === option.value
+                            ? "text-primary"
+                            : "text-foreground"
+                        )}
+                      >
                         {option.label}
                       </div>
                       <div className="text-xs text-muted-foreground mt-0.5">
@@ -238,7 +254,7 @@ export function QuickCaptureModal({
                   Creating...
                 </>
               ) : (
-                'Create Task'
+                "Create Task"
               )}
             </Button>
           </DialogFooter>
@@ -247,11 +263,15 @@ export function QuickCaptureModal({
         {/* Keyboard Shortcuts Hint */}
         <div className="pt-2 border-t">
           <p className="text-xs text-muted-foreground text-center">
-            <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Cmd/Ctrl + Enter</kbd> to save •
-            <kbd className="px-1 py-0.5 bg-muted rounded text-xs ml-1">Esc</kbd> to cancel
+            <kbd className="px-1 py-0.5 bg-muted rounded text-xs">
+              Cmd/Ctrl + Enter
+            </kbd>{" "}
+            to save •
+            <kbd className="px-1 py-0.5 bg-muted rounded text-xs ml-1">Esc</kbd>{" "}
+            to cancel
           </p>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

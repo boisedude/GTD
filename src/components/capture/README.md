@@ -5,61 +5,61 @@ This directory contains the complete task capture interface for the GTD applicat
 ## Components
 
 ### CaptureInput
+
 The main quick capture component with auto-save functionality.
 
 ```tsx
-import { CaptureInput } from '@/components/capture'
+import { CaptureInput } from "@/components/capture";
 
 <CaptureInput
   onTaskCapture={async (title) => {
     // Handle quick task creation
-    await createTask({ title, status: 'captured' })
+    await createTask({ title, status: "captured" });
   }}
   onDetailedCapture={() => {
     // Open detailed capture modal
-    setShowModal(true)
+    setShowModal(true);
   }}
   placeholder="What's on your mind?"
   autoFocus={true}
-/>
+/>;
 ```
 
 ### QuickCaptureModal
+
 Detailed task entry modal with status selection.
 
 ```tsx
-import { QuickCaptureModal } from '@/components/capture'
+import { QuickCaptureModal } from "@/components/capture";
 
 <QuickCaptureModal
   isOpen={isModalOpen}
   onClose={() => setIsModalOpen(false)}
   onTaskCreate={async (taskData) => {
-    await createTask(taskData)
+    await createTask(taskData);
   }}
   initialTitle="Pre-filled title"
-/>
+/>;
 ```
 
 ### CaptureContainer
+
 Complete capture interface with status, keyboard shortcuts, and offline support.
 
 ```tsx
-import { CaptureContainer } from '@/components/capture'
+import { CaptureContainer } from "@/components/capture";
 
-<CaptureContainer
-  alwaysVisible={true}
-  autoFocus={false}
-  showStatus={true}
-/>
+<CaptureContainer alwaysVisible={true} autoFocus={false} showStatus={true} />;
 ```
 
 ## Hooks
 
 ### useTasks
+
 Real-time task management with Supabase integration.
 
 ```tsx
-import { useTasks } from '@/hooks/useTasks'
+import { useTasks } from "@/hooks/useTasks";
 
 const {
   tasks,
@@ -68,18 +68,19 @@ const {
   createTask,
   updateTask,
   deleteTask,
-  optimisticAdd
+  optimisticAdd,
 } = useTasks({
   autoRefresh: true,
-  realTimeSync: true
-})
+  realTimeSync: true,
+});
 ```
 
 ### useTaskCapture
+
 Capture-specific functionality with offline support.
 
 ```tsx
-import { useTaskCapture } from '@/hooks/useTaskCapture'
+import { useTaskCapture } from "@/hooks/useTaskCapture";
 
 const {
   isOnline,
@@ -87,51 +88,59 @@ const {
   captureTask,
   quickCapture,
   offlineQueueCount,
-  syncOfflineQueue
+  syncOfflineQueue,
 } = useTaskCapture({
-  enableOfflineQueue: true
-})
+  enableOfflineQueue: true,
+});
 ```
 
 ### useKeyboardShortcuts
+
 Global keyboard shortcut management.
 
 ```tsx
-import { useKeyboardShortcuts, GTD_SHORTCUTS } from '@/hooks/useKeyboardShortcuts'
+import {
+  useKeyboardShortcuts,
+  GTD_SHORTCUTS,
+} from "@/hooks/useKeyboardShortcuts";
 
 useKeyboardShortcuts([
   {
     ...GTD_SHORTCUTS.QUICK_CAPTURE,
-    action: () => focusCaptureInput()
+    action: () => focusCaptureInput(),
   },
   {
     ...GTD_SHORTCUTS.DETAILED_CAPTURE,
-    action: () => openDetailedModal()
-  }
-])
+    action: () => openDetailedModal(),
+  },
+]);
 ```
 
 ## Features
 
 ### Performance
+
 - **Sub-5 second capture time**: Optimized for speed
 - **Auto-save**: Saves automatically 2 seconds after user stops typing
 - **Optimistic UI**: Immediate feedback before server response
 - **Real-time sync**: Live updates across devices
 
 ### Mobile-First
+
 - **Thumb-friendly interactions**: Large touch targets
 - **Mobile keyboard shortcuts**: Touch-optimized shortcuts
 - **Responsive design**: Works on all screen sizes
 - **Gesture support**: Swipe and tap interactions
 
 ### Offline Support
+
 - **Offline queue**: Tasks saved locally when offline
 - **Auto-sync**: Automatic sync when connection restored
 - **Visual indicators**: Clear online/offline status
 - **Error handling**: Graceful degradation
 
 ### Accessibility
+
 - **Keyboard navigation**: Full keyboard support
 - **Screen reader friendly**: Proper ARIA labels
 - **High contrast**: Accessible color schemes
@@ -150,7 +159,7 @@ useKeyboardShortcuts([
 
 ```tsx
 // In your main layout or dashboard
-import { CaptureContainer } from '@/components/capture'
+import { CaptureContainer } from "@/components/capture";
 
 export default function Dashboard() {
   return (
@@ -167,11 +176,9 @@ export default function Dashboard() {
       </header>
 
       {/* Rest of your content */}
-      <main>
-        {/* Dashboard content */}
-      </main>
+      <main>{/* Dashboard content */}</main>
     </div>
-  )
+  );
 }
 ```
 

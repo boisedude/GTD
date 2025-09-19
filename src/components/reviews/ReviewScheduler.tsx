@@ -1,15 +1,27 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Switch } from '@/components/ui/switch'
-import { useReviews } from '@/hooks/useReviews'
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { useReviews } from "@/hooks/useReviews";
 import {
   Clock,
   Calendar,
@@ -22,89 +34,98 @@ import {
   Moon,
   Sun,
   Coffee,
-  Briefcase
-} from 'lucide-react'
-import type { ReviewType } from '@/types/database'
+  Briefcase,
+} from "lucide-react";
+import type { ReviewType } from "@/types/database";
 
 interface ReviewSchedule {
-  enabled: boolean
-  type: ReviewType
-  time: string
-  days: number[] // 0 = Sunday, 1 = Monday, etc.
+  enabled: boolean;
+  type: ReviewType;
+  time: string;
+  days: number[]; // 0 = Sunday, 1 = Monday, etc.
   reminders: {
-    enabled: boolean
-    beforeMinutes: number
-  }
-  autoStart: boolean
+    enabled: boolean;
+    beforeMinutes: number;
+  };
+  autoStart: boolean;
 }
 
 interface ReviewSchedulerProps {
-  onScheduleChange?: (schedules: ReviewSchedule[]) => void
-  compact?: boolean
+  onScheduleChange?: (schedules: ReviewSchedule[]) => void;
+  compact?: boolean;
 }
 
 const DEFAULT_SCHEDULES: ReviewSchedule[] = [
   {
     enabled: true,
-    type: 'daily',
-    time: '09:00',
+    type: "daily",
+    time: "09:00",
     days: [1, 2, 3, 4, 5], // Monday through Friday
     reminders: {
       enabled: true,
-      beforeMinutes: 15
+      beforeMinutes: 15,
     },
-    autoStart: false
+    autoStart: false,
   },
   {
     enabled: true,
-    type: 'weekly',
-    time: '10:00',
+    type: "weekly",
+    time: "10:00",
     days: [5], // Friday
     reminders: {
       enabled: true,
-      beforeMinutes: 30
+      beforeMinutes: 30,
     },
-    autoStart: false
-  }
-]
+    autoStart: false,
+  },
+];
 
-export function ReviewScheduler({ onScheduleChange, compact = false }: ReviewSchedulerProps) {
-  const [schedules, setSchedules] = useState<ReviewSchedule[]>(DEFAULT_SCHEDULES)
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false)
-  const { getReviewStreak, getCompletionRate } = useReviews()
+export function ReviewScheduler({
+  onScheduleChange,
+  compact = false,
+}: ReviewSchedulerProps) {
+  const [schedules, setSchedules] =
+    useState<ReviewSchedule[]>(DEFAULT_SCHEDULES);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const { getReviewStreak, getCompletionRate } = useReviews();
 
   // Check notification permission on mount
   useEffect(() => {
-    if ('Notification' in window) {
-      setNotificationsEnabled(Notification.permission === 'granted')
+    if ("Notification" in window) {
+      setNotificationsEnabled(Notification.permission === "granted");
     }
-  }, [])
+  }, []);
 
   const requestNotificationPermission = async () => {
-    if ('Notification' in window) {
-      const permission = await Notification.requestPermission()
-      setNotificationsEnabled(permission === 'granted')
+    if ("Notification" in window) {
+      const permission = await Notification.requestPermission();
+      setNotificationsEnabled(permission === "granted");
     }
-  }
+  };
 
   const updateSchedule = (index: number, updates: Partial<ReviewSchedule>) => {
-    const newSchedules = [...schedules]
-    newSchedules[index] = { ...newSchedules[index], ...updates }
-    setSchedules(newSchedules)
-    onScheduleChange?.(newSchedules)
-  }
+    const newSchedules = [...schedules];
+    newSchedules[index] = { ...newSchedules[index], ...updates };
+    setSchedules(newSchedules);
+    onScheduleChange?.(newSchedules);
+  };
 
   const toggleDay = (scheduleIndex: number, day: number) => {
-    const schedule = schedules[scheduleIndex]
+    const schedule = schedules[scheduleIndex];
     const newDays = schedule.days.includes(day)
-      ? schedule.days.filter(d => d !== day)
-      : [...schedule.days, day].sort()
+      ? schedule.days.filter((d) => d !== day)
+      : [...schedule.days, day].sort();
 
-    updateSchedule(scheduleIndex, { days: newDays })
-  }
+    updateSchedule(scheduleIndex, { days: newDays });
+  };
 
   if (compact) {
-    return <CompactScheduler schedules={schedules} notificationsEnabled={notificationsEnabled} />
+    return (
+      <CompactScheduler
+        schedules={schedules}
+        notificationsEnabled={notificationsEnabled}
+      />
+    );
   }
 
   return (
@@ -125,24 +146,33 @@ export function ReviewScheduler({ onScheduleChange, compact = false }: ReviewSch
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="notifications">Enable Notifications</Label>
-                <p className="text-sm text-gray-600">Get reminded when it's time for your reviews</p>
+                <p className="text-sm text-gray-600">
+                  Get reminded when it&apos;s time for your reviews
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <Switch
                   id="notifications"
                   checked={notificationsEnabled}
                   onCheckedChange={setNotificationsEnabled}
-                  disabled={'Notification' in window && Notification.permission === 'denied'}
+                  disabled={
+                    "Notification" in window &&
+                    Notification.permission === "denied"
+                  }
                 />
-                {!notificationsEnabled && 'Notification' in window && (
-                  <Button size="sm" variant="outline" onClick={requestNotificationPermission}>
+                {!notificationsEnabled && "Notification" in window && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={requestNotificationPermission}
+                  >
                     Enable
                   </Button>
                 )}
               </div>
             </div>
 
-            {!('Notification' in window) && (
+            {!("Notification" in window) && (
               <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-700">
                   Notifications are not supported in this browser.
@@ -167,52 +197,60 @@ export function ReviewScheduler({ onScheduleChange, compact = false }: ReviewSch
       {/* Current status */}
       <ReviewStatusCard />
     </div>
-  )
+  );
 }
 
 function ScheduleCard({
   schedule,
   onUpdate,
   onToggleDay,
-  notificationsEnabled
+  notificationsEnabled,
 }: {
-  schedule: ReviewSchedule
-  onUpdate: (updates: Partial<ReviewSchedule>) => void
-  onToggleDay: (day: number) => void
-  notificationsEnabled: boolean
+  schedule: ReviewSchedule;
+  onUpdate: (updates: Partial<ReviewSchedule>) => void;
+  onToggleDay: (day: number) => void;
+  notificationsEnabled: boolean;
 }) {
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const getScheduleIcon = () => {
-    if (schedule.type === 'daily') {
-      const hour = parseInt(schedule.time.split(':')[0])
-      if (hour < 6) return Moon
-      if (hour < 12) return Sun
-      if (hour < 17) return Briefcase
-      return Coffee
+    if (schedule.type === "daily") {
+      const hour = parseInt(schedule.time.split(":")[0]);
+      if (hour < 6) return Moon;
+      if (hour < 12) return Sun;
+      if (hour < 17) return Briefcase;
+      return Coffee;
     }
-    return Calendar
-  }
+    return Calendar;
+  };
 
-  const Icon = getScheduleIcon()
-  const isDaily = schedule.type === 'daily'
+  const Icon = getScheduleIcon();
+  const isDaily = schedule.type === "daily";
 
   return (
-    <Card className={schedule.enabled ? 'border-green-200' : 'border-gray-200'}>
+    <Card className={schedule.enabled ? "border-green-200" : "border-gray-200"}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${
-              schedule.enabled ? 'bg-green-100' : 'bg-gray-100'
-            }`}>
-              <Icon className={`h-5 w-5 ${
-                schedule.enabled ? 'text-green-600' : 'text-gray-400'
-              }`} />
+            <div
+              className={`p-2 rounded-lg ${
+                schedule.enabled ? "bg-green-100" : "bg-gray-100"
+              }`}
+            >
+              <Icon
+                className={`h-5 w-5 ${
+                  schedule.enabled ? "text-green-600" : "text-gray-400"
+                }`}
+              />
             </div>
             <div>
-              <CardTitle className="capitalize">{schedule.type} Review</CardTitle>
+              <CardTitle className="capitalize">
+                {schedule.type} Review
+              </CardTitle>
               <CardDescription>
-                {isDaily ? 'Quick daily check-in' : 'Comprehensive weekly review'}
+                {isDaily
+                  ? "Quick daily check-in"
+                  : "Comprehensive weekly review"}
               </CardDescription>
             </div>
           </div>
@@ -244,7 +282,9 @@ function ScheduleCard({
               {dayNames.map((day, index) => (
                 <Button
                   key={day}
-                  variant={schedule.days.includes(index) ? 'default' : 'outline'}
+                  variant={
+                    schedule.days.includes(index) ? "default" : "outline"
+                  }
                   size="sm"
                   onClick={() => onToggleDay(index)}
                   className="w-12 h-10 p-0"
@@ -278,8 +318,8 @@ function ScheduleCard({
                     onUpdate({
                       reminders: {
                         ...schedule.reminders,
-                        beforeMinutes: parseInt(value)
-                      }
+                        beforeMinutes: parseInt(value),
+                      },
                     })
                   }
                 >
@@ -300,7 +340,9 @@ function ScheduleCard({
           {/* Auto-start option */}
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor={`autostart-${schedule.type}`}>Auto-start Review</Label>
+              <Label htmlFor={`autostart-${schedule.type}`}>
+                Auto-start Review
+              </Label>
               <p className="text-sm text-gray-600">
                 Automatically open the review workflow at scheduled time
               </p>
@@ -314,31 +356,31 @@ function ScheduleCard({
         </CardContent>
       )}
     </Card>
-  )
+  );
 }
 
 function ReviewStatusCard() {
-  const { getReviewStreak, getCompletionRate, recentReviews } = useReviews()
+  const { getReviewStreak, getCompletionRate, recentReviews } = useReviews();
 
-  const streak = getReviewStreak()
-  const weeklyRate = getCompletionRate(7)
-  const lastReview = recentReviews[0]
+  const streak = getReviewStreak();
+  const weeklyRate = getCompletionRate(7);
+  const lastReview = recentReviews[0];
 
   const getNextScheduledTime = () => {
     // This would calculate the next scheduled review time based on current schedules
-    const now = new Date()
-    const tomorrow = new Date(now)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    tomorrow.setHours(9, 0, 0, 0)
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(9, 0, 0, 0);
 
-    return tomorrow.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
-    })
-  }
+    return tomorrow.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <Card>
@@ -355,18 +397,26 @@ function ReviewStatusCard() {
             <div className="text-sm text-gray-600">Day Streak</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{weeklyRate}%</div>
+            <div className="text-2xl font-bold text-green-600">
+              {weeklyRate}%
+            </div>
             <div className="text-sm text-gray-600">This Week</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">
-              {lastReview ? new Date(lastReview.completed_at).toLocaleDateString() : 'Never'}
+              {lastReview
+                ? new Date(lastReview.completed_at).toLocaleDateString()
+                : "Never"}
             </div>
             <div className="text-sm text-gray-600">Last Review</div>
           </div>
           <div className="text-center">
-            <div className="text-sm font-medium text-gray-900">Next Scheduled</div>
-            <div className="text-xs text-gray-600">{getNextScheduledTime()}</div>
+            <div className="text-sm font-medium text-gray-900">
+              Next Scheduled
+            </div>
+            <div className="text-xs text-gray-600">
+              {getNextScheduledTime()}
+            </div>
           </div>
         </div>
 
@@ -384,17 +434,17 @@ function ReviewStatusCard() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function CompactScheduler({
   schedules,
-  notificationsEnabled
+  notificationsEnabled,
 }: {
-  schedules: ReviewSchedule[]
-  notificationsEnabled: boolean
+  schedules: ReviewSchedule[];
+  notificationsEnabled: boolean;
 }) {
-  const activeSchedules = schedules.filter(s => s.enabled)
+  const activeSchedules = schedules.filter((s) => s.enabled);
 
   return (
     <Card>
@@ -407,9 +457,14 @@ function CompactScheduler({
       <CardContent>
         <div className="space-y-3">
           {activeSchedules.map((schedule) => (
-            <div key={schedule.type} className="flex items-center justify-between">
+            <div
+              key={schedule.type}
+              className="flex items-center justify-between"
+            >
               <div className="flex items-center gap-2">
-                <Badge variant={schedule.type === 'daily' ? 'default' : 'secondary'}>
+                <Badge
+                  variant={schedule.type === "daily" ? "default" : "secondary"}
+                >
                   {schedule.type}
                 </Badge>
                 <span className="text-sm">{schedule.time}</span>
@@ -431,42 +486,47 @@ function CompactScheduler({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Hook for managing review notifications
 export function useReviewNotifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const scheduleNotification = (title: string, message: string, delay: number) => {
-    if ('Notification' in window && Notification.permission === 'granted') {
+  const scheduleNotification = (
+    title: string,
+    message: string,
+    delay: number
+  ) => {
+    if ("Notification" in window && Notification.permission === "granted") {
       setTimeout(() => {
         const notification = new Notification(title, {
           body: message,
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
-          tag: 'gtd-review',
-          requireInteraction: true
-        })
+          icon: "/favicon.ico",
+          badge: "/favicon.ico",
+          tag: "gtd-review",
+          requireInteraction: true,
+        });
 
         notification.onclick = () => {
-          window.focus()
-          notification.close()
-        }
+          window.focus();
+          notification.close();
+        };
 
-        setNotifications(prev => [...prev, notification])
-      }, delay)
+        setNotifications((prev) => [...prev, notification]);
+      }, delay);
     }
-  }
+  };
 
   const clearNotifications = () => {
-    notifications.forEach(n => n.close())
-    setNotifications([])
-  }
+    notifications.forEach((n) => n.close());
+    setNotifications([]);
+  };
 
   return {
     scheduleNotification,
     clearNotifications,
-    canNotify: 'Notification' in window && Notification.permission === 'granted'
-  }
+    canNotify:
+      "Notification" in window && Notification.permission === "granted",
+  };
 }

@@ -1,31 +1,34 @@
-'use client'
+"use client";
 
-import React, { useState, useCallback, useEffect } from 'react'
-import { CaptureInput } from './CaptureInput'
-import { QuickCaptureModal } from './QuickCaptureModal'
-import { useTaskCapture } from '@/hooks/useTaskCapture'
-import { useKeyboardShortcuts, GTD_SHORTCUTS } from '@/hooks/useKeyboardShortcuts'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Wifi, WifiOff, Clock, CheckCircle2, AlertCircle } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { CreateTaskInput } from '@/types/database'
+import React, { useState, useCallback, useEffect } from "react";
+import { CaptureInput } from "./CaptureInput";
+import { QuickCaptureModal } from "./QuickCaptureModal";
+import { useTaskCapture } from "@/hooks/useTaskCapture";
+import {
+  useKeyboardShortcuts,
+  GTD_SHORTCUTS,
+} from "@/hooks/useKeyboardShortcuts";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Wifi, WifiOff, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { CreateTaskInput } from "@/types/database";
 
 interface CaptureContainerProps {
-  className?: string
-  alwaysVisible?: boolean
-  autoFocus?: boolean
-  showStatus?: boolean
+  className?: string;
+  alwaysVisible?: boolean;
+  autoFocus?: boolean;
+  showStatus?: boolean;
 }
 
 export function CaptureContainer({
   className,
   alwaysVisible = true,
   autoFocus = false,
-  showStatus = true
+  showStatus = true,
 }: CaptureContainerProps) {
-  const [isDetailedModalOpen, setIsDetailedModalOpen] = useState(false)
-  const [recentCaptures, setRecentCaptures] = useState<string[]>([])
+  const [isDetailedModalOpen, setIsDetailedModalOpen] = useState(false);
+  const [recentCaptures, setRecentCaptures] = useState<string[]>([]);
 
   const {
     isOnline,
@@ -36,37 +39,43 @@ export function CaptureContainer({
     quickCapture,
     clearError,
     offlineQueueCount,
-    syncOfflineQueue
-  } = useTaskCapture()
+    syncOfflineQueue,
+  } = useTaskCapture();
 
   // Handle quick capture from input
-  const handleQuickCapture = useCallback(async (title: string) => {
-    try {
-      const task = await quickCapture(title)
+  const handleQuickCapture = useCallback(
+    async (title: string) => {
+      try {
+        const task = await quickCapture(title);
 
-      // Add to recent captures for quick feedback
-      setRecentCaptures(prev => [task.title, ...prev.slice(0, 2)])
+        // Add to recent captures for quick feedback
+        setRecentCaptures((prev) => [task.title, ...prev.slice(0, 2)]);
 
-      // Clear recent after 3 seconds
-      setTimeout(() => {
-        setRecentCaptures(prev => prev.filter(t => t !== task.title))
-      }, 3000)
-    } catch (err) {
-      console.error('Quick capture failed:', err)
-      // Error is handled by the hook
-    }
-  }, [quickCapture])
+        // Clear recent after 3 seconds
+        setTimeout(() => {
+          setRecentCaptures((prev) => prev.filter((t) => t !== task.title));
+        }, 3000);
+      } catch (err) {
+        console.error("Quick capture failed:", err);
+        // Error is handled by the hook
+      }
+    },
+    [quickCapture]
+  );
 
   // Handle detailed capture from modal
-  const handleDetailedCapture = useCallback(async (input: CreateTaskInput) => {
-    try {
-      await captureTask(input)
-      setIsDetailedModalOpen(false)
-    } catch (err) {
-      console.error('Detailed capture failed:', err)
-      // Keep modal open to allow retry
-    }
-  }, [captureTask])
+  const handleDetailedCapture = useCallback(
+    async (input: CreateTaskInput) => {
+      try {
+        await captureTask(input);
+        setIsDetailedModalOpen(false);
+      } catch (err) {
+        console.error("Detailed capture failed:", err);
+        // Keep modal open to allow retry
+      }
+    },
+    [captureTask]
+  );
 
   // Keyboard shortcuts
   useKeyboardShortcuts([
@@ -74,62 +83,68 @@ export function CaptureContainer({
       ...GTD_SHORTCUTS.QUICK_CAPTURE,
       action: () => {
         // Focus the quick capture input
-        const input = document.querySelector('[data-capture-input]') as HTMLInputElement
+        const input = document.querySelector(
+          "[data-capture-input]"
+        ) as HTMLInputElement;
         if (input) {
-          input.focus()
+          input.focus();
         }
-      }
+      },
     },
     {
       ...GTD_SHORTCUTS.DETAILED_CAPTURE,
-      action: () => setIsDetailedModalOpen(true)
+      action: () => setIsDetailedModalOpen(true),
     },
     {
       ...GTD_SHORTCUTS.ESCAPE,
       action: () => {
-        setIsDetailedModalOpen(false)
-        clearError()
-      }
-    }
-  ])
+        setIsDetailedModalOpen(false);
+        clearError();
+      },
+    },
+  ]);
 
   // Auto-focus behavior
   useEffect(() => {
     if (autoFocus) {
       const timer = setTimeout(() => {
-        const input = document.querySelector('[data-capture-input]') as HTMLInputElement
+        const input = document.querySelector(
+          "[data-capture-input]"
+        ) as HTMLInputElement;
         if (input) {
-          input.focus()
+          input.focus();
         }
-      }, 100)
-      return () => clearTimeout(timer)
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [autoFocus])
+  }, [autoFocus]);
 
   const getStatusIcon = () => {
-    if (!isOnline) return <WifiOff className="h-4 w-4 text-red-500" />
-    if (isSaving) return <Clock className="h-4 w-4 text-blue-500" />
-    if (error) return <AlertCircle className="h-4 w-4 text-red-500" />
-    if (lastSaveTime) return <CheckCircle2 className="h-4 w-4 text-green-500" />
-    return <Wifi className="h-4 w-4 text-gray-400" />
-  }
+    if (!isOnline) return <WifiOff className="h-4 w-4 text-red-500" />;
+    if (isSaving) return <Clock className="h-4 w-4 text-blue-500" />;
+    if (error) return <AlertCircle className="h-4 w-4 text-red-500" />;
+    if (lastSaveTime)
+      return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+    return <Wifi className="h-4 w-4 text-gray-400" />;
+  };
 
   const getStatusText = () => {
     if (!isOnline) {
       return offlineQueueCount > 0
         ? `Offline - ${offlineQueueCount} queued`
-        : 'Offline mode'
+        : "Offline mode";
     }
-    if (isSaving) return 'Saving...'
-    if (error) return 'Error occurred'
+    if (isSaving) return "Saving...";
+    if (error) return "Error occurred";
     if (lastSaveTime) {
-      const timeDiff = Date.now() - lastSaveTime.getTime()
-      if (timeDiff < 60000) return 'Just saved'
-      if (timeDiff < 3600000) return `Saved ${Math.floor(timeDiff / 60000)}m ago`
-      return 'Saved earlier'
+      const timeDiff = Date.now() - lastSaveTime.getTime();
+      if (timeDiff < 60000) return "Just saved";
+      if (timeDiff < 3600000)
+        return `Saved ${Math.floor(timeDiff / 60000)}m ago`;
+      return "Saved earlier";
     }
-    return 'Ready to capture'
-  }
+    return "Ready to capture";
+  };
 
   return (
     <div className={cn("w-full space-y-3", className)}>
@@ -185,9 +200,8 @@ export function CaptureContainer({
                 <CheckCircle2 className="h-3 w-3" />
                 <span>
                   {recentCaptures.length === 1
-                    ? 'Captured!'
-                    : `${recentCaptures.length} captured`
-                  }
+                    ? "Captured!"
+                    : `${recentCaptures.length} captured`}
                 </span>
               </div>
             )}
@@ -210,8 +224,12 @@ export function CaptureContainer({
       {/* Keyboard shortcuts hint (desktop only) */}
       <div className="hidden lg:block text-xs text-muted-foreground text-center space-y-1">
         <div>
-          <kbd className="px-1 py-0.5 bg-muted rounded text-xs">⌘+N</kbd> Quick capture •
-          <kbd className="px-1 py-0.5 bg-muted rounded text-xs ml-1">⌘+Shift+N</kbd> Detailed
+          <kbd className="px-1 py-0.5 bg-muted rounded text-xs">⌘+N</kbd> Quick
+          capture •
+          <kbd className="px-1 py-0.5 bg-muted rounded text-xs ml-1">
+            ⌘+Shift+N
+          </kbd>{" "}
+          Detailed
         </div>
       </div>
 
@@ -222,5 +240,5 @@ export function CaptureContainer({
         onTaskCreate={handleDetailedCapture}
       />
     </div>
-  )
+  );
 }

@@ -1,15 +1,21 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useReviews } from '@/hooks/useReviews'
-import { useTasks } from '@/hooks/useTasks'
-import { TaskCard } from '@/components/gtd/TaskCard'
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useReviews } from "@/hooks/useReviews";
+import { useTasks } from "@/hooks/useTasks";
+import { TaskCard } from "@/components/gtd/TaskCard";
 import {
   Calendar,
   CheckCircle2,
@@ -23,74 +29,77 @@ import {
   Lightbulb,
   BookOpen,
   Coffee,
-  X
-} from 'lucide-react'
-import type { Task, DailyReviewData, ReviewStepType } from '@/types/database'
+  X,
+} from "lucide-react";
+import type { Task, DailyReviewData, ReviewStepType } from "@/types/database";
 
 interface DailyReviewWorkflowProps {
-  onClose?: () => void
-  onComplete?: () => void
+  onClose?: () => void;
+  onComplete?: () => void;
 }
 
 const DAILY_REVIEW_STEPS: Array<{
-  id: ReviewStepType
-  title: string
-  description: string
-  timeEstimate: string
-  icon: React.ComponentType<any>
-  required: boolean
+  id: ReviewStepType;
+  title: string;
+  description: string;
+  timeEstimate: string;
+  icon: React.ComponentType<{ className?: string }>;
+  required: boolean;
 }> = [
   {
-    id: 'welcome',
-    title: 'Welcome to Daily Review',
-    description: 'Quick check-in with your GTD system',
-    timeEstimate: '1 min',
+    id: "welcome",
+    title: "Welcome to Daily Review",
+    description: "Quick check-in with your GTD system",
+    timeEstimate: "1 min",
     icon: Coffee,
-    required: true
+    required: true,
   },
   {
-    id: 'calendar_check',
-    title: 'Calendar Check',
-    description: 'Review today\'s commitments and appointments',
-    timeEstimate: '1 min',
+    id: "calendar_check",
+    title: "Calendar Check",
+    description: "Review today&apos;s commitments and appointments",
+    timeEstimate: "1 min",
     icon: Calendar,
-    required: true
+    required: true,
   },
   {
-    id: 'task_triage',
-    title: 'Task Triage',
-    description: 'Review and organize today\'s tasks',
-    timeEstimate: '2-3 min',
+    id: "task_triage",
+    title: "Task Triage",
+    description: "Review and organize today&apos;s tasks",
+    timeEstimate: "2-3 min",
     icon: Target,
-    required: true
+    required: true,
   },
   {
-    id: 'waiting_for_review',
-    title: 'Waiting For Review',
-    description: 'Check items you\'re waiting on from others',
-    timeEstimate: '1 min',
+    id: "waiting_for_review",
+    title: "Waiting For Review",
+    description: "Check items you&apos;re waiting on from others",
+    timeEstimate: "1 min",
     icon: Clock,
-    required: true
+    required: true,
   },
   {
-    id: 'planning',
-    title: 'Tomorrow Planning',
-    description: 'Set intentions for tomorrow',
-    timeEstimate: '2 min',
+    id: "planning",
+    title: "Tomorrow Planning",
+    description: "Set intentions for tomorrow",
+    timeEstimate: "2 min",
     icon: ArrowRight,
-    required: true
+    required: true,
   },
   {
-    id: 'reflection',
-    title: 'Quick Reflection',
-    description: 'Note insights and improvements',
-    timeEstimate: '1 min',
+    id: "reflection",
+    title: "Quick Reflection",
+    description: "Note insights and improvements",
+    timeEstimate: "1 min",
     icon: Lightbulb,
-    required: false
-  }
-]
+    required: false,
+  },
+];
 
-export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflowProps) {
+export function DailyReviewWorkflow({
+  onClose,
+  onComplete,
+}: DailyReviewWorkflowProps) {
   const {
     currentSession,
     dailyReviewData,
@@ -102,128 +111,141 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
     completeReviewStep,
     completeReview,
     abandonReview,
-    loadDailyReviewData
-  } = useReviews()
+    loadDailyReviewData,
+  } = useReviews();
 
-  const { updateTask } = useTasks()
+  const { updateTask } = useTasks();
 
-  const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  const [stepData, setStepData] = useState<Record<string, any>>({})
-  const [isStarted, setIsStarted] = useState(false)
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [stepData, setStepData] = useState<Record<string, unknown>>({});
+  const [isStarted, setIsStarted] = useState(false);
 
-  const currentStep = DAILY_REVIEW_STEPS[currentStepIndex]
-  const isPaused = currentSession?.status === 'paused'
-  const totalSteps = DAILY_REVIEW_STEPS.length
+  const currentStep = DAILY_REVIEW_STEPS[currentStepIndex];
+  const isPaused = currentSession?.status === "paused";
+  const totalSteps = DAILY_REVIEW_STEPS.length;
 
   // Initialize or resume review
   useEffect(() => {
-    if (currentSession && currentSession.type === 'daily') {
-      setIsStarted(true)
-      setCurrentStepIndex(currentSession.current_step)
-      setStepData(currentSession.session_data || {})
+    if (currentSession && currentSession.type === "daily") {
+      setIsStarted(true);
+      setCurrentStepIndex(currentSession.current_step);
+      setStepData(currentSession.session_data || {});
     }
-  }, [currentSession])
+  }, [currentSession]);
 
   // Start review
   const handleStartReview = async () => {
     try {
-      await startReview('daily')
-      setIsStarted(true)
+      await startReview("daily");
+      setIsStarted(true);
     } catch (err) {
-      console.error('Failed to start daily review:', err)
+      console.error("Failed to start daily review:", err);
     }
-  }
+  };
 
   // Resume paused review
   const handleResumeReview = async () => {
     try {
-      await resumeReview()
+      await resumeReview();
     } catch (err) {
-      console.error('Failed to resume review:', err)
+      console.error("Failed to resume review:", err);
     }
-  }
+  };
 
   // Pause review
   const handlePauseReview = async () => {
     try {
-      await pauseReview()
+      await pauseReview();
     } catch (err) {
-      console.error('Failed to pause review:', err)
+      console.error("Failed to pause review:", err);
     }
-  }
+  };
 
   // Complete current step
-  const handleCompleteStep = async (data?: any) => {
+  const handleCompleteStep = async (data?: unknown) => {
     try {
       if (currentSession) {
-        await completeReviewStep(currentStep.id, data)
+        await completeReviewStep(
+          currentStep.id,
+          data as Record<string, unknown> | undefined
+        );
 
         if (currentStepIndex < totalSteps - 1) {
-          setCurrentStepIndex(prev => prev + 1)
+          setCurrentStepIndex((prev) => prev + 1);
         } else {
           // Complete entire review
-          await completeReview(stepData.reflection?.notes)
-          setIsStarted(false)
-          onComplete?.()
+          await completeReview(
+            (stepData.reflection as { notes?: string })?.notes
+          );
+          setIsStarted(false);
+          onComplete?.();
         }
       }
     } catch (err) {
-      console.error('Failed to complete step:', err)
+      console.error("Failed to complete step:", err);
     }
-  }
+  };
 
   // Go to previous step
   const handlePreviousStep = () => {
     if (currentStepIndex > 0) {
-      setCurrentStepIndex(prev => prev - 1)
+      setCurrentStepIndex((prev) => prev - 1);
     }
-  }
+  };
 
   // Cancel review
   const handleCancelReview = async () => {
     try {
-      await abandonReview()
-      setIsStarted(false)
-      onClose?.()
+      await abandonReview();
+      setIsStarted(false);
+      onClose?.();
     } catch (err) {
-      console.error('Failed to cancel review:', err)
+      console.error("Failed to cancel review:", err);
     }
-  }
+  };
 
   // Update step data
-  const updateStepData = (stepId: string, data: any) => {
-    setStepData(prev => ({
+  const updateStepData = (stepId: string, data: unknown) => {
+    setStepData((prev) => ({
       ...prev,
-      [stepId]: { ...prev[stepId], ...data }
-    }))
-  }
+      [stepId]: {
+        ...((prev[stepId] as Record<string, unknown>) || {}),
+        ...((data as Record<string, unknown>) || {}),
+      },
+    }));
+  };
 
   // Mark task as completed/deferred
-  const handleTaskAction = async (task: Task, action: 'complete' | 'defer' | 'reschedule') => {
+  const handleTaskAction = async (
+    task: Task,
+    action: "complete" | "defer" | "reschedule"
+  ) => {
     try {
       switch (action) {
-        case 'complete':
+        case "complete":
           await updateTask(task.id, {
-            status: 'completed',
-            completed_at: new Date().toISOString()
-          })
-          break
-        case 'defer':
+            status: "completed",
+            completed_at: new Date().toISOString(),
+          });
+          break;
+        case "defer":
           await updateTask(task.id, {
-            due_date: new Date(Date.now() + 86400000).toISOString().split('T')[0] // Tomorrow
-          })
-          break
-        case 'reschedule':
+            due_date: new Date(Date.now() + 86400000)
+              .toISOString()
+              .split("T")[0], // Tomorrow
+          });
+          break;
+        case "reschedule":
           // Could open a date picker here
-          break
+          break;
       }
 
       // Reload review data
-      await loadDailyReviewData()
+      await loadDailyReviewData();
     } catch (err) {
-      console.error('Failed to update task:', err)
+      console.error("Failed to update task:", err);
     }
-  }
+  };
 
   if (!isStarted) {
     return (
@@ -253,21 +275,28 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
           {/* Review overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {DAILY_REVIEW_STEPS.map((step, index) => {
-              const Icon = step.icon
+              const Icon = step.icon;
               return (
-                <div key={step.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                <div
+                  key={step.id}
+                  className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                >
                   <div className="p-1.5 bg-white rounded border">
                     <Icon className="h-4 w-4 text-gray-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-gray-900">{step.title}</p>
-                    <p className="text-xs text-gray-600 mt-0.5">{step.description}</p>
+                    <p className="font-medium text-sm text-gray-900">
+                      {step.title}
+                    </p>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      {step.description}
+                    </p>
                     <Badge variant="outline" className="text-xs mt-1">
                       {step.timeEstimate}
                     </Badge>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
 
@@ -276,10 +305,13 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
             <div className="flex items-start gap-3">
               <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5" />
               <div>
-                <h4 className="font-medium text-blue-900 text-sm">Daily Review Benefits</h4>
+                <h4 className="font-medium text-blue-900 text-sm">
+                  Daily Review Benefits
+                </h4>
                 <p className="text-blue-700 text-sm mt-1">
-                  Regular daily reviews help you stay on top of commitments, make quick course corrections,
-                  and maintain trust in your GTD system. Consistency is more important than perfection.
+                  Regular daily reviews help you stay on top of commitments,
+                  make quick course corrections, and maintain trust in your GTD
+                  system. Consistency is more important than perfection.
                 </p>
               </div>
             </div>
@@ -295,7 +327,7 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (isPaused) {
@@ -325,7 +357,7 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
             <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all"
-                style={{ width: `${((currentStepIndex) / totalSteps) * 100}%` }}
+                style={{ width: `${(currentStepIndex / totalSteps) * 100}%` }}
               />
             </div>
           </div>
@@ -341,7 +373,7 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -350,7 +382,9 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 rounded-lg">
-              {React.createElement(currentStep.icon, { className: "h-6 w-6 text-blue-600" })}
+              {React.createElement(currentStep.icon, {
+                className: "h-6 w-6 text-blue-600",
+              })}
             </div>
             <div>
               <CardTitle className="flex items-center gap-2">
@@ -383,54 +417,54 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
 
       <CardContent className="space-y-6">
         {/* Step content */}
-        {currentStep.id === 'welcome' && (
+        {currentStep.id === "welcome" && (
           <WelcomeStep
             data={stepData.welcome}
-            onDataChange={(data) => updateStepData('welcome', data)}
+            onDataChange={(data) => updateStepData("welcome", data)}
             onNext={() => handleCompleteStep(stepData.welcome)}
           />
         )}
 
-        {currentStep.id === 'calendar_check' && (
+        {currentStep.id === "calendar_check" && (
           <CalendarCheckStep
             data={stepData.calendar_check}
-            onDataChange={(data) => updateStepData('calendar_check', data)}
+            onDataChange={(data) => updateStepData("calendar_check", data)}
             onNext={() => handleCompleteStep(stepData.calendar_check)}
           />
         )}
 
-        {currentStep.id === 'task_triage' && (
+        {currentStep.id === "task_triage" && (
           <TaskTriageStep
             reviewData={dailyReviewData}
             data={stepData.task_triage}
-            onDataChange={(data) => updateStepData('task_triage', data)}
+            onDataChange={(data) => updateStepData("task_triage", data)}
             onTaskAction={handleTaskAction}
             onNext={() => handleCompleteStep(stepData.task_triage)}
           />
         )}
 
-        {currentStep.id === 'waiting_for_review' && (
+        {currentStep.id === "waiting_for_review" && (
           <WaitingForReviewStep
             reviewData={dailyReviewData}
             data={stepData.waiting_for_review}
-            onDataChange={(data) => updateStepData('waiting_for_review', data)}
+            onDataChange={(data) => updateStepData("waiting_for_review", data)}
             onTaskAction={handleTaskAction}
             onNext={() => handleCompleteStep(stepData.waiting_for_review)}
           />
         )}
 
-        {currentStep.id === 'planning' && (
+        {currentStep.id === "planning" && (
           <PlanningStep
             data={stepData.planning}
-            onDataChange={(data) => updateStepData('planning', data)}
+            onDataChange={(data) => updateStepData("planning", data)}
             onNext={() => handleCompleteStep(stepData.planning)}
           />
         )}
 
-        {currentStep.id === 'reflection' && (
+        {currentStep.id === "reflection" && (
           <ReflectionStep
             data={stepData.reflection}
-            onDataChange={(data) => updateStepData('reflection', data)}
+            onDataChange={(data) => updateStepData("reflection", data)}
             onNext={() => handleCompleteStep(stepData.reflection)}
           />
         )}
@@ -454,14 +488,18 @@ export function DailyReviewWorkflow({ onClose, onComplete }: DailyReviewWorkflow
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Individual step components
-function WelcomeStep({ data, onDataChange, onNext }: {
-  data: any
-  onDataChange: (data: any) => void
-  onNext: () => void
+function WelcomeStep({
+  data,
+  onDataChange,
+  onNext,
+}: {
+  data: unknown;
+  onDataChange: (data: unknown) => void;
+  onNext: () => void;
 }) {
   return (
     <div className="text-center space-y-4">
@@ -470,8 +508,8 @@ function WelcomeStep({ data, onDataChange, onNext }: {
           Ready for your daily review?
         </h3>
         <p className="text-gray-600">
-          This will take about 5-10 minutes to check in with your GTD system
-          and prepare for a productive day.
+          This will take about 5-10 minutes to check in with your GTD system and
+          prepare for a productive day.
         </p>
       </div>
 
@@ -479,41 +517,51 @@ function WelcomeStep({ data, onDataChange, onNext }: {
         <div className="flex items-start gap-3">
           <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5" />
           <div className="text-left">
-            <h4 className="font-medium text-blue-900 text-sm">Today's Focus</h4>
+            <h4 className="font-medium text-blue-900 text-sm">
+              Today&apos;s Focus
+            </h4>
             <p className="text-blue-700 text-sm mt-1">
-              Remember: The goal isn't to complete everything, but to make conscious choices
-              about what matters most today.
+              Remember: The goal isn&apos;t to complete everything, but to make
+              conscious choices about what matters most today.
             </p>
           </div>
         </div>
       </div>
 
       <Button onClick={onNext} className="w-full">
-        Let's Begin
+        Let&apos;s Begin
         <ArrowRight className="h-4 w-4 ml-2" />
       </Button>
     </div>
-  )
+  );
 }
 
-function CalendarCheckStep({ data, onDataChange, onNext }: {
-  data: any
-  onDataChange: (data: any) => void
-  onNext: () => void
+function CalendarCheckStep({
+  data,
+  onDataChange,
+  onNext,
+}: {
+  data: unknown;
+  onDataChange: (data: unknown) => void;
+  onNext: () => void;
 }) {
-  const [calendarReviewed, setCalendarReviewed] = useState(data?.calendarReviewed || false)
-  const [conflicts, setConflicts] = useState(data?.conflicts || '')
+  const [calendarReviewed, setCalendarReviewed] = useState(
+    (data as { calendarReviewed?: boolean })?.calendarReviewed || false
+  );
+  const [conflicts, setConflicts] = useState(
+    (data as { conflicts?: string })?.conflicts || ""
+  );
 
   const handleNext = () => {
-    onDataChange({ calendarReviewed, conflicts })
-    onNext()
-  }
+    onDataChange({ calendarReviewed, conflicts });
+    onNext();
+  };
 
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium text-gray-900 mb-3">
-          Review Today's Calendar
+          Review Today&apos;s Calendar
         </h3>
         <p className="text-gray-600 mb-4">
           Check your calendar for appointments, meetings, and hard commitments.
@@ -523,10 +571,12 @@ function CalendarCheckStep({ data, onDataChange, onNext }: {
           <div className="flex items-start gap-3">
             <Calendar className="h-5 w-5 text-yellow-600 mt-0.5" />
             <div>
-              <h4 className="font-medium text-yellow-900 text-sm">Calendar Integration</h4>
+              <h4 className="font-medium text-yellow-900 text-sm">
+                Calendar Integration
+              </h4>
               <p className="text-yellow-700 text-sm mt-1">
-                Open your calendar app to review today's schedule. Note any conflicts
-                or preparation needed for meetings.
+                Open your calendar app to review today&apos;s schedule. Note any
+                conflicts or preparation needed for meetings.
               </p>
             </div>
           </div>
@@ -543,7 +593,7 @@ function CalendarCheckStep({ data, onDataChange, onNext }: {
             className="rounded border-gray-300"
           />
           <Label htmlFor="calendar-reviewed">
-            I've reviewed my calendar for today
+            I&apos;ve reviewed my calendar for today
           </Label>
         </div>
 
@@ -559,12 +609,16 @@ function CalendarCheckStep({ data, onDataChange, onNext }: {
         </div>
       </div>
 
-      <Button onClick={handleNext} disabled={!calendarReviewed} className="w-full">
+      <Button
+        onClick={handleNext}
+        disabled={!calendarReviewed}
+        className="w-full"
+      >
         Continue to Task Review
         <ArrowRight className="h-4 w-4 ml-2" />
       </Button>
     </div>
-  )
+  );
 }
 
 function TaskTriageStep({
@@ -572,39 +626,42 @@ function TaskTriageStep({
   data,
   onDataChange,
   onTaskAction,
-  onNext
+  onNext,
 }: {
-  reviewData: DailyReviewData | null
-  data: any
-  onDataChange: (data: any) => void
-  onTaskAction: (task: Task, action: 'complete' | 'defer' | 'reschedule') => void
-  onNext: () => void
+  reviewData: DailyReviewData | null;
+  data: unknown;
+  onDataChange: (data: unknown) => void;
+  onTaskAction: (
+    task: Task,
+    action: "complete" | "defer" | "reschedule"
+  ) => void;
+  onNext: () => void;
 }) {
-  const todaysTasks = reviewData?.todaysTasks || []
-  const overdueTasks = reviewData?.overdueTasks || []
-  const [reviewedTaskIds, setReviewedTaskIds] = useState<string[]>(data?.reviewedTaskIds || [])
+  const todaysTasks = reviewData?.todaysTasks || [];
+  const overdueTasks = reviewData?.overdueTasks || [];
+  const [reviewedTaskIds, setReviewedTaskIds] = useState<string[]>(
+    (data as { reviewedTaskIds?: string[] })?.reviewedTaskIds || []
+  );
 
   const markTaskReviewed = (taskId: string) => {
-    const updated = [...reviewedTaskIds, taskId]
-    setReviewedTaskIds(updated)
-    onDataChange({ reviewedTaskIds: updated })
-  }
+    const updated = [...reviewedTaskIds, taskId];
+    setReviewedTaskIds(updated);
+    onDataChange({ reviewedTaskIds: updated });
+  };
 
-  const allTasksReviewed = [...todaysTasks, ...overdueTasks].every(task =>
+  const allTasksReviewed = [...todaysTasks, ...overdueTasks].every((task) =>
     reviewedTaskIds.includes(task.id)
-  )
+  );
 
   const handleNext = () => {
-    onDataChange({ reviewedTaskIds })
-    onNext()
-  }
+    onDataChange({ reviewedTaskIds });
+    onNext();
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-3">
-          Task Triage
-        </h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-3">Task Triage</h3>
         <p className="text-gray-600 mb-4">
           Review your tasks for today and handle any overdue items.
         </p>
@@ -633,7 +690,7 @@ function TaskTriageStep({
         <div className="space-y-3">
           <h4 className="font-medium text-gray-900 flex items-center gap-2">
             <Target className="h-4 w-4" />
-            Today's Tasks ({todaysTasks.length})
+            Today&apos;s Tasks ({todaysTasks.length})
           </h4>
           {todaysTasks.map((task) => (
             <TaskReviewCard
@@ -654,12 +711,16 @@ function TaskTriageStep({
         </div>
       )}
 
-      <Button onClick={handleNext} disabled={!allTasksReviewed} className="w-full">
+      <Button
+        onClick={handleNext}
+        disabled={!allTasksReviewed}
+        className="w-full"
+      >
         Continue to Waiting For
         <ArrowRight className="h-4 w-4 ml-2" />
       </Button>
     </div>
-  )
+  );
 }
 
 function TaskReviewCard({
@@ -667,16 +728,21 @@ function TaskReviewCard({
   isReviewed,
   onMarkReviewed,
   onTaskAction,
-  isOverdue = false
+  isOverdue = false,
 }: {
-  task: Task
-  isReviewed: boolean
-  onMarkReviewed: () => void
-  onTaskAction: (task: Task, action: 'complete' | 'defer' | 'reschedule') => void
-  isOverdue?: boolean
+  task: Task;
+  isReviewed: boolean;
+  onMarkReviewed: () => void;
+  onTaskAction: (
+    task: Task,
+    action: "complete" | "defer" | "reschedule"
+  ) => void;
+  isOverdue?: boolean;
 }) {
   return (
-    <Card className={`${isOverdue ? 'border-red-200 bg-red-50' : ''} ${isReviewed ? 'opacity-75' : ''}`}>
+    <Card
+      className={`${isOverdue ? "border-red-200 bg-red-50" : ""} ${isReviewed ? "opacity-75" : ""}`}
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
@@ -685,7 +751,9 @@ function TaskReviewCard({
               <p className="text-sm text-gray-600 mt-1">{task.description}</p>
             )}
             {task.due_date && (
-              <p className={`text-xs mt-2 ${isOverdue ? 'text-red-600' : 'text-gray-500'}`}>
+              <p
+                className={`text-xs mt-2 ${isOverdue ? "text-red-600" : "text-gray-500"}`}
+              >
                 Due: {new Date(task.due_date).toLocaleDateString()}
               </p>
             )}
@@ -698,8 +766,8 @@ function TaskReviewCard({
                   size="sm"
                   variant="outline"
                   onClick={() => {
-                    onTaskAction(task, 'complete')
-                    onMarkReviewed()
+                    onTaskAction(task, "complete");
+                    onMarkReviewed();
                   }}
                 >
                   <CheckCircle2 className="h-4 w-4" />
@@ -708,29 +776,23 @@ function TaskReviewCard({
                   size="sm"
                   variant="outline"
                   onClick={() => {
-                    onTaskAction(task, 'defer')
-                    onMarkReviewed()
+                    onTaskAction(task, "defer");
+                    onMarkReviewed();
                   }}
                 >
                   Defer
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onMarkReviewed}
-                >
+                <Button size="sm" variant="outline" onClick={onMarkReviewed}>
                   Skip
                 </Button>
               </>
             )}
-            {isReviewed && (
-              <Badge variant="secondary">Reviewed</Badge>
-            )}
+            {isReviewed && <Badge variant="secondary">Reviewed</Badge>}
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function WaitingForReviewStep({
@@ -738,31 +800,36 @@ function WaitingForReviewStep({
   data,
   onDataChange,
   onTaskAction,
-  onNext
+  onNext,
 }: {
-  reviewData: DailyReviewData | null
-  data: any
-  onDataChange: (data: any) => void
-  onTaskAction: (task: Task, action: 'complete' | 'defer' | 'reschedule') => void
-  onNext: () => void
+  reviewData: DailyReviewData | null;
+  data: unknown;
+  onDataChange: (data: unknown) => void;
+  onTaskAction: (
+    task: Task,
+    action: "complete" | "defer" | "reschedule"
+  ) => void;
+  onNext: () => void;
 }) {
-  const waitingForItems = reviewData?.waitingForItems || []
-  const [reviewedItemIds, setReviewedItemIds] = useState<string[]>(data?.reviewedItemIds || [])
+  const waitingForItems = reviewData?.waitingForItems || [];
+  const [reviewedItemIds, setReviewedItemIds] = useState<string[]>(
+    (data as { reviewedItemIds?: string[] })?.reviewedItemIds || []
+  );
 
   const markItemReviewed = (itemId: string) => {
-    const updated = [...reviewedItemIds, itemId]
-    setReviewedItemIds(updated)
-    onDataChange({ reviewedItemIds: updated })
-  }
+    const updated = [...reviewedItemIds, itemId];
+    setReviewedItemIds(updated);
+    onDataChange({ reviewedItemIds: updated });
+  };
 
-  const allItemsReviewed = waitingForItems.every(item =>
+  const allItemsReviewed = waitingForItems.every((item) =>
     reviewedItemIds.includes(item.id)
-  )
+  );
 
   const handleNext = () => {
-    onDataChange({ reviewedItemIds })
-    onNext()
-  }
+    onDataChange({ reviewedItemIds });
+    onNext();
+  };
 
   return (
     <div className="space-y-6">
@@ -771,23 +838,29 @@ function WaitingForReviewStep({
           Waiting For Review
         </h3>
         <p className="text-gray-600 mb-4">
-          Check on items you're waiting for from other people.
+          Check on items you&apos;re waiting for from other people.
         </p>
       </div>
 
       {waitingForItems.length > 0 ? (
         <div className="space-y-3">
           {waitingForItems.map((item) => (
-            <Card key={item.id} className={reviewedItemIds.includes(item.id) ? 'opacity-75' : ''}>
+            <Card
+              key={item.id}
+              className={reviewedItemIds.includes(item.id) ? "opacity-75" : ""}
+            >
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <h5 className="font-medium text-gray-900">{item.title}</h5>
                     {item.description && (
-                      <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {item.description}
+                      </p>
                     )}
                     <p className="text-xs text-gray-500 mt-2">
-                      Waiting since: {new Date(item.created_at).toLocaleDateString()}
+                      Waiting since:{" "}
+                      {new Date(item.created_at).toLocaleDateString()}
                     </p>
                   </div>
 
@@ -799,7 +872,7 @@ function WaitingForReviewStep({
                           variant="outline"
                           onClick={() => {
                             // Could add follow-up logic here
-                            markItemReviewed(item.id)
+                            markItemReviewed(item.id);
                           }}
                         >
                           Follow Up
@@ -829,26 +902,38 @@ function WaitingForReviewStep({
         </div>
       )}
 
-      <Button onClick={handleNext} disabled={!allItemsReviewed} className="w-full">
+      <Button
+        onClick={handleNext}
+        disabled={!allItemsReviewed}
+        className="w-full"
+      >
         Continue to Planning
         <ArrowRight className="h-4 w-4 ml-2" />
       </Button>
     </div>
-  )
+  );
 }
 
-function PlanningStep({ data, onDataChange, onNext }: {
-  data: any
-  onDataChange: (data: any) => void
-  onNext: () => void
+function PlanningStep({
+  data,
+  onDataChange,
+  onNext,
+}: {
+  data: unknown;
+  onDataChange: (data: unknown) => void;
+  onNext: () => void;
 }) {
-  const [tomorrowsPlan, setTomorrowsPlan] = useState(data?.tomorrowsPlan || '')
-  const [priorities, setPriorities] = useState(data?.priorities || '')
+  const [tomorrowsPlan, setTomorrowsPlan] = useState(
+    (data as { tomorrowsPlan?: string })?.tomorrowsPlan || ""
+  );
+  const [priorities, setPriorities] = useState(
+    (data as { priorities?: string })?.priorities || ""
+  );
 
   const handleNext = () => {
-    onDataChange({ tomorrowsPlan, priorities })
-    onNext()
-  }
+    onDataChange({ tomorrowsPlan, priorities });
+    onNext();
+  };
 
   return (
     <div className="space-y-6">
@@ -863,7 +948,9 @@ function PlanningStep({ data, onDataChange, onNext }: {
 
       <div className="space-y-4">
         <div>
-          <Label htmlFor="priorities">What are your top 3 priorities for tomorrow?</Label>
+          <Label htmlFor="priorities">
+            What are your top 3 priorities for tomorrow?
+          </Label>
           <Textarea
             id="priorities"
             placeholder="1. Complete project proposal
@@ -877,7 +964,9 @@ function PlanningStep({ data, onDataChange, onNext }: {
         </div>
 
         <div>
-          <Label htmlFor="tomorrows-plan">Any specific intentions or plans?</Label>
+          <Label htmlFor="tomorrows-plan">
+            Any specific intentions or plans?
+          </Label>
           <Textarea
             id="tomorrows-plan"
             placeholder="Focus on deep work in the morning, schedule calls for afternoon..."
@@ -895,8 +984,8 @@ function PlanningStep({ data, onDataChange, onNext }: {
           <div>
             <h4 className="font-medium text-green-900 text-sm">Planning Tip</h4>
             <p className="text-green-700 text-sm mt-1">
-              Keep it simple and realistic. It's better to accomplish 3 important things
-              than to plan 10 and feel overwhelmed.
+              Keep it simple and realistic. It&apos;s better to accomplish 3
+              important things than to plan 10 and feel overwhelmed.
             </p>
           </div>
         </div>
@@ -907,22 +996,28 @@ function PlanningStep({ data, onDataChange, onNext }: {
         <ArrowRight className="h-4 w-4 ml-2" />
       </Button>
     </div>
-  )
+  );
 }
 
-function ReflectionStep({ data, onDataChange, onNext }: {
-  data: any
-  onDataChange: (data: any) => void
-  onNext: () => void
+function ReflectionStep({
+  data,
+  onDataChange,
+  onNext,
+}: {
+  data: unknown;
+  onDataChange: (data: unknown) => void;
+  onNext: () => void;
 }) {
-  const [notes, setNotes] = useState(data?.notes || '')
-  const [wins, setWins] = useState(data?.wins || '')
-  const [improvements, setImprovements] = useState(data?.improvements || '')
+  const [notes, setNotes] = useState((data as { notes?: string })?.notes || "");
+  const [wins, setWins] = useState((data as { wins?: string })?.wins || "");
+  const [improvements, setImprovements] = useState(
+    (data as { improvements?: string })?.improvements || ""
+  );
 
   const handleNext = () => {
-    onDataChange({ notes, wins, improvements })
-    onNext()
-  }
+    onDataChange({ notes, wins, improvements });
+    onNext();
+  };
 
   return (
     <div className="space-y-6">
@@ -948,7 +1043,9 @@ function ReflectionStep({ data, onDataChange, onNext }: {
         </div>
 
         <div>
-          <Label htmlFor="improvements">What could be improved? (optional)</Label>
+          <Label htmlFor="improvements">
+            What could be improved? (optional)
+          </Label>
           <Input
             id="improvements"
             placeholder="Start earlier, better time blocking..."
@@ -975,10 +1072,12 @@ function ReflectionStep({ data, onDataChange, onNext }: {
         <div className="flex items-start gap-3">
           <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5" />
           <div>
-            <h4 className="font-medium text-blue-900 text-sm">Reflection Benefits</h4>
+            <h4 className="font-medium text-blue-900 text-sm">
+              Reflection Benefits
+            </h4>
             <p className="text-blue-700 text-sm mt-1">
-              Regular reflection helps you learn from experiences, celebrate progress,
-              and continuously improve your productivity system.
+              Regular reflection helps you learn from experiences, celebrate
+              progress, and continuously improve your productivity system.
             </p>
           </div>
         </div>
@@ -989,5 +1088,5 @@ function ReflectionStep({ data, onDataChange, onNext }: {
         <CheckCircle2 className="h-4 w-4 ml-2" />
       </Button>
     </div>
-  )
+  );
 }

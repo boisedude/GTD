@@ -20,6 +20,7 @@ This is a GTD (Getting Things Done) productivity app project inspired by David A
 ## Data Model
 
 ### Core Tables
+
 - **users**: id, email, timestamps
 - **tasks**: id, user_id, title, description, status (captured/next_action/project/waiting_for/someday), project_id, timestamps
 - **projects**: id, user_id, name, status (active/complete), timestamps
@@ -27,7 +28,7 @@ This is a GTD (Getting Things Done) productivity app project inspired by David A
 
 ## Development Commands
 
-*Note: This project appears to be in planning phase. Once implemented, standard Next.js commands will likely be:*
+_Note: This project appears to be in planning phase. Once implemented, standard Next.js commands will likely be:_
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production

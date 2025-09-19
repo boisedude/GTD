@@ -1,9 +1,9 @@
-import { Header, MobileNav } from '@/components/layout/header'
+import { Header, MobileNav } from "@/components/layout/header";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -11,5 +11,5 @@ export default function DashboardLayout({
       <main>{children}</main>
       <MobileNav />
     </div>
-  )
+  );
 }

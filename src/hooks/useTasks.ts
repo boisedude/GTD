@@ -1,246 +1,268 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import type { Task, CreateTaskInput, UpdateTaskInput } from '@/types/database'
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createClient } from "@/utils/supabase/client";
+import type { Task, CreateTaskInput, UpdateTaskInput } from "@/types/database";
 
 interface UseTasksOptions {
-  autoRefresh?: boolean
-  realTimeSync?: boolean
+  autoRefresh?: boolean;
+  realTimeSync?: boolean;
 }
 
 interface UseTasksReturn {
-  tasks: Task[]
-  loading: boolean
-  error: string | null
-  createTask: (input: CreateTaskInput) => Promise<Task>
-  updateTask: (id: string, input: UpdateTaskInput) => Promise<Task>
-  deleteTask: (id: string) => Promise<void>
-  refresh: () => Promise<void>
-  optimisticAdd: (task: Partial<Task>) => void
-  optimisticUpdate: (id: string, updates: Partial<Task>) => void
-  optimisticRemove: (id: string) => void
+  tasks: Task[];
+  loading: boolean;
+  error: string | null;
+  createTask: (input: CreateTaskInput) => Promise<Task>;
+  updateTask: (id: string, input: UpdateTaskInput) => Promise<Task>;
+  deleteTask: (id: string) => Promise<void>;
+  refresh: () => Promise<void>;
+  optimisticAdd: (task: Partial<Task>) => void;
+  optimisticUpdate: (id: string, updates: Partial<Task>) => void;
+  optimisticRemove: (id: string) => void;
 }
 
 export function useTasks(options: UseTasksOptions = {}): UseTasksReturn {
-  const { autoRefresh = true, realTimeSync = true } = options
+  const { autoRefresh = true, realTimeSync = true } = options;
 
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClient()
-  const subscribedRef = useRef(false)
+  const supabase = createClient();
+  const subscribedRef = useRef(false);
 
   // Fetch tasks from Supabase
   const fetchTasks = useCallback(async () => {
     try {
-      setError(null)
+      setError(null);
 
       const { data, error: fetchError } = await supabase
-        .from('tasks')
-        .select('*')
-        .order('created_at', { ascending: false })
+        .from("tasks")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (fetchError) {
-        throw new Error(fetchError.message)
+        throw new Error(fetchError.message);
       }
 
-      setTasks(data || [])
+      setTasks(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch tasks')
-      console.error('Error fetching tasks:', err)
+      setError(err instanceof Error ? err.message : "Failed to fetch tasks");
+      console.error("Error fetching tasks:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [supabase])
+  }, [supabase]);
 
   // Create a new task
-  const createTask = useCallback(async (input: CreateTaskInput): Promise<Task> => {
-    try {
-      setError(null)
+  const createTask = useCallback(
+    async (input: CreateTaskInput): Promise<Task> => {
+      try {
+        setError(null);
 
-      const { data, error: createError } = await supabase
-        .from('tasks')
-        .insert({
-          ...input,
-          status: input.status || 'captured'
-        })
-        .select()
-        .single()
+        const { data, error: createError } = await supabase
+          .from("tasks")
+          .insert({
+            ...input,
+            status: input.status || "captured",
+          })
+          .select()
+          .single();
 
-      if (createError) {
-        throw new Error(createError.message)
+        if (createError) {
+          throw new Error(createError.message);
+        }
+
+        if (!data) {
+          throw new Error("No data returned from task creation");
+        }
+
+        // Update local state optimistically if real-time is disabled
+        if (!realTimeSync) {
+          setTasks((prev) => [data, ...prev]);
+        }
+
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create task";
+        setError(errorMessage);
+        throw err;
       }
-
-      if (!data) {
-        throw new Error('No data returned from task creation')
-      }
-
-      // Update local state optimistically if real-time is disabled
-      if (!realTimeSync) {
-        setTasks(prev => [data, ...prev])
-      }
-
-      return data
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create task'
-      setError(errorMessage)
-      throw err
-    }
-  }, [supabase, realTimeSync])
+    },
+    [supabase, realTimeSync]
+  );
 
   // Update an existing task
-  const updateTask = useCallback(async (id: string, input: UpdateTaskInput): Promise<Task> => {
-    try {
-      setError(null)
+  const updateTask = useCallback(
+    async (id: string, input: UpdateTaskInput): Promise<Task> => {
+      try {
+        setError(null);
 
-      const { data, error: updateError } = await supabase
-        .from('tasks')
-        .update({
-          ...input,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .select()
-        .single()
+        const { data, error: updateError } = await supabase
+          .from("tasks")
+          .update({
+            ...input,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", id)
+          .select()
+          .single();
 
-      if (updateError) {
-        throw new Error(updateError.message)
+        if (updateError) {
+          throw new Error(updateError.message);
+        }
+
+        if (!data) {
+          throw new Error("No data returned from task update");
+        }
+
+        // Update local state optimistically if real-time is disabled
+        if (!realTimeSync) {
+          setTasks((prev) =>
+            prev.map((task) => (task.id === id ? data : task))
+          );
+        }
+
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update task";
+        setError(errorMessage);
+        throw err;
       }
-
-      if (!data) {
-        throw new Error('No data returned from task update')
-      }
-
-      // Update local state optimistically if real-time is disabled
-      if (!realTimeSync) {
-        setTasks(prev => prev.map(task => task.id === id ? data : task))
-      }
-
-      return data
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update task'
-      setError(errorMessage)
-      throw err
-    }
-  }, [supabase, realTimeSync])
+    },
+    [supabase, realTimeSync]
+  );
 
   // Delete a task
-  const deleteTask = useCallback(async (id: string): Promise<void> => {
-    try {
-      setError(null)
+  const deleteTask = useCallback(
+    async (id: string): Promise<void> => {
+      try {
+        setError(null);
 
-      const { error: deleteError } = await supabase
-        .from('tasks')
-        .delete()
-        .eq('id', id)
+        const { error: deleteError } = await supabase
+          .from("tasks")
+          .delete()
+          .eq("id", id);
 
-      if (deleteError) {
-        throw new Error(deleteError.message)
+        if (deleteError) {
+          throw new Error(deleteError.message);
+        }
+
+        // Update local state optimistically if real-time is disabled
+        if (!realTimeSync) {
+          setTasks((prev) => prev.filter((task) => task.id !== id));
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to delete task";
+        setError(errorMessage);
+        throw err;
       }
-
-      // Update local state optimistically if real-time is disabled
-      if (!realTimeSync) {
-        setTasks(prev => prev.filter(task => task.id !== id))
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete task'
-      setError(errorMessage)
-      throw err
-    }
-  }, [supabase, realTimeSync])
+    },
+    [supabase, realTimeSync]
+  );
 
   // Optimistic UI updates
   const optimisticAdd = useCallback((task: Partial<Task>) => {
     const optimisticTask: Task = {
       id: `temp-${Date.now()}`,
-      user_id: '',
-      title: '',
-      status: 'captured',
+      user_id: "",
+      title: "",
+      status: "captured",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      ...task
-    }
-    setTasks(prev => [optimisticTask, ...prev])
-  }, [])
+      ...task,
+    };
+    setTasks((prev) => [optimisticTask, ...prev]);
+  }, []);
 
   const optimisticUpdate = useCallback((id: string, updates: Partial<Task>) => {
-    setTasks(prev => prev.map(task =>
-      task.id === id
-        ? { ...task, ...updates, updated_at: new Date().toISOString() }
-        : task
-    ))
-  }, [])
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id
+          ? { ...task, ...updates, updated_at: new Date().toISOString() }
+          : task
+      )
+    );
+  }, []);
 
   const optimisticRemove = useCallback((id: string) => {
-    setTasks(prev => prev.filter(task => task.id !== id))
-  }, [])
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  }, []);
 
   // Refresh tasks
   const refresh = useCallback(async () => {
-    setLoading(true)
-    await fetchTasks()
-  }, [fetchTasks])
+    setLoading(true);
+    await fetchTasks();
+  }, [fetchTasks]);
 
   // Set up real-time subscription
   useEffect(() => {
-    if (!realTimeSync || subscribedRef.current) return
+    if (!realTimeSync || subscribedRef.current) return;
 
     const subscription = supabase
-      .channel('tasks_channel')
+      .channel("tasks_channel")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'tasks'
+          event: "*",
+          schema: "public",
+          table: "tasks",
         },
         (payload) => {
           switch (payload.eventType) {
-            case 'INSERT':
+            case "INSERT":
               if (payload.new) {
-                setTasks(prev => {
+                setTasks((prev) => {
                   // Avoid duplicates
-                  const exists = prev.some(task => task.id === payload.new.id)
-                  if (exists) return prev
-                  return [payload.new as Task, ...prev]
-                })
+                  const exists = prev.some(
+                    (task) => task.id === payload.new.id
+                  );
+                  if (exists) return prev;
+                  return [payload.new as Task, ...prev];
+                });
               }
-              break
+              break;
 
-            case 'UPDATE':
+            case "UPDATE":
               if (payload.new) {
-                setTasks(prev => prev.map(task =>
-                  task.id === payload.new.id ? payload.new as Task : task
-                ))
+                setTasks((prev) =>
+                  prev.map((task) =>
+                    task.id === payload.new.id ? (payload.new as Task) : task
+                  )
+                );
               }
-              break
+              break;
 
-            case 'DELETE':
+            case "DELETE":
               if (payload.old) {
-                setTasks(prev => prev.filter(task => task.id !== payload.old.id))
+                setTasks((prev) =>
+                  prev.filter((task) => task.id !== payload.old.id)
+                );
               }
-              break
+              break;
           }
         }
       )
-      .subscribe()
+      .subscribe();
 
-    subscribedRef.current = true
+    subscribedRef.current = true;
 
     return () => {
-      subscription.unsubscribe()
-      subscribedRef.current = false
-    }
-  }, [supabase, realTimeSync])
+      subscription.unsubscribe();
+      subscribedRef.current = false;
+    };
+  }, [supabase, realTimeSync]);
 
   // Initial fetch
   useEffect(() => {
     if (autoRefresh) {
-      fetchTasks()
+      fetchTasks();
     }
-  }, [fetchTasks, autoRefresh])
+  }, [fetchTasks, autoRefresh]);
 
   return {
     tasks,
@@ -252,6 +274,6 @@ export function useTasks(options: UseTasksOptions = {}): UseTasksReturn {
     refresh,
     optimisticAdd,
     optimisticUpdate,
-    optimisticRemove
-  }
+    optimisticRemove,
+  };
 }
