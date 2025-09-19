@@ -74,7 +74,6 @@ export function useOfflineActions(
           prev.filter((a) => a.id !== offlineAction.id)
         );
 
-        console.log("Successfully executed offline action:", offlineAction);
       } catch (error) {
         // Update retry count and timestamp
         setPendingActions((prev) =>

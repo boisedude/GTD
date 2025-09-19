@@ -1,7 +1,6 @@
 // Clarity Done Service Worker
 // Provides offline functionality and caching for the GTD productivity app
 
-const CACHE_NAME = "clarity-done-v1";
 const STATIC_CACHE_NAME = "clarity-done-static-v1";
 const DYNAMIC_CACHE_NAME = "clarity-done-dynamic-v1";
 

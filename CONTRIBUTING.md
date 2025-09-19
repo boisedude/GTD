@@ -52,6 +52,10 @@
 - `/src/hooks/` - Custom React hooks
 - `/src/stores/` - Zustand state management
 - `/docs/` - Architecture and development documentation
+  - `ARCHITECTURE.md` - Technical architecture and decisions
+  - `PRODUCT_REQUIREMENTS.md` - Product goals and MVP scope
+  - `GTD_GUIDANCE.md` - GTD methodology and UX guidance
+  - `DESIGN_SYSTEM.md` - UI components and design guidelines
 
 ## Development Workflow
 
@@ -117,7 +121,7 @@
 
 ### Terminology
 
-- Use GTD-approved language (see `Baseline.md`)
+- Use GTD-approved language (see `docs/GTD_GUIDANCE.md`)
 - Include proper disclaimers about GTD inspiration
 - Avoid claiming official GTD affiliation
 

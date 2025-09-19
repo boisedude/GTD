@@ -51,3 +51,15 @@ next-env.d.ts
 # editor
 .vscode/
 .idea/
+
+# development artifacts
+debug-*.png
+gtd-*.png
+mobile-*.png
+*.debug.png
+key
+key.pub
+
+# backup directories
+src_backup/
+*_backup/

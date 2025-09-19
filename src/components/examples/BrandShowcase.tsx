@@ -7,6 +7,7 @@
  */
 
 import { BRAND } from "@/lib/brand";
+import Image from 'next/image';
 
 export function BrandShowcase() {
   return (
@@ -14,9 +15,11 @@ export function BrandShowcase() {
       {/* Brand Header */}
       <header className="text-center space-y-4">
         <div className="flex items-center justify-center space-x-4">
-          <img
+          <Image
             src="/logo.png"
             alt="ClarityDone Logo"
+            width={64}
+            height={64}
             className="h-16 w-16 object-contain"
           />
           <div>

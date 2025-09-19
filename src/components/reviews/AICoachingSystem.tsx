@@ -353,7 +353,8 @@ export function AICoachingSystem({
   reviewType,
   currentStep,
   reviewData,
-  insights,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  insights: _insights, // Currently unused - reserved for future dynamic coaching
   compact = false,
 }: AICoachingSystemProps) {
   const [visiblePrompts, setVisiblePrompts] = useState<CoachingPrompt[]>([]);

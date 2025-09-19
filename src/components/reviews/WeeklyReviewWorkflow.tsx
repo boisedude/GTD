@@ -893,7 +893,8 @@ function ProjectReviewStep({
   reviewData,
   data,
   onDataChange,
-  onTaskAction,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onTaskAction: _onTaskAction, // Interface compliance - unused in this step
   onNext,
 }: {
   reviewData: WeeklyReviewData | null;
@@ -1114,10 +1115,14 @@ function WeeklyCalendarStep({
 }
 
 function WeeklyWaitingForStep({
-  reviewData,
-  data,
-  onDataChange,
-  onTaskAction,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  reviewData: _reviewData, // Interface compliance - unused in this step
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  data: _data, // Interface compliance - unused in this step
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onDataChange: _onDataChange, // Interface compliance - unused in this step
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onTaskAction: _onTaskAction, // Interface compliance - unused in this step
   onNext,
 }: {
   reviewData: WeeklyReviewData | null;
@@ -1146,10 +1151,14 @@ function WeeklyWaitingForStep({
 }
 
 function SomedayReviewStep({
-  reviewData,
-  data,
-  onDataChange,
-  onTaskAction,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  reviewData: _reviewData, // Interface compliance - unused in this step
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  data: _data, // Interface compliance - unused in this step
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onDataChange: _onDataChange, // Interface compliance - unused in this step
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onTaskAction: _onTaskAction, // Interface compliance - unused in this step
   onNext,
 }: {
   reviewData: WeeklyReviewData | null;
@@ -1178,7 +1187,8 @@ function SomedayReviewStep({
 }
 
 function WeeklyPlanningStep({
-  reviewData,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  reviewData: _reviewData, // Interface compliance - unused in this step
   data,
   onDataChange,
   onNext,
@@ -1229,7 +1239,8 @@ function WeeklyPlanningStep({
 }
 
 function WeeklyReflectionStep({
-  reviewData,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  reviewData: _reviewData, // Interface compliance - unused in this step
   data,
   onDataChange,
   onNext,

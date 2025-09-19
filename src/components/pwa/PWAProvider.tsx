@@ -45,7 +45,6 @@ export function PWAProvider({ children }: PWAProviderProps) {
           const reg = await navigator.serviceWorker.register("/sw.js");
           setRegistration(reg);
 
-          console.log("Service Worker registered:", reg);
 
           // Check for updates
           reg.addEventListener("updatefound", () => {
@@ -110,9 +109,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
     const result = await deferredPrompt.userChoice;
 
     if (result.outcome === "accepted") {
-      console.log("PWA install accepted");
     } else {
-      console.log("PWA install dismissed");
       localStorage.setItem("pwa-install-dismissed", Date.now().toString());
     }
 

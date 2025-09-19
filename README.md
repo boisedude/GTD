@@ -97,6 +97,13 @@ The app uses Supabase with the following core tables:
 - `projects` - Projects and multi-step outcomes
 - `reviews` - Review completion tracking
 
+## Documentation
+
+- [Product Requirements](docs/PRODUCT_REQUIREMENTS.md) - Product goals and MVP scope
+- [Architecture](docs/ARCHITECTURE.md) - Technical architecture and decisions
+- [GTD Guidance](docs/GTD_GUIDANCE.md) - GTD methodology and UX guidance
+- [Design System](docs/DESIGN_SYSTEM.md) - UI components and design guidelines
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.

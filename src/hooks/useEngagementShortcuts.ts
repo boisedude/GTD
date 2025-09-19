@@ -147,7 +147,7 @@ export function useEngagementShortcuts(
 
 function showKeyboardHelp() {
   // Could show a modal or toast with keyboard shortcuts
-  console.log("Keyboard shortcuts:", getShortcutList());
+  // TODO: Implement keyboard shortcuts modal/toast
 }
 
 function getShortcutList() {
