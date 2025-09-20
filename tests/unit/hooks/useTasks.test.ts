@@ -11,12 +11,12 @@ vi.mock('@/utils/supabase/client', () => ({
 }))
 
 describe('useTasks', () => {
-  let mockSupabase: any
+  let mockSupabase: ReturnType<typeof createMockSupabaseClient>
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockSupabase = createMockSupabaseClient()
-    const { createClient } = require('@/utils/supabase/client')
-    createClient.mockReturnValue(mockSupabase)
+    const { createClient } = await import('@/utils/supabase/client')
+    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase)
   })
 
   afterEach(() => {
@@ -68,7 +68,7 @@ describe('useTasks', () => {
         status: 'captured',
       }
 
-      let createdTask: any
+      let createdTask: unknown
       await act(async () => {
         createdTask = await result.current.createTask(taskInput)
       })
@@ -114,6 +114,7 @@ describe('useTasks', () => {
       const taskInput: CreateTaskInput = {
         title: 'New Task',
         description: 'New task description',
+        status: 'captured',
       }
 
       await act(async () => {
@@ -141,7 +142,7 @@ describe('useTasks', () => {
         title: 'Updated Task',
       }
 
-      let resultTask: any
+      let resultTask: unknown
       await act(async () => {
         resultTask = await result.current.updateTask('task-1', updateInput)
       })
@@ -295,7 +296,7 @@ describe('useTasks', () => {
     })
 
     it('should handle INSERT events from real-time subscription', () => {
-      let subscriptionHandler: any
+      let subscriptionHandler: (payload: { eventType: string; new?: unknown; old?: unknown }) => void
       const mockChannel = {
         on: vi.fn((event, config, handler) => {
           subscriptionHandler = handler
@@ -321,7 +322,7 @@ describe('useTasks', () => {
     })
 
     it('should handle UPDATE events from real-time subscription', () => {
-      let subscriptionHandler: any
+      let subscriptionHandler: (payload: { eventType: string; new?: unknown; old?: unknown }) => void
       const mockChannel = {
         on: vi.fn((event, config, handler) => {
           subscriptionHandler = handler
@@ -353,7 +354,7 @@ describe('useTasks', () => {
     })
 
     it('should handle DELETE events from real-time subscription', () => {
-      let subscriptionHandler: any
+      let subscriptionHandler: (payload: { eventType: string; new?: unknown; old?: unknown }) => void
       const mockChannel = {
         on: vi.fn((event, config, handler) => {
           subscriptionHandler = handler

@@ -132,10 +132,6 @@ export class DashboardPage extends BasePage {
 
   // Drag and drop
   async dragTaskBetweenLists(title: string, fromList: string, toList: string) {
-    const sourceList = this.page.getByTestId(fromList)
-    const targetList = this.page.getByTestId(toList)
-    const taskCard = sourceList.getByText(title)
-
     await this.dragAndDrop(
       `[data-testid="${fromList}"] [data-testid="task-card"]:has-text("${title}")`,
       `[data-testid="${toList}"]`

@@ -43,7 +43,7 @@ test.describe('Accessibility Tests', () => {
       // Submit button should be properly labeled
       const submitButton = loginPage.signInButton
       await expect(submitButton).toHaveAttribute('type', 'submit')
-      await expect(submitButton).toHaveAccessibleName()
+      await expect(submitButton).toHaveAccessibleName(/sign in|submit|login/i)
     })
 
     test('should support keyboard navigation', async ({ page }) => {
@@ -208,7 +208,7 @@ test.describe('Accessibility Tests', () => {
 
       // Add button should be accessible
       const addButton = dashboardPage.addTaskButton
-      await expect(addButton).toHaveAccessibleName()
+      await expect(addButton).toHaveAccessibleName(/add|create|capture/i)
       await expect(addButton).toHaveAttribute('aria-label')
     })
 
@@ -255,7 +255,7 @@ test.describe('Accessibility Tests', () => {
       // Each task should be properly labeled
       for (let i = 0; i < taskCount; i++) {
         const taskItem = taskItems.nth(i)
-        await expect(taskItem).toHaveAccessibleName()
+        await expect(taskItem).toHaveAccessibleName(/task \d+|.*task.*/i)
       }
     })
 

@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test'
+import { Page, expect, Response } from '@playwright/test'
 
 export class BasePage {
   readonly page: Page
@@ -120,7 +120,7 @@ export class BasePage {
     await this.page.waitForLoadState('networkidle')
   }
 
-  async mockApiResponse(url: string | RegExp, response: any) {
+  async mockApiResponse(url: string | RegExp, response: Record<string, unknown>) {
     await this.page.route(url, async route => {
       await route.fulfill({
         status: 200,
@@ -130,7 +130,7 @@ export class BasePage {
     })
   }
 
-  async interceptApiCall(url: string | RegExp): Promise<any> {
+  async interceptApiCall(url: string | RegExp): Promise<Response> {
     const responsePromise = this.page.waitForResponse(url)
     return responsePromise
   }

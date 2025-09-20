@@ -24,7 +24,7 @@ export const handlers = [
   }),
 
   http.post('/rest/v1/tasks', async ({ request }) => {
-    const newTask = await request.json()
+    const newTask = await request.json() as Record<string, unknown>
     const task = {
       id: `task-${Date.now()}`,
       user_id: mockUsers[0].id,
@@ -36,7 +36,7 @@ export const handlers = [
   }),
 
   http.patch('/rest/v1/tasks', async ({ request }) => {
-    const updates = await request.json()
+    const updates = await request.json() as Record<string, unknown>
     const updatedTask = {
       ...mockTasks[0],
       ...updates,
@@ -55,7 +55,7 @@ export const handlers = [
   }),
 
   http.post('/rest/v1/projects', async ({ request }) => {
-    const newProject = await request.json()
+    const newProject = await request.json() as Record<string, unknown>
     const project = {
       id: `project-${Date.now()}`,
       user_id: mockUsers[0].id,
@@ -67,7 +67,7 @@ export const handlers = [
   }),
 
   http.patch('/rest/v1/projects', async ({ request }) => {
-    const updates = await request.json()
+    const updates = await request.json() as Record<string, unknown>
     const updatedProject = {
       ...mockProjects[0],
       ...updates,
@@ -86,7 +86,7 @@ export const handlers = [
   }),
 
   http.post('/rest/v1/reviews', async ({ request }) => {
-    const newReview = await request.json()
+    const newReview = await request.json() as Record<string, unknown>
     const review = {
       id: `review-${Date.now()}`,
       user_id: mockUsers[0].id,

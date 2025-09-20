@@ -183,7 +183,7 @@ test.describe('Authentication Flow', () => {
   })
 
   test.describe('Performance', () => {
-    test('should load quickly', async ({ page }) => {
+    test('should load quickly', async ({ page: _page }) => { // eslint-disable-line @typescript-eslint/no-unused-vars
       const startTime = Date.now()
 
       await loginPage.goto()

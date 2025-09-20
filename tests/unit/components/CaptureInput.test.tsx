@@ -4,8 +4,8 @@ import { userInteractions } from '../../utils/test-utils'
 import { CaptureInput } from '@/components/capture/CaptureInput'
 
 describe('CaptureInput', () => {
-  let mockOnTaskCapture: any
-  let mockOnDetailedCapture: any
+  let mockOnTaskCapture: ReturnType<typeof vi.fn>
+  let mockOnDetailedCapture: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     mockOnTaskCapture = vi.fn().mockResolvedValue(undefined)
@@ -113,7 +113,7 @@ describe('CaptureInput', () => {
     })
 
     it('should show saving state during save operation', async () => {
-      const slowSave = vi.fn(() => new Promise(resolve => setTimeout(resolve, 100)))
+      const slowSave = vi.fn(() => new Promise<void>(resolve => setTimeout(resolve, 100)))
       render(<CaptureInput onTaskCapture={slowSave} />)
       const input = screen.getByPlaceholderText("What's on your mind?")
       const addButton = screen.getByRole('button', { name: /add task/i })
@@ -136,6 +136,7 @@ describe('CaptureInput', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Saved!')).toBeInTheDocument()
+        return true
       })
 
       expect(input).toHaveValue('')
@@ -152,6 +153,7 @@ describe('CaptureInput', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Save failed')).toBeInTheDocument()
+        return true
       })
     })
 
@@ -182,6 +184,7 @@ describe('CaptureInput', () => {
 
       await waitFor(() => {
         expect(mockOnTaskCapture).toHaveBeenCalledWith('Test task')
+        return true
       })
     })
 
@@ -221,6 +224,7 @@ describe('CaptureInput', () => {
 
       await waitFor(() => {
         expect(mockOnTaskCapture).toHaveBeenCalledWith('Test task')
+        return true
       })
     })
   })
@@ -348,6 +352,7 @@ describe('CaptureInput', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Failed to save task')).toBeInTheDocument()
+        return true
       })
     })
   })

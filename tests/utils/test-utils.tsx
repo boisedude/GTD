@@ -5,9 +5,8 @@ import { AuthProvider } from '@/contexts/auth-context'
 import { mockUsers } from '../fixtures/data'
 
 // Mock AuthContext provider for testing
-const MockAuthProvider: React.FC<{ children: React.ReactNode; user?: any }> = ({
+const MockAuthProvider: React.FC<{ children: React.ReactNode; user?: typeof mockUsers[0] }> = ({
   children,
-  user = mockUsers[0]
 }) => {
   // For testing, we'll use the real AuthProvider but with mocked Supabase client
   return (
@@ -18,7 +17,7 @@ const MockAuthProvider: React.FC<{ children: React.ReactNode; user?: any }> = ({
 }
 
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  user?: any
+  user?: typeof mockUsers[0]
   withAuth?: boolean
 }
 
@@ -60,7 +59,7 @@ export const waitFor = async (
 }
 
 // Create a mock Supabase client
-export const createMockSupabaseClient = (overrides: any = {}) => {
+export const createMockSupabaseClient = (overrides: Record<string, unknown> = {}) => {
   const defaultClient = {
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: mockUsers[0] }, error: null }),
@@ -126,7 +125,7 @@ export const createMockTimer = () => {
 }
 
 // Mock fetch responses
-export const mockFetch = (response: any, status = 200) => {
+export const mockFetch = (response: unknown, status = 200) => {
   global.fetch = vi.fn().mockResolvedValue({
     ok: status >= 200 && status < 300,
     status,

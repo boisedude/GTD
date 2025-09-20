@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, waitFor, act } from '@testing-library/react'
+import React from 'react'
 import { createMockSupabaseClient } from '../../utils/test-utils'
 import { mockUsers, testCredentials } from '../../fixtures/data'
 
@@ -27,7 +28,7 @@ vi.mock('next/navigation', () => ({
 }))
 
 // Create a mock auth context for integration testing
-const createMockAuthContext = (mockSupabase: any) => {
+const createMockAuthContext = (mockSupabase: ReturnType<typeof createMockSupabaseClient>) => {
   const useAuth = () => {
     const [user, setUser] = React.useState(null)
     const [loading, setLoading] = React.useState(true)
@@ -63,13 +64,13 @@ const createMockAuthContext = (mockSupabase: any) => {
 }
 
 describe('Authentication Integration', () => {
-  let mockSupabase: any
-  let useAuth: any
+  let mockSupabase: ReturnType<typeof createMockSupabaseClient>
+  let useAuth: ReturnType<typeof createMockAuthContext>
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockSupabase = createMockSupabaseClient()
-    const { createClient } = require('@/utils/supabase/client')
-    createClient.mockReturnValue(mockSupabase)
+    const { createClient } = await import('@/utils/supabase/client')
+    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase)
 
     useAuth = createMockAuthContext(mockSupabase)
   })
@@ -301,7 +302,7 @@ describe('Authentication Integration', () => {
 
       const { result } = renderHook(() => useAuth())
 
-      let signInResult: any
+      let signInResult: unknown
       await act(async () => {
         signInResult = await result.current.signIn(testCredentials.email)
       })

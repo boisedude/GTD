@@ -11,12 +11,12 @@ vi.mock('@/utils/supabase/client', () => ({
 }))
 
 describe('useProjects', () => {
-  let mockSupabase: any
+  let mockSupabase: ReturnType<typeof createMockSupabaseClient>
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockSupabase = createMockSupabaseClient()
-    const { createClient } = require('@/utils/supabase/client')
-    createClient.mockReturnValue(mockSupabase)
+    const { createClient } = await import('@/utils/supabase/client')
+    ;(createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase)
   })
 
   afterEach(() => {
@@ -61,7 +61,7 @@ describe('useProjects', () => {
         status: 'active' as const,
       }
 
-      let createdProject: any
+      let createdProject: unknown
       await act(async () => {
         createdProject = await result.current.createProject(projectInput)
       })
@@ -132,7 +132,7 @@ describe('useProjects', () => {
         name: 'Updated Project',
       }
 
-      let resultProject: any
+      let resultProject: unknown
       await act(async () => {
         resultProject = await result.current.updateProject('project-1', updateInput)
       })
@@ -243,7 +243,7 @@ describe('useProjects', () => {
 
       const { result } = renderHook(() => useProjects({ autoRefresh: false }))
 
-      let tasks: any
+      let tasks: unknown
       await act(async () => {
         tasks = await result.current.getProjectTasks('project-1')
       })
@@ -285,7 +285,7 @@ describe('useProjects', () => {
         status: 'captured',
       }
 
-      let createdTask: any
+      let createdTask: unknown
       await act(async () => {
         createdTask = await result.current.addTaskToProject('project-1', taskInput)
       })
@@ -310,6 +310,7 @@ describe('useProjects', () => {
 
       const taskInput: CreateTaskInput = {
         title: 'New Project Task',
+        status: 'captured',
       }
 
       await act(async () => {
@@ -334,6 +335,7 @@ describe('useProjects', () => {
 
       const taskInput: CreateTaskInput = {
         title: 'New Project Task',
+        status: 'captured',
       }
 
       await act(async () => {
@@ -376,7 +378,7 @@ describe('useProjects', () => {
     })
 
     it('should handle INSERT events from real-time subscription', () => {
-      let subscriptionHandler: any
+      let subscriptionHandler: (payload: { eventType: string; new?: unknown; old?: unknown }) => void
       const mockChannel = {
         on: vi.fn((event, config, handler) => {
           subscriptionHandler = handler

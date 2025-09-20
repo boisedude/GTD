@@ -4,7 +4,7 @@ import { useKeyboardShortcuts, GTD_SHORTCUTS } from '@/hooks/useKeyboardShortcut
 import type { KeyboardShortcut } from '@/hooks/useKeyboardShortcuts'
 
 describe('useKeyboardShortcuts', () => {
-  let mockAction: any
+  let mockAction: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     mockAction = vi.fn()
