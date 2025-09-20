@@ -1,431 +1,574 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, waitFor, act } from "@testing-library/react";
-import React from "react";
+import { renderHook, rtlWaitFor } from "../../utils/test-utils";
+import { useAuth } from "@/contexts/auth-context";
 import { createMockSupabaseClient } from "../../utils/test-utils";
-import { mockUsers, testCredentials } from "../../fixtures/data";
 
-// Mock the Supabase client
+// Mock Supabase client
 vi.mock("@/utils/supabase/client", () => ({
-  createClient: vi.fn(),
+  createClient: vi.fn(() => mockSupabaseClient),
 }));
 
-// Mock Next.js navigation
-const mockPush = vi.fn();
-const mockReplace = vi.fn();
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: mockReplace,
-    prefetch: vi.fn(),
-    back: vi.fn(),
-    forward: vi.fn(),
-    refresh: vi.fn(),
-  }),
-  useSearchParams: () => ({
-    get: vi.fn(),
-  }),
-  usePathname: () => "/dashboard",
-}));
-
-// Create a mock auth context for integration testing
-const createMockAuthContext = (
-  mockSupabase: ReturnType<typeof createMockSupabaseClient>
-) => {
-  const useAuth = () => {
-    const [user, setUser] = React.useState(null);
-    const [loading, setLoading] = React.useState(true);
-
-    const signIn = async (email: string) => {
-      const { data, error } = await mockSupabase.auth.signInWithOtp({ email });
-      if (error) throw error;
-      return data;
-    };
-
-    const signOut = async () => {
-      const { error } = await mockSupabase.auth.signOut();
-      if (error) throw error;
-      setUser(null);
-    };
-
-    const getUser = async () => {
-      const { data, error } = await mockSupabase.auth.getUser();
-      if (error) throw error;
-      setUser(data.user);
-      setLoading(false);
-      return data.user;
-    };
-
-    React.useEffect(() => {
-      getUser();
-    }, []);
-
-    return { user, loading, signIn, signOut, getUser };
-  };
-
-  return useAuth;
-};
+let mockSupabaseClient: ReturnType<typeof createMockSupabaseClient>;
 
 describe("Authentication Integration", () => {
-  let mockSupabase: ReturnType<typeof createMockSupabaseClient>;
-  let useAuth: ReturnType<typeof createMockAuthContext>;
-
-  beforeEach(async () => {
-    mockSupabase = createMockSupabaseClient();
-    const { createClient } = await import("@/utils/supabase/client");
-    (createClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    useAuth = createMockAuthContext(mockSupabase);
-  });
-
-  afterEach(() => {
+  beforeEach(() => {
+    mockSupabaseClient = createMockSupabaseClient();
     vi.clearAllMocks();
   });
 
-  describe("sign in flow", () => {
-    it("should successfully sign in with valid email", async () => {
-      mockSupabase.auth.signInWithOtp.mockResolvedValue({
-        data: { user: null, session: null },
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await result.current.signIn(testCredentials.email);
-      });
-
-      expect(mockSupabase.auth.signInWithOtp).toHaveBeenCalledWith({
-        email: testCredentials.email,
-      });
-    });
-
-    it("should handle sign in with OTP including options", async () => {
-      mockSupabase.auth.signInWithOtp.mockResolvedValue({
-        data: { user: null, session: null },
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await result.current.signIn(testCredentials.email);
-      });
-
-      expect(mockSupabase.auth.signInWithOtp).toHaveBeenCalledWith({
-        email: testCredentials.email,
-      });
-    });
-
-    it("should handle sign in errors", async () => {
-      const signInError = new Error("Invalid email address");
-      mockSupabase.auth.signInWithOtp.mockResolvedValue({
-        data: null,
-        error: signInError,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await expect(result.current.signIn("invalid-email")).rejects.toThrow(
-          "Invalid email address"
-        );
-      });
-    });
-
-    it("should handle network errors during sign in", async () => {
-      mockSupabase.auth.signInWithOtp.mockRejectedValue(
-        new Error("Network error")
-      );
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await expect(
-          result.current.signIn(testCredentials.email)
-        ).rejects.toThrow("Network error");
-      });
-    });
+  afterEach(() => {
+    vi.clearAllTimers();
   });
 
-  describe("user session management", () => {
-    it("should load user session on initialization", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: mockUsers[0] },
-        error: null,
-      });
-
+  describe("useAuth hook integration", () => {
+    it("should initialize with loading state", () => {
       const { result } = renderHook(() => useAuth());
 
       expect(result.current.loading).toBe(true);
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current.user).toEqual(mockUsers[0]);
-      expect(mockSupabase.auth.getUser).toHaveBeenCalled();
+      expect(result.current.user).toBe(null);
     });
 
-    it("should handle no active session", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
+    it("should load authenticated user on mount", async () => {
+      const mockUser = {
+        id: "user-1",
+        email: "test@example.com",
+        created_at: "2023-01-01T00:00:00Z",
+        updated_at: "2023-01-01T00:00:00Z",
+      };
+
+      mockSupabaseClient.auth.getUser.mockResolvedValue({
+        data: { user: mockUser },
+        error: null,
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.user).toEqual(mockUser);
+      });
+    });
+
+    it("should handle no authenticated user", async () => {
+      mockSupabaseClient.auth.getUser.mockResolvedValue({
         data: { user: null },
         error: null,
       });
 
       const { result } = renderHook(() => useAuth());
 
-      await waitFor(() => {
+      await rtlWaitFor(() => {
         expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current.user).toBe(null);
-    });
-
-    it("should handle session retrieval errors", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: null,
-        error: new Error("Session expired"),
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await expect(result.current.getUser()).rejects.toThrow(
-          "Session expired"
-        );
+        expect(result.current.user).toBe(null);
       });
     });
-  });
 
-  describe("sign out flow", () => {
-    it("should successfully sign out user", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: mockUsers[0] },
-        error: null,
-      });
-      mockSupabase.auth.signOut.mockResolvedValue({
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      // Wait for initial load
-      await waitFor(() => {
-        expect(result.current.user).toEqual(mockUsers[0]);
-      });
-
-      await act(async () => {
-        await result.current.signOut();
-      });
-
-      expect(mockSupabase.auth.signOut).toHaveBeenCalled();
-      expect(result.current.user).toBe(null);
-    });
-
-    it("should handle sign out errors", async () => {
-      mockSupabase.auth.signOut.mockResolvedValue({
-        error: new Error("Sign out failed"),
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await expect(result.current.signOut()).rejects.toThrow(
-          "Sign out failed"
-        );
-      });
-    });
-  });
-
-  describe("auth state persistence", () => {
-    it("should maintain auth state across page reloads", async () => {
-      // Simulate page reload by calling getUser multiple times
-      mockSupabase.auth.getUser
-        .mockResolvedValueOnce({
-          data: { user: mockUsers[0] },
-          error: null,
-        })
-        .mockResolvedValueOnce({
-          data: { user: mockUsers[0] },
-          error: null,
-        });
-
-      const { result } = renderHook(() => useAuth());
-
-      // Initial load
-      await waitFor(() => {
-        expect(result.current.user).toEqual(mockUsers[0]);
-      });
-
-      // Simulate page reload
-      await act(async () => {
-        await result.current.getUser();
-      });
-
-      expect(result.current.user).toEqual(mockUsers[0]);
-      expect(mockSupabase.auth.getUser).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe("route protection", () => {
-    it("should redirect unauthenticated users to login", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
+    it("should handle authentication errors", async () => {
+      mockSupabaseClient.auth.getUser.mockResolvedValue({
         data: { user: null },
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current.user).toBe(null);
-      // In a real protected route component, this would trigger a redirect
-    });
-
-    it("should allow authenticated users to access protected routes", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: mockUsers[0] },
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current.user).toEqual(mockUsers[0]);
-      // User should be able to access protected content
-    });
-  });
-
-  describe("OTP verification flow", () => {
-    it("should handle OTP email sending", async () => {
-      mockSupabase.auth.signInWithOtp.mockResolvedValue({
-        data: {
-          user: null,
-          session: null,
-          messageId: "msg_123",
-        },
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      let signInResult: unknown;
-      await act(async () => {
-        signInResult = await result.current.signIn(testCredentials.email);
-      });
-
-      expect(mockSupabase.auth.signInWithOtp).toHaveBeenCalledWith({
-        email: testCredentials.email,
-      });
-      expect(signInResult).toHaveProperty("messageId");
-    });
-
-    it("should handle invalid email format", async () => {
-      mockSupabase.auth.signInWithOtp.mockResolvedValue({
-        data: null,
-        error: { message: "Invalid email format" },
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await expect(result.current.signIn("not-an-email")).rejects.toThrow(
-          "Invalid email format"
-        );
-      });
-    });
-
-    it("should handle rate limiting", async () => {
-      mockSupabase.auth.signInWithOtp.mockResolvedValue({
-        data: null,
-        error: { message: "Too many requests" },
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await act(async () => {
-        await expect(
-          result.current.signIn(testCredentials.email)
-        ).rejects.toThrow("Too many requests");
-      });
-    });
-  });
-
-  describe("session refresh", () => {
-    it("should handle automatic session refresh", async () => {
-      // Mock initial session
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: mockUsers[0] },
-        error: null,
-      });
-
-      // Mock session refresh
-      mockSupabase.auth.getSession.mockResolvedValue({
-        data: {
-          session: {
-            user: mockUsers[0],
-            access_token: "new-token",
-            refresh_token: "new-refresh-token",
-          },
-        },
-        error: null,
-      });
-
-      const { result } = renderHook(() => useAuth());
-
-      await waitFor(() => {
-        expect(result.current.user).toEqual(mockUsers[0]);
-      });
-
-      // Simulate session refresh
-      await act(async () => {
-        await result.current.getUser();
-      });
-
-      expect(result.current.user).toEqual(mockUsers[0]);
-    });
-
-    it("should handle session refresh failures", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: null,
         error: { message: "Session expired" },
       });
 
       const { result } = renderHook(() => useAuth());
 
-      await act(async () => {
-        await expect(result.current.getUser()).rejects.toThrow(
-          "Session expired"
-        );
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.user).toBe(null);
       });
     });
   });
 
-  describe("concurrent auth operations", () => {
-    it("should handle multiple simultaneous auth calls", async () => {
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: mockUsers[0] },
+  describe("sign in workflow", () => {
+    it("should handle successful OTP sign in", async () => {
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
         error: null,
       });
 
       const { result } = renderHook(() => useAuth());
 
-      // Make multiple concurrent calls
-      await act(async () => {
-        await Promise.all([
-          result.current.getUser(),
-          result.current.getUser(),
-          result.current.getUser(),
-        ]);
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
       });
 
-      expect(result.current.user).toEqual(mockUsers[0]);
-      expect(mockSupabase.auth.getUser).toHaveBeenCalledTimes(4); // 1 initial + 3 concurrent
+      const signInWithOtpResult = await result.current.signInWithOtp("test@example.com");
+
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).toHaveBeenCalledWith({
+        email: "test@example.com",
+        options: {
+          emailRedirectTo: expect.stringContaining("/auth/callback"),
+        },
+      });
+
+      expect(signInWithOtpResult).toEqual({ success: true });
+    });
+
+    it("should handle sign in errors", async () => {
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
+        error: { message: "Invalid email address" },
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signInWithOtpResult = await result.current.signInWithOtp("invalid-email");
+
+      expect(signInWithOtpResult).toEqual({
+        success: false,
+        error: "Invalid email address",
+      });
+    });
+
+    it("should handle network errors during sign in", async () => {
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockRejectedValue(
+        new Error("Network error")
+      );
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signInWithOtpResult = await result.current.signInWithOtp("test@example.com");
+
+      expect(signInWithOtpResult).toEqual({
+        success: false,
+        error: "Network error",
+      });
+    });
+
+    it("should validate email format before sign in", async () => {
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signInWithOtpResult = await result.current.signInWithOtp("invalid-email");
+
+      expect(signInWithOtpResult).toEqual({
+        success: false,
+        error: "Please enter a valid email address",
+      });
+
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).not.toHaveBeenCalled();
+    });
+
+    it("should trim whitespace from email", async () => {
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
+        error: null,
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await result.current.signInWithOtp("  test@example.com  ");
+
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).toHaveBeenCalledWith({
+        email: "test@example.com",
+        options: {
+          emailRedirectTo: expect.stringContaining("/auth/callback"),
+        },
+      });
+    });
+  });
+
+  describe("sign out workflow", () => {
+    it("should handle successful sign out", async () => {
+      mockSupabaseClient.auth.signOut.mockResolvedValue({ error: null });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signOutResult = await result.current.signOut();
+
+      expect(mockSupabaseClient.auth.signOut).toHaveBeenCalled();
+      expect(signOutResult).toEqual({ success: true });
+    });
+
+    it("should handle sign out errors", async () => {
+      mockSupabaseClient.auth.signOut.mockResolvedValue({
+        error: { message: "Sign out failed" },
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signOutResult = await result.current.signOut();
+
+      expect(signOutResult).toEqual({
+        success: false,
+        error: "Sign out failed",
+      });
+    });
+
+    it("should handle network errors during sign out", async () => {
+      mockSupabaseClient.auth.signOut.mockRejectedValue(
+        new Error("Network error")
+      );
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signOutResult = await result.current.signOut();
+
+      expect(signOutResult).toEqual({
+        success: false,
+        error: "Network error",
+      });
+    });
+  });
+
+  describe("authentication state changes", () => {
+    it("should listen for auth state changes", () => {
+      renderHook(() => useAuth());
+
+      expect(mockSupabaseClient.auth.onAuthStateChange).toHaveBeenCalledWith(
+        expect.any(Function)
+      );
+    });
+
+    it("should update user state on auth change", async () => {
+      let authChangeCallback: ((event: string, session: any) => void) | null = null;
+
+      mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback) => {
+        authChangeCallback = callback;
+        return { data: { subscription: { unsubscribe: vi.fn() } } };
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // Simulate sign in
+      const mockUser = {
+        id: "user-1",
+        email: "test@example.com",
+        created_at: "2023-01-01T00:00:00Z",
+        updated_at: "2023-01-01T00:00:00Z",
+      };
+
+      authChangeCallback?.("SIGNED_IN", { user: mockUser });
+
+      await rtlWaitFor(() => {
+        expect(result.current.user).toEqual(mockUser);
+      });
+
+      // Simulate sign out
+      authChangeCallback?.("SIGNED_OUT", null);
+
+      await rtlWaitFor(() => {
+        expect(result.current.user).toBe(null);
+      });
+    });
+
+    it("should cleanup auth listener on unmount", () => {
+      const mockUnsubscribe = vi.fn();
+      mockSupabaseClient.auth.onAuthStateChange.mockReturnValue({
+        data: { subscription: { unsubscribe: mockUnsubscribe } },
+      });
+
+      const { unmount } = renderHook(() => useAuth());
+
+      unmount();
+
+      expect(mockUnsubscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe("session management", () => {
+    it("should check for existing session on mount", async () => {
+      const mockSession = {
+        user: {
+          id: "user-1",
+          email: "test@example.com",
+          created_at: "2023-01-01T00:00:00Z",
+          updated_at: "2023-01-01T00:00:00Z",
+        },
+      };
+
+      mockSupabaseClient.auth.getSession.mockResolvedValue({
+        data: { session: mockSession },
+        error: null,
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.user).toEqual(mockSession.user);
+      });
+
+      expect(mockSupabaseClient.auth.getSession).toHaveBeenCalled();
+    });
+
+    it("should handle session errors", async () => {
+      mockSupabaseClient.auth.getSession.mockResolvedValue({
+        data: { session: null },
+        error: { message: "Session invalid" },
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.user).toBe(null);
+      });
+    });
+
+    it("should refresh user when session changes", async () => {
+      let authChangeCallback: ((event: string, session: any) => void) | null = null;
+
+      mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback) => {
+        authChangeCallback = callback;
+        return { data: { subscription: { unsubscribe: vi.fn() } } };
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // Simulate token refresh
+      const mockUser = {
+        id: "user-1",
+        email: "test@example.com",
+        created_at: "2023-01-01T00:00:00Z",
+        updated_at: "2023-01-01T00:00:00Z",
+      };
+
+      authChangeCallback?.("TOKEN_REFRESHED", { user: mockUser });
+
+      await rtlWaitFor(() => {
+        expect(result.current.user).toEqual(mockUser);
+      });
+    });
+  });
+
+  describe("email validation", () => {
+    it("should validate valid email formats", async () => {
+      const validEmails = [
+        "test@example.com",
+        "user.name@domain.co.uk",
+        "user+tag@example.org",
+        "123@test.com",
+      ];
+
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
+        error: null,
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      for (const email of validEmails) {
+        const signInWithOtpResult = await result.current.signInWithOtp(email);
+        expect(signInWithOtpResult.success).toBe(true);
+      }
+    });
+
+    it("should reject invalid email formats", async () => {
+      const invalidEmails = [
+        "invalid-email",
+        "@example.com",
+        "test@",
+        "test..test@example.com",
+        "test@.com",
+        "",
+        "   ",
+      ];
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      for (const email of invalidEmails) {
+        const signInWithOtpResult = await result.current.signInWithOtp(email);
+        expect(signInWithOtpResult.success).toBe(false);
+        expect(signInWithOtpResult.error).toContain("valid email");
+      }
+
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("redirect URL handling", () => {
+    it("should include correct redirect URL for development", async () => {
+      // Mock development environment
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = "development";
+
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
+        error: null,
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await result.current.signInWithOtp("test@example.com");
+
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).toHaveBeenCalledWith({
+        email: "test@example.com",
+        options: {
+          emailRedirectTo: expect.stringContaining("localhost"),
+        },
+      });
+
+      process.env.NODE_ENV = originalEnv;
+    });
+
+    it("should include correct redirect URL for production", async () => {
+      // Mock production environment
+      const originalEnv = process.env.NODE_ENV;
+      const originalUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+      process.env.NODE_ENV = "production";
+      process.env.NEXT_PUBLIC_VERCEL_URL = "myapp.vercel.app";
+
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
+        error: null,
+      });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await result.current.signInWithOtp("test@example.com");
+
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).toHaveBeenCalledWith({
+        email: "test@example.com",
+        options: {
+          emailRedirectTo: expect.stringContaining("myapp.vercel.app"),
+        },
+      });
+
+      process.env.NODE_ENV = originalEnv;
+      process.env.NEXT_PUBLIC_VERCEL_URL = originalUrl;
+    });
+  });
+
+  describe("race conditions and edge cases", () => {
+    it("should handle rapid sign in/out cycles", async () => {
+      let authChangeCallback: ((event: string, session: any) => void) | null = null;
+
+      mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback) => {
+        authChangeCallback = callback;
+        return { data: { subscription: { unsubscribe: vi.fn() } } };
+      });
+
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        data: {},
+        error: null,
+      });
+
+      mockSupabaseClient.auth.signOut.mockResolvedValue({ error: null });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // Rapid sign in/out
+      await result.current.signInWithOtp("test@example.com");
+      await result.current.signOut();
+      await result.current.signInWithOtp("test@example.com");
+
+      // Should handle all operations without errors
+      expect(mockSupabaseClient.auth.signInWithOtpWithOtp).toHaveBeenCalledTimes(2);
+      expect(mockSupabaseClient.auth.signOut).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle component unmount during auth operations", async () => {
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 1000))
+      );
+
+      const { result, unmount } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // Start sign in but unmount before completion
+      const signInWithOtpPromise = result.current.signInWithOtp("test@example.com");
+      unmount();
+
+      // Should not throw errors
+      await expect(signInWithOtpPromise).resolves.toBeDefined();
+    });
+  });
+
+  describe("error resilience", () => {
+    it("should recover from temporary network errors", async () => {
+      // First call fails, second succeeds
+      mockSupabaseClient.auth.signInWithOtpWithOtp
+        .mockRejectedValueOnce(new Error("Network error"))
+        .mockResolvedValueOnce({ data: {}, error: null });
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      // First attempt fails
+      const firstResult = await result.current.signInWithOtp("test@example.com");
+      expect(firstResult.success).toBe(false);
+
+      // Second attempt succeeds
+      const secondResult = await result.current.signInWithOtp("test@example.com");
+      expect(secondResult.success).toBe(true);
+    });
+
+    it("should handle malformed responses gracefully", async () => {
+      mockSupabaseClient.auth.signInWithOtpWithOtp.mockResolvedValue({
+        // Missing data and error properties
+      } as any);
+
+      const { result } = renderHook(() => useAuth());
+
+      await rtlWaitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const signInWithOtpResult = await result.current.signInWithOtp("test@example.com");
+
+      // Should handle gracefully and not crash
+      expect(signInWithOtpResult).toBeDefined();
     });
   });
 });
