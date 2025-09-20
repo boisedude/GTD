@@ -192,19 +192,19 @@
   /* Task highlighting is now handled by TaskHighlightProvider context */
 
   [class*="bg-error"] {
-    background: red !important;
+    background: rgb(var(--color-error)) !important;
     color: white !important;
     border: 2px solid black !important;
   }
 
   [class*="bg-success"] {
-    background: green !important;
+    background: rgb(var(--color-success)) !important;
     color: white !important;
     border: 2px solid black !important;
   }
 
   [class*="bg-info"] {
-    background: blue !important;
+    background: rgb(var(--color-info)) !important;
     color: white !important;
     border: 2px solid black !important;
   }
@@ -292,21 +292,21 @@
 }
 
 .a11y-warning {
-  background: #fff3cd !important;
-  color: #856404 !important;
-  border: 1px solid #ffeaa7 !important;
+  background: rgb(var(--color-warning-light) / 0.1) !important;
+  color: rgb(var(--color-warning-dark)) !important;
+  border: 1px solid rgb(var(--color-warning)) !important;
 }
 
 .a11y-error {
-  background: #f8d7da !important;
-  color: #721c24 !important;
-  border: 1px solid #f1aeb5 !important;
+  background: rgb(var(--color-error-light) / 0.1) !important;
+  color: rgb(var(--color-error-dark)) !important;
+  border: 1px solid rgb(var(--color-error)) !important;
 }
 
 .a11y-success {
-  background: #d1edff !important;
-  color: #0f5132 !important;
-  border: 1px solid #a3cfbb !important;
+  background: rgb(var(--color-success-light) / 0.1) !important;
+  color: rgb(var(--color-success-dark)) !important;
+  border: 1px solid rgb(var(--color-success)) !important;
 }
 
 /* Ensure these work in forced colors mode too */
