@@ -261,7 +261,6 @@ export function QuickCaptureModal({
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              size="touch"
               className="w-full sm:w-auto min-h-[44px] text-sm font-medium"
             >
               Cancel
@@ -269,7 +268,6 @@ export function QuickCaptureModal({
             <Button
               type="submit"
               disabled={!title.trim() || isSubmitting}
-              size="touch"
               className="w-full sm:w-auto min-w-[120px] min-h-[44px] text-sm font-medium"
             >
               {isSubmitting ? (

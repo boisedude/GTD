@@ -14,7 +14,9 @@ interface TaskHighlightContextType {
   isInTaskManagementArea: boolean;
 }
 
-const TaskHighlightContext = createContext<TaskHighlightContextType | null>(null);
+const TaskHighlightContext = createContext<TaskHighlightContextType | null>(
+  null
+);
 
 interface TaskHighlightProviderProps {
   children: ReactNode;
@@ -23,9 +25,8 @@ interface TaskHighlightProviderProps {
 
 export function TaskHighlightProvider({
   children,
-  isInTaskManagementArea = true
+  isInTaskManagementArea = true,
 }: TaskHighlightProviderProps) {
-
   const shouldHighlight = (task: Task): boolean => {
     // Don't highlight if not in task management area
     if (!isInTaskManagementArea) return false;
@@ -38,13 +39,16 @@ export function TaskHighlightProvider({
 
     // Check highlighting conditions
     const isOverdue = task.due_date && new Date(task.due_date) < today;
-    const isDueToday = task.due_date &&
+    const isDueToday =
+      task.due_date &&
       new Date(task.due_date).toDateString() === today.toDateString();
     const isUnprocessed = task.status === "captured";
-    const isHighPriorityAction = task.priority && task.priority <= 2 &&
-      task.status === "next_action";
+    const isHighPriorityAction =
+      task.priority && task.priority <= 2 && task.status === "next_action";
 
-    return Boolean(isOverdue || isDueToday || isUnprocessed || isHighPriorityAction);
+    return Boolean(
+      isOverdue || isDueToday || isUnprocessed || isHighPriorityAction
+    );
   };
 
   const getHighlightReasons = (task: Task): TaskHighlightReason[] => {
@@ -55,18 +59,25 @@ export function TaskHighlightProvider({
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     // Check overdue
-    if (task.due_date && new Date(task.due_date) < today && task.status !== "completed") {
+    if (
+      task.due_date &&
+      new Date(task.due_date) < today &&
+      task.status !== "completed"
+    ) {
       reasons.push({
         type: "overdue",
-        message: "This task is overdue and needs attention"
+        message: "This task is overdue and needs attention",
       });
     }
 
     // Check due today
-    if (task.due_date && new Date(task.due_date).toDateString() === today.toDateString()) {
+    if (
+      task.due_date &&
+      new Date(task.due_date).toDateString() === today.toDateString()
+    ) {
       reasons.push({
         type: "due_today",
-        message: "This task is due today"
+        message: "This task is due today",
       });
     }
 
@@ -74,7 +85,7 @@ export function TaskHighlightProvider({
     if (task.status === "captured") {
       reasons.push({
         type: "unprocessed",
-        message: "This task needs to be processed and organized"
+        message: "This task needs to be processed and organized",
       });
     }
 
@@ -82,7 +93,7 @@ export function TaskHighlightProvider({
     if (task.priority && task.priority <= 2 && task.status === "next_action") {
       reasons.push({
         type: "high_priority",
-        message: `High priority (P${task.priority}) next action`
+        message: `High priority (P${task.priority}) next action`,
       });
     }
 
@@ -92,7 +103,7 @@ export function TaskHighlightProvider({
   const value: TaskHighlightContextType = {
     shouldHighlight,
     getHighlightReasons,
-    isInTaskManagementArea
+    isInTaskManagementArea,
   };
 
   return (
@@ -109,7 +120,7 @@ export function useTaskHighlight() {
     return {
       shouldHighlight: () => false,
       getHighlightReasons: () => [],
-      isInTaskManagementArea: false
+      isInTaskManagementArea: false,
     };
   }
   return context;

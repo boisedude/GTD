@@ -73,7 +73,6 @@ export function useOfflineActions(
         setPendingActions((prev) =>
           prev.filter((a) => a.id !== offlineAction.id)
         );
-
       } catch (error) {
         // Update retry count and timestamp
         setPendingActions((prev) =>

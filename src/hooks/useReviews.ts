@@ -378,8 +378,8 @@ export function useReviews(options: UseReviewsOptions = {}): UseReviewsReturn {
     }, [supabase]);
 
   // Load weekly review data
-  const loadWeeklyReviewData =
-    useCallback(async (): Promise<WeeklyReviewData> => {
+  const loadWeeklyReviewData = useCallback(
+    async (): Promise<WeeklyReviewData> => {
       try {
         setLoading(true);
 
@@ -450,7 +450,8 @@ export function useReviews(options: UseReviewsOptions = {}): UseReviewsReturn {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [supabase]);
+    [supabase]
+  );
 
   // Load review history
   const loadReviewHistory = useCallback(async (): Promise<void> => {

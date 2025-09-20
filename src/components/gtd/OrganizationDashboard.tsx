@@ -167,7 +167,6 @@ export function OrganizationDashboard({
         <div className="flex items-center gap-2 sm:justify-end">
           <Button
             onClick={handleTaskCreate}
-            size="touch"
             className="flex items-center justify-center gap-2 bg-brand-teal hover:bg-brand-teal/90 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 min-h-[44px] px-4 w-full sm:w-auto"
           >
             <Plus className="h-5 w-5 sm:h-4 sm:w-4" />

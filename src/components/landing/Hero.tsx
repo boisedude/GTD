@@ -35,7 +35,6 @@ export function Hero() {
             <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 md:flex-row md:gap-6 px-4 sm:px-0">
               <Button
                 asChild
-                size="touch"
                 className="w-full max-w-xs bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 sm:w-auto min-h-[48px] text-base font-semibold active:scale-95 transition-all duration-200"
               >
                 <Link
@@ -50,7 +49,6 @@ export function Hero() {
               <Button
                 asChild
                 variant="outline"
-                size="touch"
                 className="w-full max-w-xs border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800 sm:w-auto min-h-[48px] text-base active:scale-95 transition-all duration-200"
               >
                 <Link

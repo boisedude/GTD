@@ -1,11 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/contexts/auth-context";
 import { UserMenu } from "@/components/auth/user-menu";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   LayoutDashboard,
   Plus,
@@ -41,11 +52,21 @@ export function Header() {
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         {/* Logo and Navigation */}
         <div className="flex items-center space-x-6">
+          {user && <SidebarTrigger className="hidden md:flex h-7 w-7" />}
+
           <Link
             href={user ? "/dashboard" : "/"}
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
           >
-            <span className="text-brand-xl font-bold text-brand-navy">
+            <Image
+              src="/images/clarity-done-logo.png"
+              alt="Clarity Done"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+              priority
+            />
+            <span className="text-brand-xl font-bold text-brand-navy hidden sm:inline">
               Clarity Done
             </span>
           </Link>
@@ -76,16 +97,50 @@ export function Header() {
                 })}
               </nav>
 
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden p-2"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
+              {/* Mobile Drawer Trigger */}
+              <Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <DrawerTrigger asChild>
+                  <Button variant="ghost" size="sm" className="md:hidden p-2">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Open navigation menu</span>
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm">
+                    <DrawerHeader>
+                      <DrawerTitle>Navigation</DrawerTitle>
+                      <DrawerDescription>
+                        Navigate to different sections of the app.
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <nav className="p-4 pb-6">
+                      <div className="space-y-2">
+                        {navItems.map((item) => {
+                          const Icon = item.icon;
+                          const active = isActive(item.href);
+
+                          return (
+                            <DrawerClose key={item.href} asChild>
+                              <Link
+                                href={item.href}
+                                className={cn(
+                                  "flex items-center gap-3 text-brand-sm font-medium transition-all duration-200 px-4 py-3 rounded-lg w-full",
+                                  active
+                                    ? "text-brand-navy bg-brand-teal/10 border border-brand-teal/20"
+                                    : "text-brand-gray-700 hover:text-brand-navy hover:bg-brand-gray-100"
+                                )}
+                              >
+                                <Icon className="h-5 w-5" />
+                                {item.label}
+                              </Link>
+                            </DrawerClose>
+                          );
+                        })}
+                      </div>
+                    </nav>
+                  </div>
+                </DrawerContent>
+              </Drawer>
             </>
           )}
         </div>
@@ -103,37 +158,6 @@ export function Header() {
           )}
         </div>
       </div>
-
-      {/* Mobile Navigation Dropdown */}
-      {user && mobileMenuOpen && (
-        <div className="md:hidden border-t border-brand-gray-200 bg-background shadow-lg">
-          <nav className="container mx-auto px-4 py-2">
-            <div className="space-y-1">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 text-brand-sm font-medium transition-all duration-200 px-3 py-3 rounded-lg",
-                      active
-                        ? "text-brand-navy bg-brand-teal/10 border border-brand-teal/20"
-                        : "text-brand-gray-700 hover:text-brand-navy hover:bg-brand-gray-100"
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-        </div>
-      )}
     </header>
   );
 }

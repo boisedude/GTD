@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Select,
   SelectContent,
@@ -24,6 +30,8 @@ import {
   Plus,
   RotateCcw,
   Archive,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { TaskCard } from "./TaskCard";
 import { useTasks } from "@/hooks/useTasks";
@@ -104,6 +112,9 @@ export function GTDLists({
   const [selectedList, setSelectedList] = useState<TaskStatus | "all">("all");
   const [filters, setFilters] = useState<TaskFilter>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [collapsedLists, setCollapsedLists] = useState<Set<TaskStatus>>(
+    new Set()
+  );
 
   // Group tasks by status
   const tasksByStatus = useMemo(() => {
@@ -190,6 +201,18 @@ export function GTDLists({
     await deleteTask(taskId);
   };
 
+  const toggleListCollapse = (listId: TaskStatus) => {
+    setCollapsedLists((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(listId)) {
+        newSet.delete(listId);
+      } else {
+        newSet.add(listId);
+      }
+      return newSet;
+    });
+  };
+
   if (loading) {
     return (
       <div className={cn("space-y-6", className)}>
@@ -271,7 +294,10 @@ export function GTDLists({
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">GTD Lists</h2>
           {onTaskCreate && (
-            <Button onClick={onTaskCreate}>
+            <Button
+              onClick={onTaskCreate}
+              className="min-h-[44px] touch-manipulation"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Task
             </Button>
@@ -286,7 +312,7 @@ export function GTDLists({
               placeholder="Search tasks, descriptions, tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 min-h-[44px] touch-manipulation"
             />
           </div>
 
@@ -297,7 +323,7 @@ export function GTDLists({
                 setSelectedList(value as TaskStatus | "all")
               }
             >
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 min-h-[44px] touch-manipulation">
                 <SelectValue placeholder="All lists" />
               </SelectTrigger>
               <SelectContent>
@@ -313,7 +339,10 @@ export function GTDLists({
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className={cn(showFilters && "bg-muted")}
+              className={cn(
+                showFilters && "bg-muted",
+                "min-h-[44px] touch-manipulation"
+              )}
             >
               <Filter className="h-4 w-4 mr-2" />
               Filters
@@ -432,59 +461,78 @@ export function GTDLists({
             const Icon = list.icon;
 
             return (
-              <Card key={list.id} className="h-fit">
-                <CardHeader className="pb-3">
-                  <CardTitle
-                    className={cn(
-                      "flex items-center gap-2 text-lg",
-                      list.iconColor
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {list.title}
-                    <Badge variant="secondary" className="ml-auto">
-                      {listTasks.length}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {listTasks.length === 0 ? (
-                    <p className="text-sm text-gray-500 italic py-4 text-center">
-                      No tasks in {list.title.toLowerCase()}
-                    </p>
-                  ) : (
-                    listTasks
-                      .slice(0, 5)
-                      .map((task) => (
-                        <TaskCard
-                          key={task.id}
-                          task={task}
-                          onEdit={onTaskEdit}
-                          onDelete={handleTaskDelete}
-                          onComplete={handleTaskComplete}
-                          onStatusChange={handleTaskStatusChange}
-                          compact
-                        />
-                      ))
-                  )}
+              <Collapsible
+                key={list.id}
+                open={!collapsedLists.has(list.id)}
+                onOpenChange={() => toggleListCollapse(list.id)}
+              >
+                <Card className="h-fit">
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="pb-3 cursor-pointer hover:bg-gray-50 transition-colors min-h-[44px] touch-manipulation">
+                      <CardTitle
+                        className={cn(
+                          "flex items-center gap-2 text-lg",
+                          list.iconColor
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                        {list.title}
+                        <Badge variant="secondary" className="ml-auto">
+                          {listTasks.length}
+                        </Badge>
+                        {collapsedLists.has(list.id) ? (
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-gray-400" />
+                        )}
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      {listTasks.length === 0 ? (
+                        <p className="text-sm text-gray-500 italic py-4 text-center">
+                          No tasks in {list.title.toLowerCase()}
+                        </p>
+                      ) : (
+                        <ScrollArea className="h-[400px] w-full">
+                          <div className="space-y-3 pr-4">
+                            {listTasks.slice(0, 10).map((task) => (
+                              <TaskCard
+                                key={task.id}
+                                task={task}
+                                onEdit={onTaskEdit}
+                                onDelete={handleTaskDelete}
+                                onComplete={handleTaskComplete}
+                                onStatusChange={handleTaskStatusChange}
+                                compact
+                              />
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      )}
 
-                  {listTasks.length > 5 && (
-                    <Button
-                      variant="ghost"
-                      className="w-full text-sm"
-                      onClick={() => setSelectedList(list.id)}
-                    >
-                      View all {listTasks.length} tasks
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
+                      {listTasks.length > 10 && (
+                        <div className="pt-3 border-t border-gray-100">
+                          <Button
+                            variant="ghost"
+                            className="w-full text-sm min-h-[44px] touch-manipulation"
+                            onClick={() => setSelectedList(list.id)}
+                          >
+                            View all {listTasks.length} tasks
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
             );
           })}
         </div>
       ) : (
         /* Single list view */
-        <div className="space-y-4">
+        <div>
           {filteredTasks.length === 0 ? (
             <Card className="text-center py-12">
               <CardContent>
@@ -506,16 +554,20 @@ export function GTDLists({
               </CardContent>
             </Card>
           ) : (
-            filteredTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={onTaskEdit}
-                onDelete={handleTaskDelete}
-                onComplete={handleTaskComplete}
-                onStatusChange={handleTaskStatusChange}
-              />
-            ))
+            <ScrollArea className="h-[calc(100vh-300px)] w-full">
+              <div className="space-y-4 pr-4">
+                {filteredTasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onEdit={onTaskEdit}
+                    onDelete={handleTaskDelete}
+                    onComplete={handleTaskComplete}
+                    onStatusChange={handleTaskStatusChange}
+                  />
+                ))}
+              </div>
+            </ScrollArea>
           )}
         </div>
       )}

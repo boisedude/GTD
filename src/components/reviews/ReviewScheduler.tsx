@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useReviews } from "@/hooks/useReviews";
+import { DateTimePicker } from "@/components/ui/date-picker";
 import {
   Clock,
   Calendar,
@@ -38,6 +39,7 @@ interface ReviewSchedule {
   enabled: boolean;
   type: ReviewType;
   time: string;
+  nextReviewDate?: Date;
   days: number[]; // 0 = Sunday, 1 = Monday, etc.
   reminders: {
     enabled: boolean;
@@ -155,6 +157,7 @@ export function ReviewScheduler({
                     "Notification" in window &&
                     Notification.permission === "denied"
                   }
+                  className="min-h-[44px] min-w-[44px] touch-manipulation"
                 />
                 {!notificationsEnabled && "Notification" in window && (
                   <Button
@@ -260,14 +263,27 @@ function ScheduleCard({
       {schedule.enabled && (
         <CardContent className="space-y-4">
           {/* Time setting */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor={`time-${schedule.type}`}>Preferred Time</Label>
             <Input
               id={`time-${schedule.type}`}
               type="time"
               value={schedule.time}
               onChange={(e) => onUpdate({ time: e.target.value })}
-              className="mt-1 w-32"
+              className="mt-1 w-32 min-h-[44px] touch-manipulation"
+            />
+          </div>
+
+          {/* Next Review Date */}
+          <div className="space-y-2">
+            <Label>Next Review</Label>
+            <DateTimePicker
+              date={schedule.nextReviewDate}
+              onSelect={(date) => onUpdate({ nextReviewDate: date })}
+              placeholder="Set specific date"
+              clearable
+              showTime
+              className="min-h-[44px] touch-manipulation"
             />
           </div>
 
@@ -283,7 +299,7 @@ function ScheduleCard({
                   }
                   size="sm"
                   onClick={() => onToggleDay(index)}
-                  className="w-12 h-10 p-0"
+                  className="w-12 h-10 p-0 min-h-[44px] touch-manipulation"
                 >
                   {day}
                 </Button>
@@ -319,7 +335,7 @@ function ScheduleCard({
                     })
                   }
                 >
-                  <SelectTrigger className="w-48 mt-1">
+                  <SelectTrigger className="w-48 mt-1 min-h-[44px] touch-manipulation">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useTaskHighlight } from "@/contexts/task-highlight-context";
+import { DeleteConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Clock,
   User,
@@ -83,6 +84,8 @@ export function TaskCard({
   className,
 }: TaskCardProps) {
   const [isCompleting, setIsCompleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { shouldHighlight } = useTaskHighlight();
 
   const isCompleted = task.status === "completed" || task.completed_at;
@@ -109,18 +112,31 @@ export function TaskCard({
     }
   };
 
+  const handleDelete = async () => {
+    if (!onDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await onDelete(task.id);
+      setDeleteDialogOpen(false);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const ContextIcon = task.context ? contextIcons[task.context] : null;
 
   return (
     <Card
       className={cn(
-        "group transition-all duration-300 hover:shadow-lg hover:shadow-brand-teal/10 hover:-translate-y-1 cursor-pointer border-l-4 relative",
+        "group transition-all duration-300 hover:shadow-lg hover:shadow-brand-teal/10 hover:-translate-y-1 cursor-pointer border-l-4 relative min-h-[44px] touch-manipulation",
         "hover:border-brand-teal/30 focus-within:ring-2 focus-within:ring-brand-teal/20",
         task.priority &&
           priorityColors[task.priority as keyof typeof priorityColors],
         isCompleted && "opacity-60 hover:opacity-80",
         isOverdue && "ring-2 ring-error/30 animate-pulse",
-        shouldHighlight(task) && "ring-2 ring-yellow-400/50 shadow-lg shadow-yellow-400/20",
+        shouldHighlight(task) &&
+          "ring-2 ring-yellow-400/50 shadow-lg shadow-yellow-400/20",
         className
       )}
       draggable={!!onDragStart}
@@ -133,13 +149,19 @@ export function TaskCard({
           </div>
         </div>
       )}
-      <CardContent className={cn("p-4", compact && "p-3")}>
+      <CardContent
+        className={cn(
+          "p-4",
+          compact && "p-3",
+          "min-h-[44px] touch-manipulation"
+        )}
+      >
         <div className="flex items-start gap-3">
           {/* Completion checkbox */}
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 mt-0.5 hover:bg-transparent transition-all duration-200 hover:scale-110"
+            className="h-8 w-8 p-0 mt-0.5 hover:bg-transparent transition-all duration-200 hover:scale-110 min-h-[44px] min-w-[44px] touch-manipulation"
             onClick={handleComplete}
             disabled={isCompleting}
           >
@@ -257,7 +279,7 @@ export function TaskCard({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-brand-gray-100 hover:scale-110"
+                    className="h-8 w-8 p-0 opacity-0 md:group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 opacity-100 sm:opacity-0 transition-all duration-200 hover:bg-brand-gray-100 hover:scale-110 min-h-[44px] min-w-[44px] touch-manipulation"
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
@@ -305,7 +327,7 @@ export function TaskCard({
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        onClick={() => onDelete(task.id)}
+                        onClick={() => setDeleteDialogOpen(true)}
                         className="text-error focus:text-error"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
@@ -319,6 +341,19 @@ export function TaskCard({
           </div>
         </div>
       </CardContent>
+
+      {/* Delete confirmation dialog */}
+      <DeleteConfirmDialog
+        itemName={task.title}
+        itemType="task"
+        isLoading={isDeleting}
+        onConfirm={handleDelete}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+      >
+        <span />{" "}
+        {/* This span is required but won't be rendered since we control open state */}
+      </DeleteConfirmDialog>
     </Card>
   );
 }

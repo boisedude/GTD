@@ -45,7 +45,6 @@ export function PWAProvider({ children }: PWAProviderProps) {
           const reg = await navigator.serviceWorker.register("/sw.js");
           setRegistration(reg);
 
-
           // Check for updates
           reg.addEventListener("updatefound", () => {
             const newWorker = reg.installing;

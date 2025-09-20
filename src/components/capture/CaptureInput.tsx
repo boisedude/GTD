@@ -4,8 +4,9 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Plus, Loader2, Check, X } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface CaptureInputProps {
   onTaskCapture?: (title: string) => Promise<void>;
@@ -15,7 +16,7 @@ interface CaptureInputProps {
   autoFocus?: boolean;
 }
 
-type CaptureState = "idle" | "typing" | "saving" | "success" | "error";
+type CaptureState = "idle" | "typing" | "saving";
 
 export function CaptureInput({
   onTaskCapture,
@@ -26,13 +27,11 @@ export function CaptureInput({
 }: CaptureInputProps) {
   const [title, setTitle] = useState("");
   const [state, setState] = useState<CaptureState>("idle");
-  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Auto-save delay (2 seconds after user stops typing)
   const AUTO_SAVE_DELAY = 2000;
-  const SUCCESS_DISPLAY_DURATION = 1500;
 
   // Clear any pending saves
   const clearSaveTimeout = useCallback(() => {
@@ -53,22 +52,19 @@ export function CaptureInput({
       try {
         setState("saving");
         await onTaskCapture(title.trim());
-        setState("success");
+        setState("idle");
         setTitle("");
-        setError(null);
+        toast.success("Task captured successfully!");
 
-        // Show success state briefly, then return to idle
+        // Focus back to input after successful save
         setTimeout(() => {
-          setState("idle");
-        }, SUCCESS_DISPLAY_DURATION);
+          inputRef.current?.focus();
+        }, 100);
       } catch (err) {
-        setState("error");
-        setError(err instanceof Error ? err.message : "Failed to save task");
-
-        // Return to typing state after showing error
-        setTimeout(() => {
-          setState("typing");
-        }, 2000);
+        setState("idle");
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to save task";
+        toast.error(errorMessage);
       }
     }, AUTO_SAVE_DELAY);
   }, [title, onTaskCapture, clearSaveTimeout]);
@@ -78,7 +74,6 @@ export function CaptureInput({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       setTitle(newValue);
-      setError(null);
 
       if (newValue.trim()) {
         scheduleAutoSave();
@@ -102,22 +97,19 @@ export function CaptureInput({
       try {
         setState("saving");
         await onTaskCapture(title.trim());
-        setState("success");
+        setState("idle");
         setTitle("");
-        setError(null);
+        toast.success("Task captured successfully!");
 
         // Focus back to input after successful save
         setTimeout(() => {
-          setState("idle");
           inputRef.current?.focus();
-        }, SUCCESS_DISPLAY_DURATION);
+        }, 100);
       } catch (err) {
-        setState("error");
-        setError(err instanceof Error ? err.message : "Failed to save task");
-
-        setTimeout(() => {
-          setState("idle");
-        }, 2000);
+        setState("idle");
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to save task";
+        toast.error(errorMessage);
       }
     },
     [title, onTaskCapture, state, clearSaveTimeout]
@@ -133,7 +125,6 @@ export function CaptureInput({
         setTitle("");
         clearSaveTimeout();
         setState("idle");
-        setError(null);
       } else if (e.key === "Tab" && e.shiftKey && onDetailedCapture) {
         e.preventDefault();
         onDetailedCapture();
@@ -156,34 +147,6 @@ export function CaptureInput({
     }
   }, [autoFocus]);
 
-  const getStatusIcon = () => {
-    switch (state) {
-      case "saving":
-        return <Loader2 className="h-4 w-4 animate-spin text-brand-gray-500" />;
-      case "success":
-        return <Check className="h-4 w-4 text-success" />;
-      case "error":
-        return <X className="h-4 w-4 text-error" />;
-      default:
-        return null;
-    }
-  };
-
-  const getStatusText = () => {
-    switch (state) {
-      case "typing":
-        return "Auto-saving...";
-      case "saving":
-        return "Saving...";
-      case "success":
-        return "Saved!";
-      case "error":
-        return error || "Error saving";
-      default:
-        return null;
-    }
-  };
-
   return (
     <Card
       className={cn(
@@ -192,8 +155,7 @@ export function CaptureInput({
         {
           "border-brand-teal/50 shadow-lg ring-2 ring-brand-teal/20 scale-[1.02]":
             state === "typing" || title.trim(),
-          "border-success/50 bg-success/5 shadow-md": state === "success",
-          "border-error/50 bg-error/5 shadow-md": state === "error",
+          "opacity-70": state === "saving",
         }
       )}
     >
@@ -220,18 +182,6 @@ export function CaptureInput({
               maxLength={500}
               data-capture-input
             />
-
-            {/* Status indicator inside input */}
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              <div
-                className={cn("transition-all duration-200", {
-                  "scale-110": state === "success",
-                  "animate-pulse": state === "saving",
-                })}
-              >
-                {getStatusIcon()}
-              </div>
-            </div>
           </div>
 
           {/* Quick actions */}
@@ -239,7 +189,7 @@ export function CaptureInput({
             {/* Immediate save button - mobile optimized */}
             <Button
               type="submit"
-              size="touch" // Use mobile-optimized touch size
+              // Use mobile-optimized touch size
               disabled={!title.trim() || state === "saving"}
               className={cn(
                 "min-h-[44px] min-w-[44px] px-3 transition-all duration-200 sm:h-8 sm:px-2 sm:min-w-0",
@@ -261,7 +211,6 @@ export function CaptureInput({
               <Button
                 type="button"
                 variant="outline"
-                size="touch"
                 onClick={onDetailedCapture}
                 className="min-h-[44px] px-3 sm:h-8 sm:px-2 hidden xs:flex transition-all duration-200 hover:bg-brand-gray-100"
               >
@@ -270,22 +219,6 @@ export function CaptureInput({
             )}
           </div>
         </div>
-
-        {/* Status text with animation */}
-        {getStatusText() && (
-          <div
-            className={cn(
-              "mt-2 text-brand-xs transition-all duration-300 animate-in slide-in-from-top-1 fade-in",
-              {
-                "text-brand-gray-600": state === "typing" || state === "saving",
-                "text-success font-medium": state === "success",
-                "text-error font-medium": state === "error",
-              }
-            )}
-          >
-            {getStatusText()}
-          </div>
-        )}
 
         {/* Enhanced keyboard shortcuts hint */}
         <div className="mt-2 text-brand-xs text-brand-gray-500/60 hidden sm:flex items-center gap-4">

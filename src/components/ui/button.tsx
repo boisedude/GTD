@@ -5,36 +5,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-brand-md text-brand-sm font-medium ring-offset-background transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98] transform-gpu",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default:
-          "bg-brand-teal text-brand-white hover:bg-brand-teal-dark shadow-brand hover:shadow-brand-lg transition-shadow",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-error text-brand-white hover:bg-error-dark shadow-sm hover:shadow-md",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-brand-gray-300 bg-background hover:bg-brand-gray-50 hover:border-brand-teal text-brand-navy",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200 shadow-sm hover:shadow-md",
-        ghost:
-          "hover:bg-brand-gray-100 hover:text-brand-navy text-brand-gray-700",
-        link: "text-brand-teal underline-offset-4 hover:underline hover:text-brand-teal-dark",
-        navy: "bg-brand-navy text-brand-white hover:bg-brand-navy-light shadow-sm hover:shadow-md",
-        success:
-          "bg-success text-brand-white hover:bg-success-dark shadow-sm hover:shadow-md",
-        warning:
-          "bg-warning text-brand-white hover:bg-warning-dark shadow-sm hover:shadow-md",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-brand-sm px-3 text-brand-xs",
-        lg: "h-12 rounded-brand-lg px-6 text-brand-base font-semibold",
-        xl: "h-14 rounded-brand-xl px-8 text-brand-lg font-semibold",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
-        "icon-sm": "h-8 w-8 rounded-brand-sm",
-        "icon-lg": "h-12 w-12 rounded-brand-lg",
-        touch: "h-12 px-4 py-3 min-w-[44px] rounded-brand-lg", // Mobile-optimized 44px touch target
       },
     },
     defaultVariants: {

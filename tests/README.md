@@ -87,11 +87,13 @@ npm run test:performance
 ### Environment Setup
 
 1. Copy environment variables:
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 2. For E2E tests, ensure the application is running:
+
 ```bash
 npm run dev
 # or
@@ -110,36 +112,42 @@ npm run build && npm run start
 ### Coverage Areas
 
 ✅ **Authentication**
+
 - Email/OTP login flow
 - Session management
 - Route protection
 - Error handling
 
 ✅ **Task Management**
+
 - Task creation and capture
 - Task status transitions
 - CRUD operations
 - Real-time synchronization
 
 ✅ **GTD Workflows**
+
 - Capture → Clarify → Organize
 - Daily and weekly reviews
 - Task engagement and filtering
 - Project management
 
 ✅ **User Interface**
+
 - Component rendering
 - User interactions
 - Form validation
 - Error states
 
 ✅ **Accessibility**
+
 - WCAG 2.1 AA compliance
 - Keyboard navigation
 - Screen reader support
 - Color contrast
 
 ✅ **Mobile Experience**
+
 - Touch interactions
 - Responsive layouts
 - Performance on mobile
@@ -148,24 +156,28 @@ npm run build && npm run start
 ## 🎯 Testing Strategy
 
 ### Unit Tests
+
 - **Scope**: Individual functions, components, and hooks
 - **Focus**: Logic, state management, edge cases
 - **Tools**: Vitest, React Testing Library
 - **Mocking**: Supabase client, external dependencies
 
 ### Integration Tests
+
 - **Scope**: Component interactions, data flows
 - **Focus**: Authentication, API integration, real-time features
 - **Tools**: Vitest, MSW for API mocking
 - **Database**: Mock Supabase responses
 
 ### E2E Tests
+
 - **Scope**: Complete user workflows
 - **Focus**: Critical paths, cross-browser compatibility
 - **Tools**: Playwright with multiple browsers
 - **Data**: Seeded test data, isolated test environments
 
 ### Accessibility Tests
+
 - **Scope**: WCAG compliance, keyboard navigation
 - **Focus**: Screen reader support, color contrast
 - **Tools**: Playwright + axe-core
@@ -177,18 +189,19 @@ E2E tests use the Page Object Model pattern for maintainability:
 
 ```typescript
 // Example usage
-const loginPage = new LoginPage(page)
-const dashboardPage = new DashboardPage(page)
+const loginPage = new LoginPage(page);
+const dashboardPage = new DashboardPage(page);
 
-await loginPage.goto()
-await loginPage.completeLogin('test@example.com')
-await dashboardPage.expectToBeLoaded()
-await dashboardPage.captureTask('Test task')
+await loginPage.goto();
+await loginPage.completeLogin("test@example.com");
+await dashboardPage.expectToBeLoaded();
+await dashboardPage.captureTask("Test task");
 ```
 
 ### Base Page Class
 
 All page objects extend `BasePage` which provides:
+
 - Common navigation methods
 - Wait helpers
 - Assertion helpers
@@ -199,12 +212,14 @@ All page objects extend `BasePage` which provides:
 ## 🔧 Test Configuration
 
 ### Vitest Configuration
+
 - **Environment**: jsdom for DOM simulation
 - **Setup**: Automatic mocking of Next.js and Supabase
 - **Coverage**: v8 provider with HTML reports
 - **Reporters**: Verbose console + JUnit XML
 
 ### Playwright Configuration
+
 - **Browsers**: Chromium, Firefox, WebKit
 - **Mobile**: iPhone 12, Pixel 5, iPad Pro
 - **Reporters**: HTML, JUnit, JSON
@@ -214,12 +229,14 @@ All page objects extend `BasePage` which provides:
 ## 📊 Test Data Management
 
 ### Fixtures
+
 - Predefined test data for consistent testing
 - Factory functions for generating test objects
 - Mock Supabase responses
 - Test user credentials
 
 ### Mocking Strategy
+
 - **API Calls**: MSW for HTTP interception
 - **Supabase**: Complete client mocking
 - **External Services**: Stubbed responses
@@ -228,12 +245,14 @@ All page objects extend `BasePage` which provides:
 ## 🚨 Error Handling
 
 ### Test Reliability
+
 - Automatic retries for flaky tests
 - Wait strategies for async operations
 - Proper cleanup and teardown
 - Isolated test environments
 
 ### Debugging
+
 - Screenshots on failure
 - Video recordings for E2E tests
 - Console error capturing
@@ -242,12 +261,14 @@ All page objects extend `BasePage` which provides:
 ## 📱 Mobile Testing
 
 ### Approach
+
 - Device simulation with proper viewports
 - Touch interaction testing
 - Performance validation
 - Responsive layout verification
 
 ### Devices Tested
+
 - **Phones**: iPhone 12, Pixel 5
 - **Tablets**: iPad Pro
 - **Orientations**: Portrait and landscape
@@ -255,12 +276,14 @@ All page objects extend `BasePage` which provides:
 ## ♿ Accessibility Testing
 
 ### Automated Checks
+
 - **axe-core**: Comprehensive WCAG rule validation
 - **Color Contrast**: AA compliance verification
 - **Keyboard Navigation**: Tab order and focus management
 - **ARIA**: Proper usage of ARIA attributes
 
 ### Manual Testing Areas
+
 - Screen reader compatibility
 - Voice control support
 - High contrast mode
@@ -269,6 +292,7 @@ All page objects extend `BasePage` which provides:
 ## 🔄 CI/CD Integration
 
 ### GitHub Actions Workflow
+
 - **Unit Tests**: Fast feedback on every commit
 - **E2E Tests**: Multi-browser testing matrix
 - **Accessibility**: Automated a11y validation
@@ -276,6 +300,7 @@ All page objects extend `BasePage` which provides:
 - **Performance**: Benchmark validation
 
 ### Test Reports
+
 - **Coverage**: Codecov integration
 - **Results**: JUnit XML for CI systems
 - **Artifacts**: Screenshots, videos, reports
@@ -284,12 +309,14 @@ All page objects extend `BasePage` which provides:
 ## 📈 Performance Testing
 
 ### Metrics Tracked
+
 - **Task Capture**: < 5 seconds end-to-end
 - **Page Load**: < 3 seconds initial load
 - **Interaction**: < 100ms response time
 - **Memory**: No significant leaks
 
 ### Tools
+
 - Playwright performance APIs
 - Web Vitals measurement
 - Memory usage tracking
@@ -298,12 +325,14 @@ All page objects extend `BasePage` which provides:
 ## 🧹 Maintenance
 
 ### Best Practices
+
 - **Selectors**: Use `data-testid` attributes
 - **Waiting**: Explicit waits over implicit timeouts
 - **Assertions**: Specific, meaningful assertions
 - **Cleanup**: Proper test isolation and cleanup
 
 ### Code Quality
+
 - **ESLint**: Consistent code style
 - **TypeScript**: Type safety
 - **Comments**: Clear test descriptions

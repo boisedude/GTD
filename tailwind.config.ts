@@ -27,16 +27,15 @@ const config: Config = {
       },
     },
     screens: {
-      xs: "475px", // Extra small devices
-      sm: "640px", // Small devices (large phones, 640px and up)
-      md: "768px", // Medium devices (tablets, 768px and up)
-      lg: "1024px", // Large devices (desktops, 1024px and up)
-      xl: "1280px", // Extra large devices (large desktops, 1280px and up)
-      "2xl": "1536px", // 2X large devices (larger desktops, 1536px and up)
+      xs: "475px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
     },
     extend: {
       colors: {
-        // Shadcn UI colors (using Clarity Done brand tokens)
         border: "rgb(var(--border))",
         input: "rgb(var(--input))",
         ring: "rgb(var(--ring))",
@@ -70,8 +69,6 @@ const config: Config = {
           DEFAULT: "rgb(var(--card))",
           foreground: "rgb(var(--card-foreground))",
         },
-
-        // Clarity Done Brand Colors
         brand: {
           navy: {
             DEFAULT: "rgb(var(--brand-navy))",
@@ -85,20 +82,18 @@ const config: Config = {
           },
           white: "rgb(var(--brand-white))",
           gray: {
-            50: "rgb(var(--brand-gray-50))",
-            100: "rgb(var(--brand-gray-100))",
-            200: "rgb(var(--brand-gray-200))",
-            300: "rgb(var(--brand-gray-300))",
-            400: "rgb(var(--brand-gray-400))",
-            500: "rgb(var(--brand-gray-500))",
-            600: "rgb(var(--brand-gray-600))",
-            700: "rgb(var(--brand-gray-700))",
-            800: "rgb(var(--brand-gray-800))",
-            900: "rgb(var(--brand-gray-900))",
+            "50": "rgb(var(--brand-gray-50))",
+            "100": "rgb(var(--brand-gray-100))",
+            "200": "rgb(var(--brand-gray-200))",
+            "300": "rgb(var(--brand-gray-300))",
+            "400": "rgb(var(--brand-gray-400))",
+            "500": "rgb(var(--brand-gray-500))",
+            "600": "rgb(var(--brand-gray-600))",
+            "700": "rgb(var(--brand-gray-700))",
+            "800": "rgb(var(--brand-gray-800))",
+            "900": "rgb(var(--brand-gray-900))",
           },
         },
-
-        // Semantic Colors
         success: {
           DEFAULT: "rgb(var(--color-success))",
           light: "rgb(var(--color-success-light))",
@@ -119,12 +114,21 @@ const config: Config = {
           light: "rgb(var(--color-info-light))",
           dark: "rgb(var(--color-info-dark))",
         },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        // Brand-specific radius tokens
         "brand-sm": "var(--radius-sm)",
         "brand-base": "var(--radius-base)",
         "brand-md": "var(--radius-md)",
@@ -133,21 +137,17 @@ const config: Config = {
         "brand-2xl": "var(--radius-2xl)",
         "brand-3xl": "var(--radius-3xl)",
       },
-
       spacing: {
-        // Custom spacing using design tokens
-        "18": "var(--space-18)", // 4.5rem / 72px
-        "72": "var(--space-72)", // 18rem / 288px
-        "84": "var(--space-84)", // 21rem / 336px
-        "96": "var(--space-96)", // 24rem / 384px
+        "18": "var(--space-18)",
+        "72": "var(--space-72)",
+        "84": "var(--space-84)",
+        "96": "var(--space-96)",
       },
-
       fontFamily: {
         sans: ["var(--font-primary)"],
         heading: ["var(--font-heading)"],
         mono: ["var(--font-mono)"],
       },
-
       fontSize: {
         "brand-xs": "var(--font-size-xs)",
         "brand-sm": "var(--font-size-sm)",
@@ -160,7 +160,6 @@ const config: Config = {
         "brand-5xl": "var(--font-size-5xl)",
         "brand-6xl": "var(--font-size-6xl)",
       },
-
       lineHeight: {
         "brand-tight": "var(--line-height-tight)",
         "brand-snug": "var(--line-height-snug)",
@@ -168,12 +167,10 @@ const config: Config = {
         "brand-relaxed": "var(--line-height-relaxed)",
         "brand-loose": "var(--line-height-loose)",
       },
-
       boxShadow: {
         brand: "var(--shadow-brand)",
         "brand-lg": "var(--shadow-brand-lg)",
       },
-
       transitionDuration: {
         "75": "var(--duration-75)",
         "100": "var(--duration-100)",
@@ -186,12 +183,20 @@ const config: Config = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
         },
       },
       animation: {

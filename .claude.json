@@ -1,0 +1,27 @@
+{
+  "installMethod": "unknown",
+  "autoUpdates": true,
+  "firstStartTime": "2025-09-20T03:36:31.938Z",
+  "userID": "7ac0d4673873b83eccebebe607bd183b4253fe99e5b7dcf2473e8f4c9ceaf6ab",
+  "projects": {
+    "/mnt/d/Projects/gtd": {
+      "allowedTools": [],
+      "history": [],
+      "mcpContextUris": [],
+      "mcpServers": {
+        "playwright": {
+          "type": "stdio",
+          "command": "npx",
+          "args": ["@playwright/mcp@latest"],
+          "env": {}
+        }
+      },
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false
+    }
+  }
+}

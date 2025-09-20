@@ -165,7 +165,6 @@ export function CaptureContainer({
         <div className="flex items-center justify-between mt-3 px-1 sm:hidden">
           <Button
             variant="ghost"
-            size="touch"
             onClick={() => setIsDetailedModalOpen(true)}
             className="min-h-[44px] px-4 text-sm font-medium text-brand-teal hover:bg-brand-teal/10 active:scale-95 transition-all duration-200"
           >
@@ -175,7 +174,6 @@ export function CaptureContainer({
           {offlineQueueCount > 0 && isOnline && (
             <Button
               variant="ghost"
-              size="touch"
               onClick={syncOfflineQueue}
               className="min-h-[44px] px-4 text-sm font-medium text-blue-600 hover:bg-blue-50 active:scale-95 transition-all duration-200"
             >
