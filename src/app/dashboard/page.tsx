@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { CaptureContainer } from "@/components/capture/CaptureContainer";
 import { OrganizationDashboard } from "@/components/gtd/OrganizationDashboard";
+import { TaskHighlightProvider } from "@/contexts/task-highlight-context";
 
 function DashboardContent() {
   const { isNewUser } = useAuth();
@@ -41,7 +42,9 @@ function DashboardContent() {
 
       {/* Main Dashboard Content - Mobile optimized spacing */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <OrganizationDashboard />
+        <TaskHighlightProvider isInTaskManagementArea={true}>
+          <OrganizationDashboard />
+        </TaskHighlightProvider>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TaskActionButton } from "./TaskActionButton";
+import { useTaskHighlight } from "@/contexts/task-highlight-context";
 import type { TaskSuggestion, TaskAction } from "@/types/database";
 import {
   CheckCircle2,
@@ -73,6 +74,7 @@ function TaskCard({
 }) {
   const { task, score, reasons } = suggestion;
   const [isLoading, setIsLoading] = useState(false);
+  const { shouldHighlight } = useTaskHighlight();
 
   const ContextIcon = task.context ? contextIcons[task.context] : null;
   const EnergyIcon = task.energy_level ? energyIcons[task.energy_level] : null;
@@ -93,7 +95,7 @@ function TaskCard({
 
   return (
     <Card className="group hover:shadow-md transition-all duration-200 cursor-pointer relative">
-      {showScoring && score > 75 && (
+      {shouldHighlight(task) && (
         <div className="absolute -top-2 -right-2 z-10">
           <div className="bg-yellow-400 text-yellow-900 rounded-full p-1">
             <Star className="h-3 w-3 fill-current" />

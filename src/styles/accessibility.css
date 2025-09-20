@@ -188,12 +188,8 @@
     color: purple !important;
   }
 
-  /* High contrast status indicators */
-  [class*="bg-warning"] {
-    background: yellow !important;
-    color: black !important;
-    border: 2px solid black !important;
-  }
+  /* High contrast status indicators - removed global bg-warning rule */
+  /* Task highlighting is now handled by TaskHighlightProvider context */
 
   [class*="bg-error"] {
     background: red !important;

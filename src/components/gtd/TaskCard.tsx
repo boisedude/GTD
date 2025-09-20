@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTaskHighlight } from "@/contexts/task-highlight-context";
 import {
   Clock,
   User,
@@ -82,6 +83,7 @@ export function TaskCard({
   className,
 }: TaskCardProps) {
   const [isCompleting, setIsCompleting] = useState(false);
+  const { shouldHighlight } = useTaskHighlight();
 
   const isCompleted = task.status === "completed" || task.completed_at;
   const isOverdue =
@@ -112,17 +114,25 @@ export function TaskCard({
   return (
     <Card
       className={cn(
-        "group transition-all duration-300 hover:shadow-lg hover:shadow-brand-teal/10 hover:-translate-y-1 cursor-pointer border-l-4",
+        "group transition-all duration-300 hover:shadow-lg hover:shadow-brand-teal/10 hover:-translate-y-1 cursor-pointer border-l-4 relative",
         "hover:border-brand-teal/30 focus-within:ring-2 focus-within:ring-brand-teal/20",
         task.priority &&
           priorityColors[task.priority as keyof typeof priorityColors],
         isCompleted && "opacity-60 hover:opacity-80",
         isOverdue && "ring-2 ring-error/30 animate-pulse",
+        shouldHighlight(task) && "ring-2 ring-yellow-400/50 shadow-lg shadow-yellow-400/20",
         className
       )}
       draggable={!!onDragStart}
       onDragStart={() => onDragStart?.(task)}
     >
+      {shouldHighlight(task) && (
+        <div className="absolute -top-2 -right-2 z-10">
+          <div className="bg-yellow-400 text-yellow-900 rounded-full p-1 shadow-lg">
+            <div className="w-2 h-2 rounded-full bg-yellow-900"></div>
+          </div>
+        </div>
+      )}
       <CardContent className={cn("p-4", compact && "p-3")}>
         <div className="flex items-start gap-3">
           {/* Completion checkbox */}

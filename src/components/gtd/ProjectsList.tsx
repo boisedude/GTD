@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTaskHighlight } from "@/contexts/task-highlight-context";
 // import {
 //   Select,
 //   SelectContent,
@@ -57,6 +58,7 @@ export function ProjectsList({
     deleteProject,
   } = useProjects();
   const { tasks, loading: tasksLoading, error: tasksError } = useTasks();
+  const { shouldHighlight } = useTaskHighlight();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedView, setSelectedView] = useState<ProjectView>("active");
 
@@ -423,8 +425,19 @@ export function ProjectsList({
               {tasksByProject["no-project"].slice(0, 5).map((task) => (
                 <div
                   key={task.id}
-                  className="flex items-center justify-between p-2 bg-yellow-50 rounded border border-yellow-200"
+                  className={`flex items-center justify-between p-2 bg-yellow-50 rounded border border-yellow-200 relative ${
+                    shouldHighlight(task)
+                      ? "ring-2 ring-yellow-400/50 shadow-lg shadow-yellow-400/20"
+                      : ""
+                  }`}
                 >
+                  {shouldHighlight(task) && (
+                    <div className="absolute -top-1 -right-1 z-10">
+                      <div className="bg-yellow-400 text-yellow-900 rounded-full p-0.5 shadow-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-yellow-900"></div>
+                      </div>
+                    </div>
+                  )}
                   <span className="text-sm font-medium truncate">
                     {task.title}
                   </span>
